@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+require "bundler/setup"
+require "byebug"
+
+$LOAD_PATH.unshift File.expand_path("../lib/", __dir__)
+require "minijava"
+
+require "irb"
+IRB.start __FILE__

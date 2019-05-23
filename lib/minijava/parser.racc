@@ -1,0 +1,136 @@
+class MiniJava::Parser
+start Program
+expect 0
+
+prechigh
+  left LPAREN RPAREN LBRACKET RBRACKET DOT
+  right NOT
+  left STAR
+  left PLUS MINUS
+  left LT
+  left AND
+  right EQUAL
+preclow
+
+options no_result_var
+
+rule
+  Program:
+      MainClassDeclaration { MiniJava::Syntax::Program.new(val[0], []) }
+    | MainClassDeclaration OneOrMoreClassDeclarations { MiniJava::Syntax::Program.new(val[0], val[1]) }
+
+  MainClassDeclaration:
+    CLASS Identifier LBRACE MainMethodDeclaration RBRACE { MiniJava::Syntax::MainClassDeclaration.new(val[1], val[3]) }
+
+  MainMethodDeclaration:
+    PUBLIC STATIC VOID MAIN LPAREN STRING LBRACKET RBRACKET Identifier RPAREN LBRACE
+      Statement
+    RBRACE { MiniJava::Syntax::MainMethodDeclaration.new(val[8], val[11]) }
+
+  OneOrMoreClassDeclarations:
+      ClassDeclaration { [ val[0] ] }
+    | OneOrMoreClassDeclarations ClassDeclaration { val[0].append(val[1]) }
+
+  ClassDeclaration:
+      CLASS Identifier LBRACE ClassBody RBRACE { MiniJava::Syntax::ClassDeclaration.new(val[1], *val[3]) }
+    | CLASS Identifier EXTENDS Identifier LBRACE ClassBody RBRACE
+        { MiniJava::Syntax::SubclassDeclaration.new(val[1], val[3], *val[5]) }
+  ClassBody:
+      OneOrMoreVariableDeclarations OneOrMoreMethodDeclarations { [ val[0], val[1] ] }
+    | OneOrMoreVariableDeclarations { [ val[0], [] ] }
+    | OneOrMoreMethodDeclarations { [ [], val[0] ] }
+    | { [ [], [] ] }
+
+  OneOrMoreVariableDeclarations:
+      VariableDeclaration { [ val[0] ] }
+    | OneOrMoreVariableDeclarations VariableDeclaration { val[0].append(val[1]) }
+  VariableDeclaration: Type Identifier SEMICOLON { MiniJava::Syntax::VariableDeclaration.new(val[0], val[1]) }
+
+  OneOrMoreMethodDeclarations:
+      MethodDeclaration { [ val[0] ] }
+    | OneOrMoreMethodDeclarations MethodDeclaration { val[0].append(val[1]) }
+
+  MethodDeclaration:
+    MethodSignature LBRACE MethodBody RBRACE
+      { MiniJava::Syntax::MethodDeclaration.new(*val[0], *val[2]) }
+  MethodSignature: PUBLIC Type Identifier LPAREN FormalParameters RPAREN { [ val[1], val[2], val[4] ] }
+  MethodBody:
+      OneOrMoreVariableDeclarations
+      OneOrMoreStatements
+      RETURN Expression SEMICOLON { [ val[0], val[1], val[3] ] }
+    | OneOrMoreVariableDeclarations
+      RETURN Expression SEMICOLON { [ val[0], [], val[2] ] }
+    | OneOrMoreStatements
+      RETURN Expression SEMICOLON { [ [], val[0], val[2] ] }
+    | RETURN Expression SEMICOLON { [ [], [], val[1] ] }
+
+  Type:
+      INT LBRACKET RBRACKET { MiniJava::Syntax::ARRAY_TYPE }
+    | BOOLEAN { MiniJava::Syntax::BOOLEAN_TYPE }
+    | INT { MiniJava::Syntax::INTEGER_TYPE }
+    | Identifier { MiniJava::Syntax::IdentifierType.new(val[0]) }
+
+  FormalParameters: { [] } | OneOrMoreFormalParameters { val[0] }
+
+  OneOrMoreFormalParameters:
+      FormalParameter { [ val[0] ] }
+    | FormalParameter COMMA OneOrMoreFormalParameters { val[1].prepend(val[0]) }
+
+  FormalParameter: Type Identifier { MiniJava::Syntax::FormalParameter.new(val[0], val[1]) }
+
+  Statements: { [] } | OneOrMoreStatements { val[0] }
+  OneOrMoreStatements:
+      Statement { [ val[0] ] }
+    | OneOrMoreStatements Statement { val[0].append(val[1]) }
+
+  Statement:
+      LBRACE Statements RBRACE { MiniJava::Syntax::Block.new(val[1]) }
+    | IF LPAREN Expression RPAREN Statement ELSE Statement { MiniJava::Syntax::IfStatement.new(val[2], val[4], val[6]) }
+    | WHILE LPAREN Expression RPAREN Statement { MiniJava::Syntax::WhileStatement.new(val[2], val[4]) }
+    | PRINTLN LPAREN Expression RPAREN SEMICOLON { MiniJava::Syntax::PrintStatement.new(val[2]) }
+    | Identifier EQUAL Expression SEMICOLON { MiniJava::Syntax::Assignment.new(val[0], val[2]) }
+    | Identifier LBRACKET Expression RBRACKET EQUAL Expression SEMICOLON
+        { MiniJava::Syntax::ArrayAssignment.new(val[0], val[2], val[5]) }
+
+  Expression:
+      Expression AND Expression { MiniJava::Syntax::And.new(val[0], val[2]) }
+    | Expression LT Expression { MiniJava::Syntax::LessThan.new(val[0], val[2]) }
+    | Expression PLUS Expression { MiniJava::Syntax::Plus.new(val[0], val[2]) }
+    | Expression MINUS Expression { MiniJava::Syntax::Minus.new(val[0], val[2]) }
+    | Expression STAR Expression { MiniJava::Syntax::Times.new(val[0], val[2]) }
+    | Expression LBRACKET Expression RBRACKET { MiniJava::Syntax::ArraySubscript.new(val[0], val[2]) }
+    | Expression DOT LENGTH { MiniJava::Syntax::ArrayLength.new(val[0]) }
+    | Expression DOT Identifier LPAREN ActualParameters RPAREN { MiniJava::Syntax::Call.new(val[0], val[2], val[4]) }
+    | INT_LITERAL { MiniJava::Syntax::IntegerLiteral.new(val[0]) }
+    | TRUE { MiniJava::Syntax::TRUE_LITERAL }
+    | FALSE { MiniJava::Syntax::FALSE_LITERAL }
+    | Identifier { val[0] }
+    | THIS { MiniJava::Syntax::THIS }
+    | NEW INT LBRACKET Expression RBRACKET { MiniJava::Syntax::NewArray.new(val[3]) }
+    | NEW Identifier LPAREN RPAREN { MiniJava::Syntax::NewObject.new(val[1]) }
+    | NOT Expression { MiniJava::Syntax::Not.new(val[1]) }
+    | LPAREN Expression RPAREN { val[1] }
+
+  ActualParameters: { [] } | OneOrMoreActualParameters { val[0] }
+
+  OneOrMoreActualParameters:
+      Expression { [ val[0] ] }
+    | Expression COMMA OneOrMoreActualParameters { val[1].prepend(val[0]) }
+
+  Identifier: IDENTIFIER { MiniJava::Syntax::Identifier.new(val[0]) }
+end
+
+---- header ----
+require "minijava/lexer"
+require "minijava/syntax"
+
+---- inner ----
+def initialize(source)
+  @lexer = MiniJava::Lexer.new(source)
+end
+
+def next_token
+  @lexer.next_token
+end
+
+alias_method :program, :do_parse
