@@ -16,6 +16,10 @@ module MiniJava
 module_eval(<<'...end parser.racc/module_eval...', 'parser.racc', 135)
 delegate :next_token, :line, to: :@lexer
 
+def self.program_from(source)
+  new(source).program
+end
+
 def initialize(source)
   @lexer = MiniJava::Lexer.new(source)
 end

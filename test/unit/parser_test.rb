@@ -209,6 +209,6 @@ class MiniJava::ParserTest < Minitest::Test
     end
 
     def parse(source)
-      MiniJava::Parser.new(source).program
+      MiniJava::Parser.program_from(source)
     end
 end
