@@ -160,6 +160,40 @@ class MiniJava::ParserTest < Minitest::Test
     OUTPUT
   end
 
+  def test_detecting_invalid_syntax_after_single_line_comment
+    output = capture $stderr do
+      parse <<~PROGRAM
+        class Foo {
+          public static void main(String[] args) {
+            // Oops!
+            System.out.println(int);
+          }
+        }
+      PROGRAM
+    end
+
+    assert_equal "Parse error on line 4", output.strip
+  end
+
+  def test_detecting_invalid_syntax_after_multiline_comment
+    output = capture $stderr do
+      parse <<~PROGRAM
+        class Foo {
+          public static void main(String[] args) {
+            /*
+             *
+             *
+             *
+             */
+            System.out.println(int);
+          }
+        }
+      PROGRAM
+    end
+
+    assert_equal "Parse error on line 8", output.strip
+  end
+
   private
     def capture(stream)
       destination = Tempfile.new

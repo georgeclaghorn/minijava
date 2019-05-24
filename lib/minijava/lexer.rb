@@ -8,6 +8,7 @@ module MiniJava
 
     def initialize(source)
       @scanner = StringScanner.new(source)
+      @state   = :default
       @line    = 1
     end
 
@@ -28,6 +29,13 @@ module MiniJava
       delegate :peek, :scan, to: :scanner
 
       def scan_next_token
+        case @state
+        when :default then scan_next_default_token
+        when :comment then scan_next_comment_token
+        end
+      end
+
+      def scan_next_default_token
         case
         when scan(/\r|\n|\r\n/)
           @line += 1
@@ -36,7 +44,11 @@ module MiniJava
         when scan(/\s/)
           nil
 
-        when scan(/\/\*.*?\*\/|\/\*\*+\/|\/\/[^\r\n]*/)
+        when scan(%r(/\*))
+          @state = :comment
+          nil
+
+        when scan(%r(//.*))
           nil
 
         when scan(/class/)
@@ -152,6 +164,21 @@ module MiniJava
 
         when text = scan(/./)
           raise ParseError, "Illegal character '#{text}' on line #{@line}"
+        end
+      end
+
+      def scan_next_comment_token
+        case
+        when scan(/\r|\n|\r\n/)
+          @line += 1
+          nil
+
+        when scan(%r(\*/))
+          @state = :default
+          nil
+
+        when scan(%r([^\*]+|\*(?!/)))
+          nil
         end
       end
 
