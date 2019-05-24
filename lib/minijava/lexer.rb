@@ -28,10 +28,12 @@ module MiniJava
       delegate :peek, :scan, to: :scanner
 
       def scan_next_token
-        @line += 1 if peek(1) == "\n"
-
         case
-        when scan(/[ \r\n\t\f]/)
+        when scan(/\r|\n|\r\n/)
+          @line += 1
+          nil
+
+        when scan(/\s/)
           nil
 
         when scan(/\/\*.*?\*\/|\/\*\*+\/|\/\/[^\r\n]*/)
