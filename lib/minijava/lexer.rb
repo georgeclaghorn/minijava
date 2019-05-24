@@ -4,6 +4,8 @@ require "minijava/errors"
 
 module MiniJava
   class Lexer
+    attr_reader :line
+
     def initialize(source)
       @scanner = StringScanner.new(source)
       @line    = 1
@@ -29,7 +31,7 @@ module MiniJava
         @line += 1 if peek(1) == "\n"
 
         case
-        when scan(/[ \r\n\t\f]+/)
+        when scan(/[ \r\n\t\f]/)
           nil
 
         when scan(/\/\*.*?\*\/|\/\*\*+\/|\/\/[^\r\n]*/)

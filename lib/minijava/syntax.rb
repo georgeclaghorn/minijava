@@ -5,17 +5,17 @@ module MiniJava
 
     #== Declarations
 
-    MainClassDeclaration  = Struct.new(:name, :method)
+    MainClassDeclaration  = Struct.new(:name, :method_declaration)
     MainMethodDeclaration = Struct.new(:formal_parameter_name, :statement)
 
-    ClassDeclaration      = Struct.new(:name, :variables, :methods)
-    SubclassDeclaration   = Struct.new(:name, :superclass_name, :variables, :methods)
+    ClassDeclaration    = Struct.new(:name, :variable_declarations, :method_declarations)
+    SubclassDeclaration = Struct.new(:name, :superclass_name, :variable_declarations, :method_declarations)
 
-    MethodDeclaration     = Struct.new(:type, :name, :formal_parameters, :variables, :statements, :return_expression)
+    MethodDeclaration =
+      Struct.new(:type, :name, :formal_parameters, :variable_declarations, :statements, :return_expression)
 
-    VariableDeclaration   = Struct.new(:type, :name)
-
-    FormalParameter       = Struct.new(:type, :name)
+    VariableDeclaration = Struct.new(:type, :name)
+    FormalParameter     = Struct.new(:type, :name)
 
 
     #== Types
@@ -89,6 +89,10 @@ module MiniJava
 
     #== Other
 
-    Identifier = Struct.new(:name)
+    Identifier = Struct.new(:name) do
+      def to_s
+        name
+      end
+    end
   end
 end
