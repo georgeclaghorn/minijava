@@ -15,9 +15,7 @@ preclow
 options no_result_var
 
 rule
-  Program:
-      MainClassDeclaration { MiniJava::Syntax::Program.new(val[0], []) }
-    | MainClassDeclaration OneOrMoreClassDeclarations { MiniJava::Syntax::Program.new(val[0], val[1]) }
+  Program: MainClassDeclaration ClassDeclarations { MiniJava::Syntax::Program.new(val[0], val[1]) }
 
   MainClassDeclaration:
     CLASS Identifier LBRACE MainMethodDeclaration RBRACE { MiniJava::Syntax::MainClassDeclaration.new(val[1], val[3]) }
@@ -27,42 +25,27 @@ rule
       Statement
     RBRACE { MiniJava::Syntax::MainMethodDeclaration.new(val[8], val[11]) }
 
-  OneOrMoreClassDeclarations:
-      ClassDeclaration { [ val[0] ] }
-    | OneOrMoreClassDeclarations ClassDeclaration { val[0].append(val[1]) }
+  ClassDeclarations: { [] } | ClassDeclarations ClassDeclaration { val[0].append(val[1]) }
 
   ClassDeclaration:
       CLASS Identifier LBRACE ClassBody RBRACE { MiniJava::Syntax::ClassDeclaration.new(val[1], *val[3]) }
     | CLASS Identifier EXTENDS Identifier LBRACE ClassBody RBRACE
         { MiniJava::Syntax::SubclassDeclaration.new(val[1], val[3], *val[5]) }
-  ClassBody:
-      OneOrMoreVariableDeclarations OneOrMoreMethodDeclarations { [ val[0], val[1] ] }
-    | OneOrMoreVariableDeclarations { [ val[0], [] ] }
-    | OneOrMoreMethodDeclarations { [ [], val[0] ] }
-    | { [ [], [] ] }
+  ClassBody: VariableDeclarations MethodDeclarations
 
-  OneOrMoreVariableDeclarations:
-      VariableDeclaration { [ val[0] ] }
-    | OneOrMoreVariableDeclarations VariableDeclaration { val[0].append(val[1]) }
+  VariableDeclarations: { [] } | VariableDeclarations VariableDeclaration { val[0].append(val[1]) }
   VariableDeclaration: Type Identifier SEMICOLON { MiniJava::Syntax::VariableDeclaration.new(val[0], val[1]) }
 
-  OneOrMoreMethodDeclarations:
-      MethodDeclaration { [ val[0] ] }
-    | OneOrMoreMethodDeclarations MethodDeclaration { val[0].append(val[1]) }
+  MethodDeclarations: { [] } | MethodDeclarations MethodDeclaration { val[0].append(val[1]) }
 
   MethodDeclaration:
     MethodSignature LBRACE MethodBody RBRACE
       { MiniJava::Syntax::MethodDeclaration.new(*val[0], *val[2]) }
   MethodSignature: PUBLIC Type Identifier LPAREN FormalParameters RPAREN { [ val[1], val[2], val[4] ] }
   MethodBody:
-      OneOrMoreVariableDeclarations
-      OneOrMoreStatements
-      RETURN Expression SEMICOLON { [ val[0], val[1], val[3] ] }
-    | OneOrMoreVariableDeclarations
-      RETURN Expression SEMICOLON { [ val[0], [], val[2] ] }
-    | OneOrMoreStatements
-      RETURN Expression SEMICOLON { [ [], val[0], val[2] ] }
-    | RETURN Expression SEMICOLON { [ [], [], val[1] ] }
+    VariableDeclarations
+    Statements
+    RETURN Expression SEMICOLON { [ val[0], val[1], val[3] ] }
 
   Type:
       INT LBRACKET RBRACKET { MiniJava::Syntax::ARRAY_TYPE }
@@ -78,10 +61,7 @@ rule
 
   FormalParameter: Type Identifier { MiniJava::Syntax::FormalParameter.new(val[0], val[1]) }
 
-  Statements: { [] } | OneOrMoreStatements { val[0] }
-  OneOrMoreStatements:
-      Statement { [ val[0] ] }
-    | OneOrMoreStatements Statement { val[0].append(val[1]) }
+  Statements: { [] } | Statement Statements { val[1].prepend(val[0]) }
 
   Statement:
       LBRACE Statements RBRACE { MiniJava::Syntax::Block.new(val[1]) }
