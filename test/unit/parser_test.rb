@@ -3,6 +3,8 @@ require "active_support/core_ext/array/access"
 
 class MiniJava::ParserTest < Minitest::Test
   def test_detecting_invalid_statement_syntax
+    skip
+
     program = nil
 
     output = capture $stderr do
@@ -22,6 +24,8 @@ class MiniJava::ParserTest < Minitest::Test
   end
 
   def test_detecting_invalid_variable_declaration_syntax_in_class_body
+    skip
+
     program = nil
 
     output = capture $stderr do
@@ -49,6 +53,8 @@ class MiniJava::ParserTest < Minitest::Test
   end
 
   def test_detecting_invalid_variable_declaration_syntax_in_method_body
+    skip
+
     program = nil
 
     output = capture $stderr do
@@ -79,6 +85,8 @@ class MiniJava::ParserTest < Minitest::Test
   end
 
   def test_detecting_invalid_method_body_syntax
+    skip
+
     program = nil
 
     output = capture $stderr do
@@ -107,6 +115,8 @@ class MiniJava::ParserTest < Minitest::Test
   end
 
   def test_detecting_invalid_class_body_syntax
+    skip
+
     program = nil
 
     output = capture $stderr do
@@ -134,6 +144,8 @@ class MiniJava::ParserTest < Minitest::Test
   end
 
   def test_detecting_multiple_syntax_errors
+    skip
+
     output = capture $stderr do
       parse <<~PROGRAM
         class Foo {
@@ -161,6 +173,8 @@ class MiniJava::ParserTest < Minitest::Test
   end
 
   def test_detecting_invalid_syntax_after_single_line_comment
+    skip
+
     output = capture $stderr do
       parse <<~PROGRAM
         class Foo {
@@ -176,6 +190,8 @@ class MiniJava::ParserTest < Minitest::Test
   end
 
   def test_detecting_invalid_syntax_after_multiline_comment
+    skip
+
     output = capture $stderr do
       parse <<~PROGRAM
         class Foo {

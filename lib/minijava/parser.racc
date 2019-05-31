@@ -40,15 +40,11 @@ rule
     | OneOrMoreVariableDeclarations { [ val[0], [] ] }
     | OneOrMoreMethodDeclarations { [ [], val[0] ] }
     | { [ [], [] ] }
-    | error
 
   OneOrMoreVariableDeclarations:
-      VariableDeclaration { val[0].nil? ? [] : [ val[0] ] }
-    | OneOrMoreVariableDeclarations VariableDeclaration { val[0].append(val[1]) unless val[1].nil? }
-  VariableDeclaration:
-      Type Identifier SEMICOLON { MiniJava::Syntax::VariableDeclaration.new(val[0], val[1]) }
-    | Type error SEMICOLON
-    | error Identifier SEMICOLON
+      VariableDeclaration { [ val[0] ] }
+    | OneOrMoreVariableDeclarations VariableDeclaration { val[0].append(val[1]) }
+  VariableDeclaration: Type Identifier SEMICOLON { MiniJava::Syntax::VariableDeclaration.new(val[0], val[1]) }
 
   OneOrMoreMethodDeclarations:
       MethodDeclaration { [ val[0] ] }
@@ -67,7 +63,6 @@ rule
     | OneOrMoreStatements
       RETURN Expression SEMICOLON { [ [], val[0], val[2] ] }
     | RETURN Expression SEMICOLON { [ [], [], val[1] ] }
-    | error
 
   Type:
       INT LBRACKET RBRACKET { MiniJava::Syntax::ARRAY_TYPE }
@@ -96,7 +91,6 @@ rule
     | Identifier EQUAL Expression SEMICOLON { MiniJava::Syntax::Assignment.new(val[0], val[2]) }
     | Identifier LBRACKET Expression RBRACKET EQUAL Expression SEMICOLON
         { MiniJava::Syntax::ArrayAssignment.new(val[0], val[2], val[5]) }
-    | error SEMICOLON
 
   Expression:
       Expression AND Expression { MiniJava::Syntax::And.new(val[0], val[2]) }
