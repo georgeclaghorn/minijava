@@ -82,10 +82,10 @@ rule
     | Expression DOT LENGTH { MiniJava::Syntax::ArrayLength.new(val[0]) }
     | Expression DOT Identifier LPAREN ActualParameters RPAREN { MiniJava::Syntax::Call.new(val[0], val[2], val[4]) }
     | INT_LITERAL { MiniJava::Syntax::IntegerLiteral.new(val[0]) }
-    | TRUE { MiniJava::Syntax::TRUE_LITERAL }
-    | FALSE { MiniJava::Syntax::FALSE_LITERAL }
+    | TRUE { MiniJava::Syntax::TrueLiteral.instance }
+    | FALSE { MiniJava::Syntax::FalseLiteral.instance }
     | Identifier { val[0] }
-    | THIS { MiniJava::Syntax::THIS }
+    | THIS { MiniJava::Syntax::This.instance }
     | NEW INT LBRACKET Expression RBRACKET { MiniJava::Syntax::NewArray.new(val[3]) }
     | NEW Identifier LPAREN RPAREN { MiniJava::Syntax::NewObject.new(val[1]) }
     | NOT Expression { MiniJava::Syntax::Not.new(val[1]) }

@@ -1,3 +1,5 @@
+require "singleton"
+
 module MiniJava
   module Syntax
     Program = Struct.new(:main_class_declaration, :class_declarations)
@@ -21,19 +23,16 @@ module MiniJava
     #== Types
 
     class ArrayType
+      include Singleton
     end
-
-    ARRAY_TYPE = ArrayType.new
 
     class BooleanType
+      include Singleton
     end
-
-    BOOLEAN_TYPE = BooleanType.new
 
     class IntegerType
+      include Singleton
     end
-
-    INTEGER_TYPE = IntegerType.new
 
     IdentifierType = Struct.new(:identifier)
 
@@ -72,19 +71,16 @@ module MiniJava
     IntegerLiteral = Struct.new(:value)
 
     class TrueLiteral
+      include Singleton
     end
-
-    TRUE_LITERAL = TrueLiteral.new
 
     class FalseLiteral
+      include Singleton
     end
-
-    FALSE_LITERAL = FalseLiteral.new
 
     class This
+      include Singleton
     end
-
-    THIS = This.new
 
 
     #== Other

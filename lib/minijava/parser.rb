@@ -633,13 +633,13 @@ module_eval(<<'.,.,', 'parser.racc', 83)
 
 module_eval(<<'.,.,', 'parser.racc', 84)
   def _reduce_43(val, _values)
-     MiniJava::Syntax::TRUE_LITERAL 
+     MiniJava::Syntax::TrueLiteral.instance 
   end
 .,.,
 
 module_eval(<<'.,.,', 'parser.racc', 85)
   def _reduce_44(val, _values)
-     MiniJava::Syntax::FALSE_LITERAL 
+     MiniJava::Syntax::FalseLiteral.instance 
   end
 .,.,
 
@@ -651,7 +651,7 @@ module_eval(<<'.,.,', 'parser.racc', 86)
 
 module_eval(<<'.,.,', 'parser.racc', 87)
   def _reduce_46(val, _values)
-     MiniJava::Syntax::THIS 
+     MiniJava::Syntax::This.instance 
   end
 .,.,
 
