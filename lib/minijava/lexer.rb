@@ -26,7 +26,7 @@ module MiniJava
 
     private
       attr_reader :scanner
-      delegate :peek, :scan, to: :scanner
+      delegate :scan, to: :scanner
 
       def scan_next_token
         case @state
