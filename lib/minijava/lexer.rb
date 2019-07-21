@@ -27,16 +27,23 @@ module MiniJava
       delegate :scan, :eos?, to: :scanner
 
       def scan_next_token
+        consume_newlines
+        consume_inline_whitespace
+        consume_next_token
+      end
+
+      def consume_newlines
+        @line += 1 while scan(/([^\S\r\n]*)(\r|\n|\r\n)/)
+      end
+
+      def consume_inline_whitespace
+        scan(/\s+/)
+      end
+
+      def consume_next_token
         case @state
         when :default
           case
-          when scan(/\r|\n|\r\n/)
-            @line += 1
-            nil
-
-          when scan(/\s/)
-            nil
-
           when scan(%r(/\*))
             @state = :comment
             nil
@@ -161,10 +168,6 @@ module MiniJava
 
         when :comment
           case
-          when scan(/\r|\n|\r\n/)
-            @line += 1
-            nil
-
           when scan(%r(\*/))
             @state = :default
             nil
