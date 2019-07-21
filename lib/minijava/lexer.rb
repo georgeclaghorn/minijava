@@ -30,155 +30,150 @@ module MiniJava
 
       def scan_next_token
         case @state
-        when :default then scan_next_default_token
-        when :comment then scan_next_comment_token
-        end
-      end
+        when :default
+          case
+          when scan(/\r|\n|\r\n/)
+            @line += 1
+            nil
 
-      def scan_next_default_token
-        case
-        when scan(/\r|\n|\r\n/)
-          @line += 1
-          nil
+          when scan(/\s/)
+            nil
 
-        when scan(/\s/)
-          nil
+          when scan(%r(/\*))
+            @state = :comment
+            nil
 
-        when scan(%r(/\*))
-          @state = :comment
-          nil
+          when scan(%r(//.*))
+            nil
 
-        when scan(%r(//.*))
-          nil
+          when scan(/class/)
+            emit :CLASS
 
-        when scan(/class/)
-          emit :CLASS
+          when scan(/extends/)
+            emit :EXTENDS
 
-        when scan(/extends/)
-          emit :EXTENDS
+          when scan(/public/)
+            emit :PUBLIC
 
-        when scan(/public/)
-          emit :PUBLIC
+          when scan(/static/)
+            emit :STATIC
 
-        when scan(/static/)
-          emit :STATIC
+          when scan(/void/)
+            emit :VOID
 
-        when scan(/void/)
-          emit :VOID
+          when scan(/main/)
+            emit :MAIN
 
-        when scan(/main/)
-          emit :MAIN
+          when scan(/new/)
+            emit :NEW
 
-        when scan(/new/)
-          emit :NEW
+          when scan(/if/)
+            emit :IF
 
-        when scan(/if/)
-          emit :IF
+          when scan(/else/)
+            emit :ELSE
 
-        when scan(/else/)
-          emit :ELSE
+          when scan(/while/)
+            emit :WHILE
 
-        when scan(/while/)
-          emit :WHILE
+          when scan(/length/)
+            emit :LENGTH
 
-        when scan(/length/)
-          emit :LENGTH
+          when scan(/true/)
+            emit :TRUE
 
-        when scan(/true/)
-          emit :TRUE
+          when scan(/false/)
+            emit :FALSE
 
-        when scan(/false/)
-          emit :FALSE
+          when scan(/return/)
+            emit :RETURN
 
-        when scan(/return/)
-          emit :RETURN
+          when scan(/this/)
+            emit :THIS
 
-        when scan(/this/)
-          emit :THIS
+          when scan(/boolean/)
+            emit :BOOLEAN
 
-        when scan(/boolean/)
-          emit :BOOLEAN
+          when scan(/int/)
+            emit :INT
 
-        when scan(/int/)
-          emit :INT
+          when scan(/String/)
+            emit :STRING
 
-        when scan(/String/)
-          emit :STRING
+          when scan(/System\.out\.println/)
+            emit :PRINTLN
 
-        when scan(/System\.out\.println/)
-          emit :PRINTLN
+          when scan(/\{/)
+            emit :LBRACE
 
-        when scan(/\{/)
-          emit :LBRACE
+          when scan(/\}/)
+            emit :RBRACE
 
-        when scan(/\}/)
-          emit :RBRACE
+          when scan(/;/)
+            emit :SEMICOLON
 
-        when scan(/;/)
-          emit :SEMICOLON
+          when scan(/,/)
+            emit :COMMA
 
-        when scan(/,/)
-          emit :COMMA
+          when scan(/\(/)
+            emit :LPAREN
 
-        when scan(/\(/)
-          emit :LPAREN
+          when scan(/\)/)
+            emit :RPAREN
 
-        when scan(/\)/)
-          emit :RPAREN
+          when scan(/\[/)
+            emit :LBRACKET
 
-        when scan(/\[/)
-          emit :LBRACKET
+          when scan(/\]/)
+            emit :RBRACKET
 
-        when scan(/\]/)
-          emit :RBRACKET
+          when scan(/\./)
+            emit :DOT
 
-        when scan(/\./)
-          emit :DOT
+          when scan(/\!/)
+            emit :NOT
 
-        when scan(/\!/)
-          emit :NOT
+          when scan(/\*/)
+            emit :STAR
 
-        when scan(/\*/)
-          emit :STAR
+          when scan(/\+/)
+            emit :PLUS
 
-        when scan(/\+/)
-          emit :PLUS
+          when scan(/-/)
+            emit :MINUS
 
-        when scan(/-/)
-          emit :MINUS
+          when scan(/</)
+            emit :LT
 
-        when scan(/</)
-          emit :LT
+          when scan(/&&/)
+            emit :AND
 
-        when scan(/&&/)
-          emit :AND
+          when scan(/=/)
+            emit :EQUAL
 
-        when scan(/=/)
-          emit :EQUAL
+          when text = scan(/[a-zA-Z_][a-zA-Z0-9_]*/)
+            emit :IDENTIFIER, text
 
-        when text = scan(/[a-zA-Z_][a-zA-Z0-9_]*/)
-          emit :IDENTIFIER, text
+          when text = scan(/0(?![1-9]+)|[1-9][0-9]*/)
+            emit :INT_LITERAL, Integer(text)
 
-        when text = scan(/0(?![1-9]+)|[1-9][0-9]*/)
-          emit :INT_LITERAL, Integer(text)
+          when text = scan(/./)
+            raise ParseError, "Illegal character '#{text}' on line #{@line}"
+          end
 
-        when text = scan(/./)
-          raise ParseError, "Illegal character '#{text}' on line #{@line}"
-        end
-      end
+        when :comment
+          case
+          when scan(/\r|\n|\r\n/)
+            @line += 1
+            nil
 
-      def scan_next_comment_token
-        case
-        when scan(/\r|\n|\r\n/)
-          @line += 1
-          nil
+          when scan(%r(\*/))
+            @state = :default
+            nil
 
-        when scan(%r(\*/))
-          @state = :default
-          nil
-
-        when scan(%r([^\*]+|\*(?!/)))
-          nil
+          when scan(%r([^\*]+|\*(?!/)))
+            nil
+          end
         end
       end
 
