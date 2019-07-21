@@ -18,15 +18,13 @@ module MiniJava
           return token
         end
 
-        if scanner.eos?
-          return nil
-        end
+        return nil if eos?
       end
     end
 
     private
       attr_reader :scanner
-      delegate :scan, to: :scanner
+      delegate :scan, :eos?, to: :scanner
 
       def scan_next_token
         case @state
