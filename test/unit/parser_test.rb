@@ -3,8 +3,6 @@ require "active_support/core_ext/array/access"
 
 class MiniJava::ParserTest < Minitest::Test
   def test_detecting_invalid_statement_syntax
-    skip
-
     program = nil
 
     output = capture $stderr do
@@ -21,11 +19,10 @@ class MiniJava::ParserTest < Minitest::Test
 
     assert_equal "Parse error on line 3", output.strip
     assert_equal "Bar", program.class_declarations.first.name.to_s
+    assert_kind_of MiniJava::Syntax::InvalidStatement, program.main_class_declaration.method_declaration.statement
   end
 
   def test_detecting_invalid_variable_declaration_syntax_in_class_body
-    skip
-
     program = nil
 
     output = capture $stderr do
@@ -49,12 +46,14 @@ class MiniJava::ParserTest < Minitest::Test
     end
 
     assert_equal "Parse error on line 8", output.strip
+
+    assert_equal "Bar", program.class_declarations.first.name.to_s
+    assert_kind_of MiniJava::Syntax::InvalidVariableDeclaration, program.class_declarations.first.variable_declarations.first
+
     assert_equal "Quux", program.class_declarations.second.name.to_s
   end
 
   def test_detecting_invalid_variable_declaration_syntax_in_method_body
-    skip
-
     program = nil
 
     output = capture $stderr do
@@ -81,12 +80,11 @@ class MiniJava::ParserTest < Minitest::Test
 
     class_declaration = program.class_declarations.first
     method_declaration = class_declaration.method_declarations.first
+    assert_kind_of MiniJava::Syntax::InvalidVariableDeclaration, method_declaration.variable_declarations.first
     assert_kind_of MiniJava::Syntax::Assignment, method_declaration.statements.first
   end
 
   def test_detecting_invalid_method_body_syntax
-    skip
-
     program = nil
 
     output = capture $stderr do
@@ -111,12 +109,11 @@ class MiniJava::ParserTest < Minitest::Test
     assert_equal "Parse error on line 10", output.strip
 
     class_declaration = program.class_declarations.first
+    assert_kind_of MiniJava::Syntax::InvalidMethodDeclaration, class_declaration.method_declarations.first
     assert_equal "getFloogle", class_declaration.method_declarations.second.name.to_s
   end
 
   def test_detecting_invalid_class_body_syntax
-    skip
-
     program = nil
 
     output = capture $stderr do
@@ -140,12 +137,11 @@ class MiniJava::ParserTest < Minitest::Test
     end
 
     assert_equal "Parse error on line 12", output.strip
+    assert_kind_of MiniJava::Syntax::InvalidClassDeclaration, program.class_declarations.first
     assert_equal "Quux", program.class_declarations.second.name.to_s
   end
 
   def test_detecting_multiple_syntax_errors
-    skip
-
     output = capture $stderr do
       parse <<~PROGRAM
         class Foo {
@@ -173,8 +169,6 @@ class MiniJava::ParserTest < Minitest::Test
   end
 
   def test_detecting_invalid_syntax_after_single_line_comment
-    skip
-
     output = capture $stderr do
       parse <<~PROGRAM
         class Foo {
@@ -190,8 +184,6 @@ class MiniJava::ParserTest < Minitest::Test
   end
 
   def test_detecting_invalid_syntax_after_multiline_comment
-    skip
-
     output = capture $stderr do
       parse <<~PROGRAM
         class Foo {

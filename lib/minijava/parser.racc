@@ -31,16 +31,21 @@ rule
       CLASS Identifier LBRACE ClassBody RBRACE { MiniJava::Syntax::ClassDeclaration.new(val[1], *val[3]) }
     | CLASS Identifier EXTENDS Identifier LBRACE ClassBody RBRACE
         { MiniJava::Syntax::SubclassDeclaration.new(val[1], val[3], *val[5]) }
-  ClassBody: VariableDeclarations MethodDeclarations
+    | error RBRACE { MiniJava::Syntax::InvalidClassDeclaration.instance }
+  ClassBody: VariableDeclarations MethodDeclarations { [ val[0], val[1] ] }
 
   VariableDeclarations: { [] } | VariableDeclarations VariableDeclaration { val[0].append(val[1]) }
-  VariableDeclaration: Type Identifier SEMICOLON { MiniJava::Syntax::VariableDeclaration.new(val[0], val[1]) }
+  VariableDeclaration:
+      Type Identifier SEMICOLON { MiniJava::Syntax::VariableDeclaration.new(val[0], val[1]) }
+    | Type error SEMICOLON { MiniJava::Syntax::InvalidVariableDeclaration.instance }
 
   MethodDeclarations: { [] } | MethodDeclarations MethodDeclaration { val[0].append(val[1]) }
 
   MethodDeclaration:
-    MethodSignature LBRACE MethodBody RBRACE
-      { MiniJava::Syntax::MethodDeclaration.new(*val[0], *val[2]) }
+      MethodSignature LBRACE MethodBody RBRACE
+        { MiniJava::Syntax::MethodDeclaration.new(*val[0], *val[2]) }
+    | error RBRACE
+        { MiniJava::Syntax::InvalidMethodDeclaration.instance }
   MethodSignature: PUBLIC Type Identifier LPAREN FormalParameters RPAREN { [ val[1], val[2], val[4] ] }
   MethodBody:
     VariableDeclarations
@@ -71,6 +76,7 @@ rule
     | Identifier EQUAL Expression SEMICOLON { MiniJava::Syntax::Assignment.new(val[0], val[2]) }
     | Identifier LBRACKET Expression RBRACKET EQUAL Expression SEMICOLON
         { MiniJava::Syntax::ArrayAssignment.new(val[0], val[2], val[5]) }
+    | error SEMICOLON { MiniJava::Syntax::InvalidStatement.instance }
 
   Expression:
       Expression AND Expression { MiniJava::Syntax::And.new(val[0], val[2]) }
@@ -113,7 +119,8 @@ def self.program_from(source)
 end
 
 def initialize(source)
-  @lexer = MiniJava::Lexer.new(source)
+  @lexer   = MiniJava::Lexer.new(source)
+  @yydebug = !ENV["DEBUG"].nil?
 end
 
 def on_error(*)

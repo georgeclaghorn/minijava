@@ -83,6 +83,25 @@ module MiniJava
     end
 
 
+    #== Errors
+
+    class InvalidVariableDeclaration
+      include Singleton
+    end
+
+    class InvalidStatement
+      include Singleton
+    end
+
+    class InvalidMethodDeclaration
+      include Singleton
+    end
+
+    class InvalidClassDeclaration
+      include Singleton
+    end
+
+
     #== Other
 
     Identifier = Struct.new(:name) do
