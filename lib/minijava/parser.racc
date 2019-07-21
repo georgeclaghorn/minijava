@@ -48,9 +48,9 @@ rule
     RETURN Expression SEMICOLON { [ val[0], val[1], val[3] ] }
 
   Type:
-      INT LBRACKET RBRACKET { MiniJava::Syntax::ARRAY_TYPE }
-    | BOOLEAN { MiniJava::Syntax::BOOLEAN_TYPE }
-    | INT { MiniJava::Syntax::INTEGER_TYPE }
+      INT LBRACKET RBRACKET { MiniJava::Syntax::ArrayType.instance }
+    | BOOLEAN { MiniJava::Syntax::BooleanType.instance }
+    | INT { MiniJava::Syntax::IntegerType.instance }
     | Identifier { MiniJava::Syntax::IdentifierType.new(val[0]) }
 
   FormalParameters: { [] } | OneOrMoreFormalParameters { val[0] }

@@ -477,19 +477,19 @@ module_eval(<<'.,.,', 'parser.racc', 47)
 
 module_eval(<<'.,.,', 'parser.racc', 50)
   def _reduce_17(val, _values)
-     MiniJava::Syntax::ARRAY_TYPE 
+     MiniJava::Syntax::ArrayType.instance 
   end
 .,.,
 
 module_eval(<<'.,.,', 'parser.racc', 51)
   def _reduce_18(val, _values)
-     MiniJava::Syntax::BOOLEAN_TYPE 
+     MiniJava::Syntax::BooleanType.instance 
   end
 .,.,
 
 module_eval(<<'.,.,', 'parser.racc', 52)
   def _reduce_19(val, _values)
-     MiniJava::Syntax::INTEGER_TYPE 
+     MiniJava::Syntax::IntegerType.instance 
   end
 .,.,
 
