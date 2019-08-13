@@ -1,4 +1,4 @@
 module MiniJava
   class Error < StandardError; end
-  class ParseError < Error; end
+  class SyntaxError < Error; end
 end

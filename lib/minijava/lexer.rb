@@ -163,7 +163,7 @@ module MiniJava
             emit :INT_LITERAL, Integer(text)
 
           when text = scan(/./)
-            raise ParseError, "Illegal character '#{text}' on line #{@line}"
+            raise SyntaxError, "Illegal character '#{text}' on line #{@line}"
           end
 
         when :comment
