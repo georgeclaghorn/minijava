@@ -33,7 +33,7 @@ module MiniJava
       end
 
       def consume_newlines
-        @line += 1 while scan(/([^\S\r\n]*)(\r|\n|\r\n)/)
+        @line += 1 while scan(/([^\S\r\n]*)(\r\n?|\n)/)
       end
 
       def consume_inline_whitespace
@@ -172,7 +172,7 @@ module MiniJava
             @state = :default
             nil
 
-          when scan(%r([^\*]+|\*(?!/)))
+          when comment = scan(/[^\*\r\n]+|\*(?!\/)/)
             nil
           end
         end
