@@ -30,6 +30,22 @@ class MiniJava::LexerTest < Minitest::Test
     end
   end
 
+  def test_ignoring_single_line_comments
+    lexer = MiniJava::Lexer.new(<<~JAVA)
+      foo;
+      bar;
+      // baz
+      glorp;
+    JAVA
+
+    %w[ foo bar glorp ].each do |identifier|
+      assert_equal [ :IDENTIFIER, identifier ], lexer.next_token
+      assert_equal [ :SEMICOLON, nil ], lexer.next_token
+    end
+
+    assert_equal 4, lexer.line
+  end
+
   def test_scanning_an_invalid_character
     lexer = MiniJava::Lexer.new("foo\nbar\n123\n^")
 
