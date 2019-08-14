@@ -29,13 +29,18 @@ module MiniJava
 
 
       def visit_class_declaration(declaration)
-        select(declaration) + visit(declaration.name) +
-          visit_all(declaration.variable_declarations) + visit_all(declaration.method_declarations)
+        select(declaration) +
+          visit(declaration.name) +
+          visit_all(declaration.variable_declarations) +
+          visit_all(declaration.method_declarations)
       end
 
       def visit_subclass_declaration(declaration)
-        select(declaration) + visit(declaration.name) + visit(declaration.superclass_name) +
-          visit_all(declaration.variable_declarations) + visit_all(declaration.method_declarations)
+        select(declaration) +
+          visit(declaration.name) +
+          visit(declaration.superclass_name) +
+          visit_all(declaration.variable_declarations) +
+          visit_all(declaration.method_declarations)
       end
 
       def visit_variable_declaration(declaration)
