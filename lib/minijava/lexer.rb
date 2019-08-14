@@ -160,7 +160,7 @@ module MiniJava
             emit :IDENTIFIER, text
 
           when text = scan(/0(?![1-9]+)|[1-9][0-9]*/)
-            emit :INT_LITERAL, Integer(text)
+            emit :DECIMAL_NUMERAL, text
 
           when text = scan(/./)
             raise SyntaxError, "Illegal character '#{text}' on line #{@line}"

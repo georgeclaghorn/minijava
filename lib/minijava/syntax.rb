@@ -1,8 +1,13 @@
 require "singleton"
+require "minijava/visitors/selector_visitor"
 
 module MiniJava
   module Syntax
-    Program = Struct.new(:main_class_declaration, :class_declarations)
+    Program = Struct.new(:main_class_declaration, :class_declarations) do
+      def select(selector)
+        MiniJava::Visitors::SelectorVisitor.new(selector).visit(self)
+      end
+    end
 
 
     #== Declarations
@@ -42,7 +47,7 @@ module MiniJava
     Block           = Struct.new(:statements)
 
     IfStatement     = Struct.new(:condition, :affirmative, :negative)
-    WhileStatement  = Struct.new(:condition, :statement)
+    WhileStatement  = Struct.new(:condition, :substatement)
     PrintStatement  = Struct.new(:expression)
 
     Assignment      = Struct.new(:assignee, :value)

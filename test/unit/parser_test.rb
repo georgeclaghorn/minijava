@@ -202,6 +202,22 @@ class MiniJava::ParserTest < Minitest::Test
     assert_equal "Parse error on line 8", output.strip
   end
 
+  def test_parsing_decimal_integer_literals
+    program = parse <<~PROGRAM
+      class Foo {
+        public static void main(String[] args) {
+          System.out.println(0 + 100 + 123 + 37);
+        }
+      }
+    PROGRAM
+
+    integer_literals = program.select(MiniJava::Syntax::IntegerLiteral)
+    assert_equal 0, integer_literals.first.value
+    assert_equal 100, integer_literals.second.value
+    assert_equal 123, integer_literals.third.value
+    assert_equal 37, integer_literals.fourth.value
+  end
+
   private
     def capture(stream)
       destination = Tempfile.new
