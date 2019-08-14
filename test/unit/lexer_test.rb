@@ -46,6 +46,24 @@ class MiniJava::LexerTest < Minitest::Test
     assert_equal 4, lexer.line
   end
 
+  def test_scanning_integer_literals
+    lexer = MiniJava::Lexer.new(<<~JAVA)
+      0
+      100
+      123
+      37
+      03
+    JAVA
+
+    assert_equal [ :INT_LITERAL,   0 ], lexer.next_token
+    assert_equal [ :INT_LITERAL, 100 ], lexer.next_token
+    assert_equal [ :INT_LITERAL, 123 ], lexer.next_token
+    assert_equal [ :INT_LITERAL,  37 ], lexer.next_token
+
+    error = assert_raises(MiniJava::SyntaxError) { lexer.next_token }
+    assert_equal "Illegal character '0' on line 5", error.message
+  end
+
   def test_scanning_an_invalid_character
     lexer = MiniJava::Lexer.new("foo\nbar\n123\n^")
 
