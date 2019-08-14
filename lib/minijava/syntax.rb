@@ -50,8 +50,7 @@ module MiniJava
     WhileStatement  = Struct.new(:condition, :substatement)
     PrintStatement  = Struct.new(:expression)
 
-    Assignment      = Struct.new(:assignee, :value)
-    ArrayAssignment = Struct.new(:array, :index, :value)
+    Assignment      = Struct.new(:left, :right)
 
 
     #== Expressions

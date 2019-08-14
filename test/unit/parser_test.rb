@@ -68,7 +68,8 @@ class MiniJava::ParserTest < Minitest::Test
           int baz;
 
           public int getGlorp() {
-            glorp int;
+            // Unsupported assignment in declaration:
+            int glorp = 0;
             glorp = baz + 1;
             return glorp;
           }
@@ -76,7 +77,7 @@ class MiniJava::ParserTest < Minitest::Test
       PROGRAM
     end
 
-    assert_equal "Parse error on line 11", output.strip
+    assert_equal "Parse error on line 12", output.strip
 
     class_declaration = program.class_declarations.first
     method_declaration = class_declaration.method_declarations.first
@@ -216,6 +217,38 @@ class MiniJava::ParserTest < Minitest::Test
     assert_equal 100, integer_literals.second.value
     assert_equal 123, integer_literals.third.value
     assert_equal 37, integer_literals.fourth.value
+  end
+
+  def test_parsing_array_element_assignments
+    program = parse <<~PROGRAM
+      class Foo {
+        public static void main(String[] args) {
+          System.out.println(new NumberPicker().pick());
+        }
+      }
+
+      class NumberPicker {
+        int[] numbers;
+
+        public int pick() {
+          numbers = new int[1];
+          numbers[0] = 1;
+          return numbers[0];
+        }
+      }
+    PROGRAM
+
+    assignments = program.select(MiniJava::Syntax::Assignment)
+    assert_equal 2, assignments.count
+
+    assignment = assignments.second
+
+    assert_kind_of MiniJava::Syntax::ArraySubscript, assignment.left
+    assert_equal "numbers", assignment.left.array.name
+    assert_equal 0, assignment.left.index.value
+
+    assert_kind_of MiniJava::Syntax::IntegerLiteral, assignment.right
+    assert_equal 1, assignment.right.value
   end
 
   private

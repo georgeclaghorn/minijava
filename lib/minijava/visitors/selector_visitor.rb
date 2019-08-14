@@ -96,11 +96,7 @@ module MiniJava
       end
 
       def visit_assignment(assignment)
-        select(assignment) + visit(assignment.assignee) + visit(assignment.value)
-      end
-
-      def visit_array_assignment(assignment)
-        select(assignment) + visit(assignment.array) + visit(assignment.index) + visit(assignment.value)
+        select(assignment) + visit(assignment.left) + visit(assignment.right)
       end
 
 
