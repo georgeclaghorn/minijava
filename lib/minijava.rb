@@ -4,8 +4,8 @@ module MiniJava
 
   require "minijava/syntax"
 
-  require "minijava/visitors/visitor"
-  require "minijava/visitors/selector_visitor"
+  require "minijava/visitor"
+  require "minijava/selector_visitor"
 
   require "minijava/errors"
 end

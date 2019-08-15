@@ -1,11 +1,11 @@
 require "singleton"
-require "minijava/visitors/selector_visitor"
+require "minijava/selector_visitor"
 
 module MiniJava
   module Syntax
     Program = Struct.new(:main_class_declaration, :class_declarations) do
       def select(selector)
-        MiniJava::Visitors::SelectorVisitor.new(selector).visit(self)
+        MiniJava::SelectorVisitor.new(selector).visit(self)
       end
     end
 

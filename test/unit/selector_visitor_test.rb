@@ -1,6 +1,6 @@
 require "test_helper"
 
-class MiniJava::Visitors::SelectorVisitorTest < MiniTest::Test
+class MiniJava::SelectorVisitorTest < MiniTest::Test
   def test_selecting_identifiers_in_depth_first_order
     program = MiniJava::Parser.program_from(<<~JAVA)
       class HelloWorld {
@@ -18,7 +18,7 @@ class MiniJava::Visitors::SelectorVisitorTest < MiniTest::Test
       }
     JAVA
 
-    visitor = MiniJava::Visitors::SelectorVisitor.new(MiniJava::Syntax::Identifier)
+    visitor = MiniJava::SelectorVisitor.new(MiniJava::Syntax::Identifier)
 
     identifiers = visitor.visit(program)
     assert_equal 9, identifiers.count
