@@ -2,111 +2,132 @@ require "minijava/visitor"
 
 module MiniJava
   class SelectorVisitor < Visitor
-    attr_reader :selector
-
-    def initialize(selector)
-      @selector = selector
+    def self.select(selector, root)
+      [].tap { |matches| new(selector, matches).visit(root) }
     end
 
-    def visit(visitable)
-      super || []
+    def initialize(selector, matches)
+      @selector, @matches = selector, matches
     end
 
 
     def visit_program(program)
-      select(program) + visit(program.main_class_declaration) + visit_all(program.class_declarations)
+      match program
+      visit program.main_class_declaration
+      visit_all program.class_declarations
     end
 
 
     def visit_main_class_declaration(declaration)
-      select(declaration) + visit(declaration.name) + visit(declaration.method_declaration)
+      match declaration
+      visit declaration.name
+      visit declaration.method_declaration
     end
 
     def visit_main_method_declaration(declaration)
-      select(declaration) + visit(declaration.formal_parameter_name) + visit(declaration.statement)
+      match declaration
+      visit declaration.formal_parameter_name
+      visit declaration.statement
     end
 
 
     def visit_class_declaration(declaration)
-      select(declaration) +
-        visit(declaration.name) +
-        visit_all(declaration.variable_declarations) +
-        visit_all(declaration.method_declarations)
+      match declaration
+      visit declaration.name
+      visit_all declaration.variable_declarations
+      visit_all declaration.method_declarations
     end
 
     def visit_subclass_declaration(declaration)
-      select(declaration) +
-        visit(declaration.name) +
-        visit(declaration.superclass_name) +
-        visit_all(declaration.variable_declarations) +
-        visit_all(declaration.method_declarations)
+      match declaration
+      visit declaration.name
+      visit declaration.superclass_name
+      visit_all declaration.variable_declarations
+      visit_all declaration.method_declarations
     end
 
     def visit_variable_declaration(declaration)
-      select(declaration) + visit(declaration.type) + visit(declaration.name)
+      match declaration
+      visit declaration.type
+      visit declaration.name
     end
 
     def visit_method_declaration(declaration)
-      select(declaration) +
-        visit(declaration.type) +
-        visit(declaration.name) +
-        visit_all(declaration.formal_parameters) +
-        visit_all(declaration.variable_declarations) +
-        visit_all(declaration.statements) +
-        visit(declaration.return_expression)
+      match declaration
+      visit declaration.type
+      visit declaration.name
+      visit_all declaration.formal_parameters
+      visit_all declaration.variable_declarations
+      visit_all declaration.statements
+      visit declaration.return_expression
     end
 
     def visit_formal_parameter(parameter)
-      select(parameter) + visit(parameter.type) + visit(parameter.name)
+      match parameter
+      visit parameter.type
+      visit parameter.name
     end
 
 
     def visit_array_type(type)
-      select type
+      match type
     end
 
     def visit_boolean_type(type)
-      select type
+      match type
     end
 
     def visit_integer_type(type)
-      select type
+      match type
     end
 
     def visit_identifier_type(type)
-      select(type) + visit(type.identifier)
+      match type
+      visit type.identifier
     end
 
 
     def visit_block(block)
-      select(block) + visit_all(block.statements)
+      match block
+      visit_all block.statements
     end
 
     def visit_if_statement(statement)
-      select(statement) + visit(statement.condition) + visit(statement.affirmative) + visit(statement.negative)
+      match statement
+      visit statement.condition
+      visit statement.affirmative
+      visit statement.negative
     end
 
     def visit_while_statement(statement)
-      select(statement) + visit(statement.condition) + visit(statement.substatement)
+      match statement
+      visit statement.condition
+      visit statement.substatement
     end
 
     def visit_print_statement(statement)
-      select(statement) + visit(statement.expression)
+      match statement
+      visit statement.expression
     end
 
     def visit_assignment(assignment)
-      select(assignment) + visit(assignment.left) + visit(assignment.right)
+      match assignment
+      visit assignment.left
+      visit assignment.right
     end
 
 
     def visit_unary_operation(operation)
-      select(operation) + visit(operation.expression)
+      match operation
+      visit operation.expression
     end
 
     alias_method :visit_not, :visit_unary_operation
 
     def visit_binary_operation(operation)
-      select(operation) + visit(operation.left) + visit(operation.right)
+      match operation
+      visit operation.left
+      visit operation.right
     end
 
     alias_method :visit_and,       :visit_binary_operation
@@ -116,24 +137,31 @@ module MiniJava
     alias_method :visit_times,     :visit_binary_operation
 
     def visit_array_subscript(subscript)
-      select(subscript) + visit(subscript.array) + visit(subscript.index)
+      match subscript
+      visit subscript.array
+      visit subscript.index
     end
 
     def visit_call(call)
-      select(call) + visit(call.receiver) + visit(call.method_name) + visit_all(call.parameters)
+      match call
+      visit call.receiver
+      visit call.method_name
+      visit_all call.parameters
     end
 
     def visit_new_array(expression)
-      select(expression) + visit(expression.size)
+      match expression
+      visit expression.size
     end
 
     def visit_new_object(expression)
-      select(expression) + visit(expression.class_name)
+      match expression
+      visit expression.class_name
     end
 
 
     def visit_literal(literal)
-      select literal
+      match literal
     end
 
     alias_method :visit_integer_literal, :visit_literal
@@ -143,16 +171,16 @@ module MiniJava
 
 
     def visit_identifier(identifier)
-      select identifier
+      match identifier
     end
 
     private
-      def select(visitable)
-        selector === visitable ? [ visitable ] : []
+      def match(node)
+        @matches.append(node) if match?(node)
       end
 
-      def visit_all(visitables)
-        visitables.flat_map { |visitable| visit(visitable) }
+      def match?(node)
+        @selector === node
       end
   end
 end

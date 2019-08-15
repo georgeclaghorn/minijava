@@ -5,7 +5,7 @@ module MiniJava
   module Syntax
     Program = Struct.new(:main_class_declaration, :class_declarations) do
       def select(selector)
-        MiniJava::SelectorVisitor.new(selector).visit(self)
+        MiniJava::SelectorVisitor.select(selector, self)
       end
     end
 

@@ -18,9 +18,7 @@ class MiniJava::SelectorVisitorTest < MiniTest::Test
       }
     JAVA
 
-    visitor = MiniJava::SelectorVisitor.new(MiniJava::Syntax::Identifier)
-
-    identifiers = visitor.visit(program)
+    identifiers = MiniJava::SelectorVisitor.select(MiniJava::Syntax::Identifier, program)
     assert_equal 9, identifiers.count
     assert_equal %w[ HelloWorld args NumberPicker pick number ], identifiers.collect(&:name).uniq
   end
