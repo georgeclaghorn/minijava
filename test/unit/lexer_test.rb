@@ -60,6 +60,25 @@ class MiniJava::LexerTest < Minitest::Test
     assert_equal [ :PRINTLN, nil ], lexer.next_token
   end
 
+  def test_scanning_identifiers
+    lexer = MiniJava::Lexer.new(<<~JAVA)
+      asdf
+      snake_case
+      camelCase
+      PascalCase
+      foo123
+      123bar
+    JAVA
+
+    assert_equal [ :IDENTIFIER,      "asdf"       ], lexer.next_token
+    assert_equal [ :IDENTIFIER,      "snake_case" ], lexer.next_token
+    assert_equal [ :IDENTIFIER,      "camelCase"  ], lexer.next_token
+    assert_equal [ :IDENTIFIER,      "PascalCase" ], lexer.next_token
+    assert_equal [ :IDENTIFIER,      "foo123"     ], lexer.next_token
+    assert_equal [ :DECIMAL_NUMERAL, "123"        ], lexer.next_token
+    assert_equal [ :IDENTIFIER,      "bar"        ], lexer.next_token
+  end
+
   def test_scanning_decimal_numerals
     lexer = MiniJava::Lexer.new(<<~JAVA)
       0
