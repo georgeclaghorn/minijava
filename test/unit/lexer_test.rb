@@ -46,6 +46,20 @@ class MiniJava::LexerTest < Minitest::Test
     assert_equal 4, lexer.line
   end
 
+  def test_scanning_keywords
+    lexer = MiniJava::Lexer.new(<<~JAVA)
+      boolean
+      int
+      String
+      System.out.println
+    JAVA
+
+    assert_equal [ :BOOLEAN, nil ], lexer.next_token
+    assert_equal [ :INT,     nil ], lexer.next_token
+    assert_equal [ :STRING,  nil ], lexer.next_token
+    assert_equal [ :PRINTLN, nil ], lexer.next_token
+  end
+
   def test_scanning_decimal_numerals
     lexer = MiniJava::Lexer.new(<<~JAVA)
       0
