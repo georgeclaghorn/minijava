@@ -142,6 +142,11 @@ module MiniJava
       visit subscript.index
     end
 
+    def visit_array_length(length)
+      match length
+      visit length.array
+    end
+
     def visit_call(call)
       match call
       visit call.receiver

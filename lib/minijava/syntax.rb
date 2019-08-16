@@ -63,6 +63,7 @@ module MiniJava
     Times          = Struct.new(:left, :right)
 
     ArraySubscript = Struct.new(:array, :index)
+    ArrayLength    = Struct.new(:array)
 
     Call           = Struct.new(:receiver, :method_name, :parameters)
 

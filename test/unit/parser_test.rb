@@ -251,6 +251,30 @@ class MiniJava::ParserTest < Minitest::Test
     assert_equal 1, assignment.right.value
   end
 
+  def test_parsing_array_length
+    program = parse <<~PROGRAM
+      class Foo {
+        public static void main(String[] args) {
+          System.out.println(new NumberPicker().pick());
+        }
+      }
+
+      class NumberPicker {
+        int[] numbers;
+
+        public int pick() {
+          numbers = new int[1];
+          numbers[0] = numbers.length;
+          return numbers[0];
+        }
+      }
+    PROGRAM
+
+    lengths = program.select(MiniJava::Syntax::ArrayLength)
+    assert lengths.one?
+    assert_equal "numbers", lengths.first.array.name
+  end
+
   private
     def capture(stream)
       destination = Tempfile.new
