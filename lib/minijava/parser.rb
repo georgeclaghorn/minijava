@@ -574,7 +574,7 @@ module_eval(<<'.,.,', 'parser.racc', 63)
 
 module_eval(<<'.,.,', 'parser.racc', 64)
   def _reduce_27(val, _values)
-     val[1].prepend(val[0]) 
+     val[2].prepend(val[0]) 
   end
 .,.,
 
@@ -766,7 +766,7 @@ module_eval(<<'.,.,', 'parser.racc', 103)
 
 module_eval(<<'.,.,', 'parser.racc', 104)
   def _reduce_59(val, _values)
-     val[1].prepend(val[0]) 
+     val[2].prepend(val[0]) 
   end
 .,.,
 

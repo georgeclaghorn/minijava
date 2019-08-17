@@ -74,6 +74,86 @@ class MiniJava::ParserTest < Minitest::Test
     assert_equal "numbers", lengths.first.array.name
   end
 
+  def test_parsing_parameter_lists
+    program = parse <<~PROGRAM
+      class Foo {
+        public static void main(String[] args) {
+          System.out.println(new Bar().baz(20, false));
+        }
+      }
+
+      class Bar {
+        public boolean baz(int glorp, boolean quux) {
+          return quux && (glorp < 30);
+        }
+      }
+    PROGRAM
+
+    call = program.select(MiniJava::Syntax::Call).first
+    assert_equal 2, call.parameters.count
+    assert_equal 20, call.parameters.first.value
+    assert_equal MiniJava::Syntax::FalseLiteral.instance, call.parameters.second
+
+    method_declaration = program.select(MiniJava::Syntax::MethodDeclaration).first
+    assert_equal 2, method_declaration.formal_parameters.count
+
+    parameter = method_declaration.formal_parameters.first
+    assert_equal MiniJava::Syntax::IntegerType.instance, parameter.type
+    assert_equal "glorp", parameter.name.to_s
+
+    parameter = method_declaration.formal_parameters.second
+    assert_equal MiniJava::Syntax::BooleanType.instance, parameter.type
+    assert_equal "quux", parameter.name.to_s
+  end
+
+  def test_parsing_conditionals
+    program = parse <<~PROGRAM
+      class Foo {
+        public static void main(String[] args) {
+          System.out.println(new Bar().baz(20, 30));
+        }
+      }
+
+      class Bar {
+        // Returns true if glorp is less than quux and false otherwise.
+        public boolean baz(int glorp, int quux) {
+          boolean result;
+
+          if (glorp < quux) {
+            result = true;
+          } else {
+            result = false;
+          }
+
+          return result;
+        }
+      }
+    PROGRAM
+
+    conditional = program.select(MiniJava::Syntax::IfStatement).first
+    assert_kind_of MiniJava::Syntax::LessThan, conditional.condition
+    assert_equal "glorp", conditional.condition.left.name
+    assert_equal "quux", conditional.condition.right.name
+    assert_kind_of MiniJava::Syntax::Block, conditional.affirmative
+    assert_kind_of MiniJava::Syntax::Block, conditional.negative
+
+    block = conditional.affirmative
+    assert block.statements.one?
+    assert_kind_of MiniJava::Syntax::Assignment, block.statements.first
+
+    assignment = block.statements.first
+    assert_equal "result", assignment.left.name
+    assert_equal MiniJava::Syntax::TrueLiteral.instance, assignment.right
+
+    block = conditional.negative
+    assert block.statements.one?
+    assert_kind_of MiniJava::Syntax::Assignment, block.statements.first
+
+    assignment = block.statements.first
+    assert_equal "result", assignment.left.name
+    assert_equal MiniJava::Syntax::FalseLiteral.instance, assignment.right
+  end
+
   def test_parsing_while_loops
     program = parse <<~PROGRAM
       class Foo {

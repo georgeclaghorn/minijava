@@ -62,7 +62,7 @@ rule
 
   OneOrMoreFormalParameters:
       FormalParameter { [ val[0] ] }
-    | FormalParameter COMMA OneOrMoreFormalParameters { val[1].prepend(val[0]) }
+    | FormalParameter COMMA OneOrMoreFormalParameters { val[2].prepend(val[0]) }
 
   FormalParameter: Type Identifier { MiniJava::Syntax::FormalParameter.new(val[0], val[1]) }
 
@@ -102,7 +102,7 @@ rule
 
   OneOrMoreActualParameters:
       Expression { [ val[0] ] }
-    | Expression COMMA OneOrMoreActualParameters { val[1].prepend(val[0]) }
+    | Expression COMMA OneOrMoreActualParameters { val[2].prepend(val[0]) }
 
   IntegerLiteral: DecimalNumeral { MiniJava::Syntax::IntegerLiteral.new(val[0]) }
   DecimalNumeral: DECIMAL_NUMERAL { Integer(val[0]) }
