@@ -74,6 +74,48 @@ class MiniJava::ParserTest < Minitest::Test
     assert_equal "numbers", lengths.first.array.name
   end
 
+  def test_parsing_while_loops
+    program = parse <<~PROGRAM
+      class Foo {
+        public static void main(String[] args) {
+          System.out.println(new NumberPicker().pick());
+        }
+      }
+
+      class NumberPicker {
+        int number;
+
+        public int pick() {
+          number = 0;
+
+          while (number < 3) {
+            number = 1 + number;
+          }
+
+          return number;
+        }
+      }
+    PROGRAM
+
+    loop = program.select(MiniJava::Syntax::WhileStatement).first
+    assert_kind_of MiniJava::Syntax::LessThan, loop.condition
+    assert_equal "number", loop.condition.left.name
+    assert_equal 3, loop.condition.right.value
+    assert_kind_of MiniJava::Syntax::Block, loop.substatement
+
+    block = loop.substatement
+    assert block.statements.one?
+    assert_kind_of MiniJava::Syntax::Assignment, block.statements.first
+
+    assignment = block.statements.first
+    assert_equal "number", assignment.left.name
+    assert_kind_of MiniJava::Syntax::Plus, assignment.right
+
+    plus = assignment.right
+    assert_equal 1, plus.left.value
+    assert_equal "number", plus.right.name
+  end
+
   def test_detecting_invalid_statement_syntax
     program = nil
 
