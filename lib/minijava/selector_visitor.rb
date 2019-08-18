@@ -179,6 +179,16 @@ module MiniJava
       match identifier
     end
 
+
+    def visit_error(error)
+      match error
+    end
+
+    alias_method :visit_invalid_variable_declaration, :visit_error
+    alias_method :visit_invalid_statement, :visit_error
+    alias_method :visit_invalid_method_declaration, :visit_error
+    alias_method :visit_invalid_class_declaration, :visit_error
+
     private
       def match(node)
         @matches.append(node) if match?(node)

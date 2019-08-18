@@ -22,4 +22,32 @@ class MiniJava::SelectorVisitorTest < MiniTest::Test
     assert_equal 9, identifiers.count
     assert_equal %w[ HelloWorld args NumberPicker pick number ], identifiers.collect(&:name).uniq
   end
+
+  def test_selecting_errors
+    program = nil
+
+    capture $stderr do
+      program = MiniJava::Parser.program_from(<<~JAVA)
+        class Foo {
+          public static void main(String[] args) {
+            System.out.println(new Bar().getGlorp());
+          }
+        }
+
+        class Bar {
+          int baz;
+
+          public int getGlorp() {
+            // Unsupported assignment in declaration:
+            int glorp = 0;
+            glorp = baz + 1;
+            return glorp;
+          }
+        }
+      JAVA
+    end
+
+    errors = MiniJava::SelectorVisitor.select(MiniJava::Syntax::InvalidVariableDeclaration, program)
+    assert_equal 1, errors.count
+  end
 end
