@@ -12,6 +12,7 @@ module MiniJava
     end
 
 
+    # Most visitors don't care about error nodes. Ignore them by default.
     def visit_invalid_variable_declaration(*); end
     def visit_invalid_statement(*); end
     def visit_invalid_method_declaration(*); end
