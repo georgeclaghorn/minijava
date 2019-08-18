@@ -5,14 +5,14 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
     program = MiniJava::Parser.program_from(<<~JAVA)
       class HelloWorld {
         public static void main(String[] args) {
-          System.out.println(new Incrementor().next());
+          System.out.println(new Incrementor().next(true));
         }
       }
 
       class Incrementor {
         int foo;
 
-        public int next() {
+        public int next(boolean bar) {
           int number;
           foo = 1 + foo;
           number = foo;
@@ -41,6 +41,10 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
     assert_equal MiniJava::Syntax::IntegerType.instance, class_scope.method_type_for("next")
 
     method_scope = class_scope.method_scope_for("next")
+
+    assert method_scope.variable?("bar")
+    assert_equal MiniJava::Syntax::BooleanType.instance, method_scope.variable_type_for("bar")
+
     assert method_scope.variable?("foo")
     assert_equal MiniJava::Syntax::IntegerType.instance, method_scope.variable_type_for("foo")
 

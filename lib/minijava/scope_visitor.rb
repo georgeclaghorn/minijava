@@ -49,7 +49,7 @@ module MiniJava
     end
 
     def visit_formal_parameter(parameter, scope)
-      scope.variables.add(name: declaration.name, type: declaration.type)
+      scope.variables.add(name: parameter.name, type: parameter.type)
     end
   end
 end
