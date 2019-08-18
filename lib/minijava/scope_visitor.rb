@@ -37,15 +37,15 @@ module MiniJava
       end
     end
 
+    def visit_variable_declaration(declaration, scope)
+      scope.variables.add(name: declaration.name, type: declaration.type)
+    end
+
     def visit_method_declaration(declaration, scope)
       scope.methods.add(name: declaration.name, type: declaration.type) do |own_scope|
         visit_all declaration.formal_parameters, own_scope
         visit_all declaration.variable_declarations, own_scope
       end
-    end
-
-    def visit_variable_declaration(declaration, scope)
-      scope.variables.add(name: declaration.name, type: declaration.type)
     end
 
     def visit_formal_parameter(parameter, scope)
