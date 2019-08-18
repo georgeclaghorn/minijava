@@ -10,5 +10,11 @@ module MiniJava
     def visit_all(visitables, *args)
       visitables.each { |visitable| visit(visitable, *args) }
     end
+
+
+    def visit_invalid_variable_declaration(*); end
+    def visit_invalid_statement(*); end
+    def visit_invalid_method_declaration(*); end
+    def visit_invalid_class_declaration(*); end
   end
 end
