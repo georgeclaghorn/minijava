@@ -12,8 +12,17 @@ module MiniJava
 
     #== Declarations
 
-    MainClassDeclaration  = Struct.new(:name, :method_declaration)
-    MainMethodDeclaration = Struct.new(:formal_parameter_name, :statement)
+    MainClassDeclaration = Struct.new(:name, :method_declaration)
+
+    MainMethodDeclaration = Struct.new(:formal_parameter_name, :statement) do
+      def type
+        VoidType.instance
+      end
+
+      def name
+        Identifier.new "main"
+      end
+    end
 
     ClassDeclaration    = Struct.new(:name, :variable_declarations, :method_declarations)
     SubclassDeclaration = Struct.new(:name, :superclass_name, :variable_declarations, :method_declarations)
@@ -36,6 +45,10 @@ module MiniJava
     end
 
     class IntegerType
+      include Singleton
+    end
+
+    class VoidType
       include Singleton
     end
 
