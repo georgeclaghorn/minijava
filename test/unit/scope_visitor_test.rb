@@ -26,11 +26,11 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
     assert program_scope.class?("Incrementor")
 
     class_scope = program_scope.class_scope_for("HelloWorld")
-    assert class_scope.methods.include?("main")
+    assert class_scope.method?("main")
     assert_equal MiniJava::Syntax::VoidType.instance, class_scope.method_type_for("main")
 
     method_scope = class_scope.method_scope_for("main")
-    assert method_scope.variables.include?("args")
+    assert method_scope.variable?("args")
     assert_equal MiniJava::Syntax::ArrayType.instance, method_scope.variable_type_for("args")
 
     class_scope = program_scope.class_scope_for("Incrementor")
