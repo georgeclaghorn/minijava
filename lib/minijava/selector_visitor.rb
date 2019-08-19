@@ -10,7 +10,6 @@ module MiniJava
       @selector, @matches = selector, matches
     end
 
-
     def visit_program(program)
       match program
       visit program.main_class_declaration
