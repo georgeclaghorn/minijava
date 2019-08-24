@@ -4,12 +4,13 @@ require "minijava/errors"
 
 module MiniJava
   class Lexer
-    attr_reader :line
+    attr_reader :line, :column
 
     def initialize(source)
       @scanner = StringScanner.new(source)
       @state   = :default
       @line    = 1
+      @column  = 1
     end
 
     def next_token
@@ -24,7 +25,7 @@ module MiniJava
 
     private
       attr_reader :scanner
-      delegate :scan, :eos?, to: :scanner
+      delegate :eos?, to: :scanner
 
       def scan_next_token
         consume_newlines
@@ -33,7 +34,10 @@ module MiniJava
       end
 
       def consume_newlines
-        @line += 1 while scan(/([^\S\r\n]*)(\r\n?|\n)/)
+        while scan(/(\r\n?|\n)/)
+          @line += 1
+          @next_column = 1
+        end
       end
 
       def consume_inline_whitespace
@@ -174,6 +178,15 @@ module MiniJava
 
           when comment = scan(/[^\*\r\n]+|\*(?!\/)/)
             nil
+          end
+        end
+      end
+
+      def scan(pattern)
+        scanner.scan(pattern).tap do |result|
+          unless result.nil?
+            @column = @next_column ||= 1
+            @next_column += result.length
           end
         end
       end

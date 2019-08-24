@@ -211,7 +211,7 @@ class MiniJava::ParserTest < Minitest::Test
       PROGRAM
     end
 
-    assert_equal "Parse error on line 3", output.strip
+    assert_equal "Parse error at line 3, column 24", output.strip
     assert_equal "Bar", program.class_declarations.first.name.to_s
     assert_kind_of MiniJava::Syntax::InvalidStatement, program.main_class_declaration.method_declaration.statement
   end
@@ -239,7 +239,7 @@ class MiniJava::ParserTest < Minitest::Test
       PROGRAM
     end
 
-    assert_equal "Parse error on line 8", output.strip
+    assert_equal "Parse error at line 8, column 7", output.strip
 
     class_declaration = program.class_declarations.first
     assert_equal "Bar", class_declaration.name.to_s
@@ -272,7 +272,7 @@ class MiniJava::ParserTest < Minitest::Test
       PROGRAM
     end
 
-    assert_equal "Parse error on line 12", output.strip
+    assert_equal "Parse error at line 12, column 15", output.strip
 
     class_declaration = program.class_declarations.first
     method_declaration = class_declaration.method_declarations.first
@@ -302,7 +302,7 @@ class MiniJava::ParserTest < Minitest::Test
       PROGRAM
     end
 
-    assert_equal "Parse error on line 10", output.strip
+    assert_equal "Parse error at line 10, column 5", output.strip
 
     class_declaration = program.class_declarations.first
     assert_kind_of MiniJava::Syntax::InvalidMethodDeclaration, class_declaration.method_declarations.first
@@ -332,7 +332,7 @@ class MiniJava::ParserTest < Minitest::Test
       PROGRAM
     end
 
-    assert_equal "Parse error on line 12", output.strip
+    assert_equal "Parse error at line 12, column 3", output.strip
     assert_kind_of MiniJava::Syntax::InvalidClassDeclaration, program.class_declarations.first
     assert_equal "Quux", program.class_declarations.second.name.to_s
   end
@@ -358,9 +358,9 @@ class MiniJava::ParserTest < Minitest::Test
     end
 
     assert_equal <<~OUTPUT, output
-      Parse error on line 3
-      Parse error on line 8
-      Parse error on line 12
+      Parse error at line 3, column 41
+      Parse error at line 8, column 8
+      Parse error at line 12, column 5
     OUTPUT
   end
 
@@ -376,7 +376,7 @@ class MiniJava::ParserTest < Minitest::Test
       PROGRAM
     end
 
-    assert_equal "Parse error on line 4", output.strip
+    assert_equal "Parse error at line 4, column 24", output.strip
   end
 
   def test_detecting_invalid_syntax_after_multiline_comment
@@ -395,7 +395,7 @@ class MiniJava::ParserTest < Minitest::Test
       PROGRAM
     end
 
-    assert_equal "Parse error on line 8", output.strip
+    assert_equal "Parse error at line 8, column 24", output.strip
   end
 
   private

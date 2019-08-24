@@ -82,11 +82,41 @@ class MiniJava::LexerTest < Minitest::Test
   def test_counting_lines_through_code
     lexer = MiniJava::Lexer.new("foo;\nbar;\rbaz;\r\nglorp;")
 
+    assert_equal 1, lexer.line
+
     %w[ foo bar baz glorp ].each_with_index do |identifier, index|
       assert_equal [ :IDENTIFIER, identifier ], lexer.next_token
       assert_equal [ :SEMICOLON, nil ], lexer.next_token
       assert_equal index + 1, lexer.line
     end
+  end
+
+  def test_counting_columns_through_code
+    lexer = MiniJava::Lexer.new(<<~JAVA)
+      foo bar
+        baz      glorp  123
+      quux
+    JAVA
+
+    assert_equal 1, lexer.column
+
+    assert_equal [ :IDENTIFIER, "foo" ], lexer.next_token
+    assert_equal 1, lexer.column
+
+    assert_equal [ :IDENTIFIER, "bar" ], lexer.next_token
+    assert_equal 5, lexer.column
+
+    assert_equal [ :IDENTIFIER, "baz" ], lexer.next_token
+    assert_equal 3, lexer.column
+
+    assert_equal [ :IDENTIFIER, "glorp" ], lexer.next_token
+    assert_equal 12, lexer.column
+
+    assert_equal [ :DECIMAL_NUMERAL, "123" ], lexer.next_token
+    assert_equal 19, lexer.column
+
+    assert_equal [ :IDENTIFIER, "quux" ], lexer.next_token
+    assert_equal 1, lexer.column
   end
 
   def test_counting_lines_through_multiline_comments

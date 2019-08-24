@@ -14,7 +14,7 @@ module MiniJava
   class Parser < Racc::Parser
 
 module_eval(<<'...end parser.racc/module_eval...', 'parser.racc', 119)
-delegate :next_token, :line, to: :@lexer
+delegate :next_token, :line, :column, to: :@lexer
 
 def self.program_from(source)
   new(source).program
@@ -26,7 +26,7 @@ def initialize(source)
 end
 
 def on_error(*)
-  $stderr.puts "Parse error on line #{line}"
+  $stderr.puts "Parse error at line #{line}, column #{column}"
 end
 
 alias_method :program, :do_parse
