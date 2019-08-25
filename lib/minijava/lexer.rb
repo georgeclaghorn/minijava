@@ -176,7 +176,7 @@ module MiniJava
             @state = :default
             nil
 
-          when comment = scan(/[^\*\r\n]+|\*(?!\/)/)
+          when scan(/[^\*\r\n]+|\*(?!\/)/)
             nil
           end
         end
