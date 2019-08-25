@@ -159,4 +159,19 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
     assert_equal MiniJava::Syntax::BooleanType.instance, class_scope.variable_type_by(name: "baz")
     assert_equal MiniJava::Syntax::IntegerType.instance, method_scope.variable_type_by(name: "baz")
   end
+
+  def test_forbidding_inheritance_from_undefined_class
+    program = MiniJava::Parser.program_from(<<~JAVA)
+      class HelloWorld {
+        public static void main(String[] args) {
+          System.out.println(new Foo().bar());
+        }
+      }
+
+      class Foo extends Bar { }
+    JAVA
+
+    error = assert_raises(MiniJava::NameError) { MiniJava::ScopeVisitor.scope_for(program) }
+    assert_equal "Reference to undefined class 'Bar'", error.message
+  end
 end
