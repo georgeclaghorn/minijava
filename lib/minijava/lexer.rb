@@ -166,8 +166,8 @@ module MiniJava
           when text = scan(/0(?![1-9]+)|[1-9][0-9]*/)
             emit :DECIMAL_NUMERAL, text
 
-          when text = scan(/./)
-            raise SyntaxError, "Illegal character '#{text}' on line #{@line}"
+          when text = scan(/\S+/)
+            raise SyntaxError, "Unexpected token '#{text}' at line #{@line}, column #{@column}"
           end
 
         when :comment

@@ -49,18 +49,18 @@ class MiniJava::LexerTest < Minitest::Test
     assert_equal [ :DECIMAL_NUMERAL, "37"  ], lexer.next_token
 
     error = assert_raises(MiniJava::SyntaxError) { lexer.next_token }
-    assert_equal "Illegal character '0' on line 5", error.message
+    assert_equal "Unexpected token '03' at line 5, column 1", error.message
   end
 
   def test_scanning_an_invalid_character
-    lexer = MiniJava::Lexer.new("foo\nbar\n123\n^")
+    lexer = MiniJava::Lexer.new("foo\nbar\n123\n ^")
 
     assert_equal [ :IDENTIFIER,      "foo" ], lexer.next_token
     assert_equal [ :IDENTIFIER,      "bar" ], lexer.next_token
     assert_equal [ :DECIMAL_NUMERAL, "123" ], lexer.next_token
 
     error = assert_raises(MiniJava::SyntaxError) { lexer.next_token }
-    assert_equal "Illegal character '^' on line 4", error.message
+    assert_equal "Unexpected token '^' at line 4, column 2", error.message
   end
 
   def test_ignoring_single_line_comments
