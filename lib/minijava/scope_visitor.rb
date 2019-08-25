@@ -76,10 +76,13 @@ module MiniJava
       def resolve_class_inheritance(program)
         program.class_declarations.each do |declaration|
           unless declaration.superclass_name.nil?
-            class_scope      = @root_scope.class_scope_by!(name: declaration.name)
-            superclass_scope = @root_scope.class_scope_by!(name: declaration.superclass_name)
+            class_scope = @root_scope.class_scope_by(name: declaration.name)
 
-            class_scope.reparent(superclass_scope)
+            if superclass_scope = @root_scope.class_scope_by(name: declaration.superclass_name)
+              class_scope.reparent(superclass_scope)
+            else
+              raise NameError, "Class #{declaration.name} extends undefined class #{declaration.superclass_name}"
+            end
           end
         end
       end

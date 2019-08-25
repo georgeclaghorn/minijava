@@ -1,5 +1,3 @@
-require "minijava/errors"
-
 module MiniJava
   class Scope
     attr_reader :parent, :classes, :methods, :variables
@@ -26,10 +24,6 @@ module MiniJava
 
     def class_scope_by(name:)
       classes.scope_for(name) || parent.class_scope_by(name: name)
-    end
-
-    def class_scope_by!(name:)
-      class_scope_by(name: name) || raise(NameError, "Reference to undefined class '#{name}'")
     end
 
 

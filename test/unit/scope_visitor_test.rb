@@ -172,7 +172,7 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
     JAVA
 
     error = assert_raises(MiniJava::NameError) { MiniJava::ScopeVisitor.scope_for(program) }
-    assert_equal "Reference to undefined class 'Bar'", error.message
+    assert_equal "Class Foo extends undefined class Bar", error.message
   end
 
   def test_double_inheritance
