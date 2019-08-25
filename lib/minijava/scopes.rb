@@ -7,7 +7,7 @@ module MiniJava
     end
 
     def initialize
-      @classes = ClassSet.new(self)
+      @classes = ClassSet.new
     end
 
     def class?(name)
@@ -22,12 +22,11 @@ module MiniJava
   class ClassScope
     attr_reader :variables, :methods
 
-    def self.build(parent, &block)
-      new(parent).tap(&block)
+    def self.build(&block)
+      new.tap(&block)
     end
 
-    def initialize(parent)
-      @parent    = parent
+    def initialize
       @variables = VariableSet.new
       @methods   = MethodSet.new(self)
     end
@@ -76,13 +75,12 @@ module MiniJava
 
 
   class ClassSet
-    def initialize(parent)
-      @parent = parent
+    def initialize
       @scopes = {}
     end
 
     def add(name, &block)
-      @scopes[name.to_s] = ClassScope.build(@parent, &block)
+      @scopes[name.to_s] = ClassScope.build(&block)
       nil
     end
 
