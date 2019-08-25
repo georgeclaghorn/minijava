@@ -4,12 +4,12 @@ require "minijava/selector_visitor"
 module MiniJava
   module Syntax
     Program = Struct.new(:main_class_declaration, :class_declarations) do
-      def select(selector)
-        MiniJava::SelectorVisitor.select(selector, self)
-      end
-
       def subclass_declarations
         class_declarations.reject { |declaration| declaration.superclass_name.nil? }
+      end
+
+      def select(selector)
+        MiniJava::SelectorVisitor.select(selector, self)
       end
     end
 
