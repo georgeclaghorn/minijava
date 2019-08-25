@@ -3,13 +3,13 @@ require "active_support/core_ext/array/access"
 
 class MiniJava::ParserTest < Minitest::Test
   def test_parsing_decimal_integer_literals
-    program = parse <<~PROGRAM
+    program = parse <<~JAVA
       class Foo {
         public static void main(String[] args) {
           System.out.println(0 + 100 + 123 + 37);
         }
       }
-    PROGRAM
+    JAVA
 
     integer_literals = program.select(MiniJava::Syntax::IntegerLiteral)
     assert_equal 0, integer_literals.first.value
@@ -19,7 +19,7 @@ class MiniJava::ParserTest < Minitest::Test
   end
 
   def test_parsing_array_element_assignments
-    program = parse <<~PROGRAM
+    program = parse <<~JAVA
       class Foo {
         public static void main(String[] args) {
           System.out.println(new NumberPicker().pick());
@@ -35,7 +35,7 @@ class MiniJava::ParserTest < Minitest::Test
           return numbers[0];
         }
       }
-    PROGRAM
+    JAVA
 
     assignments = program.select(MiniJava::Syntax::Assignment)
     assert_equal 2, assignments.count
@@ -51,7 +51,7 @@ class MiniJava::ParserTest < Minitest::Test
   end
 
   def test_parsing_array_length
-    program = parse <<~PROGRAM
+    program = parse <<~JAVA
       class Foo {
         public static void main(String[] args) {
           System.out.println(new NumberPicker().pick());
@@ -67,7 +67,7 @@ class MiniJava::ParserTest < Minitest::Test
           return numbers[0];
         }
       }
-    PROGRAM
+    JAVA
 
     lengths = program.select(MiniJava::Syntax::ArrayLength)
     assert lengths.one?
@@ -75,7 +75,7 @@ class MiniJava::ParserTest < Minitest::Test
   end
 
   def test_parsing_parameter_lists
-    program = parse <<~PROGRAM
+    program = parse <<~JAVA
       class Foo {
         public static void main(String[] args) {
           System.out.println(new Bar().baz(20, false));
@@ -87,7 +87,7 @@ class MiniJava::ParserTest < Minitest::Test
           return quux && (glorp < 30);
         }
       }
-    PROGRAM
+    JAVA
 
     call = program.select(MiniJava::Syntax::Call).first
     assert_equal 2, call.parameters.count
@@ -107,7 +107,7 @@ class MiniJava::ParserTest < Minitest::Test
   end
 
   def test_parsing_conditionals
-    program = parse <<~PROGRAM
+    program = parse <<~JAVA
       class Foo {
         public static void main(String[] args) {
           System.out.println(new Bar().baz(20, 30));
@@ -128,7 +128,7 @@ class MiniJava::ParserTest < Minitest::Test
           return result;
         }
       }
-    PROGRAM
+    JAVA
 
     conditional = program.select(MiniJava::Syntax::IfStatement).first
     assert_kind_of MiniJava::Syntax::LessThan, conditional.condition
@@ -155,7 +155,7 @@ class MiniJava::ParserTest < Minitest::Test
   end
 
   def test_parsing_while_loops
-    program = parse <<~PROGRAM
+    program = parse <<~JAVA
       class Foo {
         public static void main(String[] args) {
           System.out.println(new NumberPicker().pick());
@@ -175,7 +175,7 @@ class MiniJava::ParserTest < Minitest::Test
           return number;
         }
       }
-    PROGRAM
+    JAVA
 
     loop = program.select(MiniJava::Syntax::WhileStatement).first
     assert_kind_of MiniJava::Syntax::LessThan, loop.condition
@@ -200,7 +200,7 @@ class MiniJava::ParserTest < Minitest::Test
     program = nil
 
     output = capture $stderr do
-      program = parse <<~PROGRAM
+      program = parse <<~JAVA
         class Foo {
           public static void main(String[] args) {
             System.out.println(int);
@@ -208,7 +208,7 @@ class MiniJava::ParserTest < Minitest::Test
         }
 
         class Bar { }
-      PROGRAM
+      JAVA
     end
 
     assert_equal "Parse error at line 3, column 24", output.strip
@@ -220,7 +220,7 @@ class MiniJava::ParserTest < Minitest::Test
     program = nil
 
     output = capture $stderr do
-      program = parse <<~PROGRAM
+      program = parse <<~JAVA
         class Foo {
           public static void main(String[] args) {
             System.out.println(new Bar().getBaz());
@@ -236,7 +236,7 @@ class MiniJava::ParserTest < Minitest::Test
         }
 
         class Quux { }
-      PROGRAM
+      JAVA
     end
 
     assert_equal "Parse error at line 8, column 7", output.strip
@@ -252,7 +252,7 @@ class MiniJava::ParserTest < Minitest::Test
     program = nil
 
     output = capture $stderr do
-      program = parse <<~PROGRAM
+      program = parse <<~JAVA
         class Foo {
           public static void main(String[] args) {
             System.out.println(new Bar().getGlorp());
@@ -269,7 +269,7 @@ class MiniJava::ParserTest < Minitest::Test
             return glorp;
           }
         }
-      PROGRAM
+      JAVA
     end
 
     assert_equal "Parse error at line 12, column 15", output.strip
@@ -284,7 +284,7 @@ class MiniJava::ParserTest < Minitest::Test
     program = nil
 
     output = capture $stderr do
-      program = parse <<~PROGRAM
+      program = parse <<~JAVA
         class Foo {
           public static void main(String[] args) {
             System.out.println(new Bar().getBaz(5));
@@ -299,7 +299,7 @@ class MiniJava::ParserTest < Minitest::Test
 
           public int getFloogle() { return 1; }
         }
-      PROGRAM
+      JAVA
     end
 
     assert_equal "Parse error at line 10, column 5", output.strip
@@ -313,7 +313,7 @@ class MiniJava::ParserTest < Minitest::Test
     program = nil
 
     output = capture $stderr do
-      program = parse <<~PROGRAM
+      program = parse <<~JAVA
         class Foo {
           public static void main(String[] args) {
             System.out.println(new Bar().getBaz(5));
@@ -329,7 +329,7 @@ class MiniJava::ParserTest < Minitest::Test
         }
 
         class Quux { }
-      PROGRAM
+      JAVA
     end
 
     assert_equal "Parse error at line 12, column 3", output.strip
@@ -339,7 +339,7 @@ class MiniJava::ParserTest < Minitest::Test
 
   def test_detecting_multiple_syntax_errors
     output = capture $stderr do
-      parse <<~PROGRAM
+      parse <<~JAVA
         class Foo {
           public static void main(String[] args) {
             System.out.println(new Bar().getBaz(int));
@@ -354,7 +354,7 @@ class MiniJava::ParserTest < Minitest::Test
             quux
           }
         }
-      PROGRAM
+      JAVA
     end
 
     assert_equal <<~OUTPUT, output
@@ -366,14 +366,14 @@ class MiniJava::ParserTest < Minitest::Test
 
   def test_detecting_invalid_syntax_after_single_line_comment
     output = capture $stderr do
-      parse <<~PROGRAM
+      parse <<~JAVA
         class Foo {
           public static void main(String[] args) {
             // Oops!
             System.out.println(int);
           }
         }
-      PROGRAM
+      JAVA
     end
 
     assert_equal "Parse error at line 4, column 24", output.strip
@@ -381,7 +381,7 @@ class MiniJava::ParserTest < Minitest::Test
 
   def test_detecting_invalid_syntax_after_multiline_comment
     output = capture $stderr do
-      parse <<~PROGRAM
+      parse <<~JAVA
         class Foo {
           public static void main(String[] args) {
             /*
@@ -392,7 +392,7 @@ class MiniJava::ParserTest < Minitest::Test
             System.out.println(int);
           }
         }
-      PROGRAM
+      JAVA
     end
 
     assert_equal "Parse error at line 8, column 24", output.strip
