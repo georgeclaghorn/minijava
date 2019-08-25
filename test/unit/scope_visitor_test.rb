@@ -174,4 +174,35 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::NameError) { MiniJava::ScopeVisitor.scope_for(program) }
     assert_equal "Reference to undefined class 'Bar'", error.message
   end
+
+  def test_double_inheritance
+    program = MiniJava::Parser.program_from(<<~JAVA)
+      class HelloWorld {
+        public static void main(String[] args) {
+          System.out.println(new Foo().bar());
+        }
+      }
+
+      class Foo { }
+      class Bar extends Foo { }
+      class Baz extends Bar { }
+    JAVA
+
+    program_scope = MiniJava::ScopeVisitor.scope_for(program)
+
+    assert program_scope.class?("Foo")
+    assert program_scope.class?("Bar")
+    assert program_scope.class?("Baz")
+
+    foo_scope = program_scope.class_scope_by(name: "Foo")
+    bar_scope = program_scope.class_scope_by(name: "Bar")
+    baz_scope = program_scope.class_scope_by(name: "Baz")
+
+    # Weird, albeit intentional, arrangement: Bar and Baz are declared in the program scope but
+    # parented by their respective superclass' scopes, *not* the program scope.
+    #
+    # A scope's parent is not necessarily the lexical scope of its corresponding AST node.
+    assert_equal foo_scope, bar_scope.parent
+    assert_equal bar_scope, baz_scope.parent
+  end
 end
