@@ -25,31 +25,31 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
     assert program_scope.class?("HelloWorld")
     assert program_scope.class?("Incrementor")
 
-    class_scope = program_scope.class_scope_for("HelloWorld")
+    class_scope = program_scope.class_scope_by(name: "HelloWorld")
     assert class_scope.method?("main")
-    assert_equal MiniJava::Syntax::VoidType.instance, class_scope.method_type_for("main")
+    assert_equal MiniJava::Syntax::VoidType.instance, class_scope.method_type_by(name: "main")
 
-    method_scope = class_scope.method_scope_for("main")
+    method_scope = class_scope.method_scope_by(name: "main")
     assert method_scope.variable?("args")
-    assert_equal MiniJava::Syntax::ArrayType.instance, method_scope.variable_type_for("args")
+    assert_equal MiniJava::Syntax::ArrayType.instance, method_scope.variable_type_by(name: "args")
 
-    class_scope = program_scope.class_scope_for("Incrementor")
+    class_scope = program_scope.class_scope_by(name: "Incrementor")
     assert class_scope.variable?("foo")
-    assert_equal MiniJava::Syntax::IntegerType.instance, class_scope.variable_type_for("foo")
+    assert_equal MiniJava::Syntax::IntegerType.instance, class_scope.variable_type_by(name: "foo")
 
     assert class_scope.method?("next")
-    assert_equal MiniJava::Syntax::IntegerType.instance, class_scope.method_type_for("next")
+    assert_equal MiniJava::Syntax::IntegerType.instance, class_scope.method_type_by(name: "next")
 
-    method_scope = class_scope.method_scope_for("next")
+    method_scope = class_scope.method_scope_by(name: "next")
 
     assert method_scope.variable?("bar")
-    assert_equal MiniJava::Syntax::BooleanType.instance, method_scope.variable_type_for("bar")
+    assert_equal MiniJava::Syntax::BooleanType.instance, method_scope.variable_type_by(name: "bar")
 
     assert method_scope.variable?("foo")
-    assert_equal MiniJava::Syntax::IntegerType.instance, method_scope.variable_type_for("foo")
+    assert_equal MiniJava::Syntax::IntegerType.instance, method_scope.variable_type_by(name: "foo")
 
     assert method_scope.variable?("number")
-    assert_equal MiniJava::Syntax::IntegerType.instance, method_scope.variable_type_for("number")
+    assert_equal MiniJava::Syntax::IntegerType.instance, method_scope.variable_type_by(name: "number")
   end
 
   def test_forbidding_class_redefinition
@@ -127,10 +127,10 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
     JAVA
 
     program_scope = MiniJava::ScopeVisitor.scope_for(program)
-    class_scope   = program_scope.class_scope_for("Foo")
-    method_scope  = class_scope.method_scope_for("bar")
+    class_scope   = program_scope.class_scope_by(name: "Foo")
+    method_scope  = class_scope.method_scope_by(name: "bar")
 
-    assert_equal MiniJava::Syntax::BooleanType.instance, class_scope.variable_type_for("baz")
-    assert_equal MiniJava::Syntax::IntegerType.instance, method_scope.variable_type_for("baz")
+    assert_equal MiniJava::Syntax::BooleanType.instance, class_scope.variable_type_by(name: "baz")
+    assert_equal MiniJava::Syntax::IntegerType.instance, method_scope.variable_type_by(name: "baz")
   end
 end

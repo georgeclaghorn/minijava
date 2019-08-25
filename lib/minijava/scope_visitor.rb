@@ -1,15 +1,15 @@
 require "minijava/visitor"
-require "minijava/scopes"
+require "minijava/scope"
 require "minijava/errors"
 
 module MiniJava
   class ScopeVisitor < Visitor
-    def self.scope_for(program)
-      ProgramScope.build { |root| new(root).visit(program) }
+    def self.scope_for(root)
+      Scope.build { |scope| new(scope).visit(root) }
     end
 
-    def initialize(root)
-      @root = root
+    def initialize(root_scope)
+      @root_scope = root_scope
     end
 
     def visit_program(program)
@@ -19,12 +19,12 @@ module MiniJava
 
 
     def visit_main_class_declaration(declaration)
-      @root.classes.add(declaration.name) do |scope|
+      @root_scope.classes.add(declaration.name) do |scope|
         visit declaration.method_declaration, scope
       end
     end
 
-    def visit_main_method_declaration(declaration, scope)
+    def visit_main_method_declaration(declaration, scope = @root_scope)
       scope.methods.add(name: declaration.name, type: declaration.type) do |own_scope|
         own_scope.variables.add(name: declaration.formal_parameter_name, type: MiniJava::Syntax::ArrayType.instance)
       end
@@ -32,17 +32,17 @@ module MiniJava
 
 
     def visit_class_declaration(declaration)
-      if @root.classes.include?(declaration.name)
+      if @root_scope.classes.include?(declaration.name)
         raise NameError, "Redefinition of class #{declaration.name}"
       else
-        @root.classes.add(declaration.name) do |own_scope|
+        @root_scope.classes.add(declaration.name) do |own_scope|
           visit_all declaration.variable_declarations, own_scope
           visit_all declaration.method_declarations, own_scope
         end
       end
     end
 
-    def visit_variable_declaration(declaration, scope)
+    def visit_variable_declaration(declaration, scope = @root_scope)
       if scope.variables.include?(declaration.name)
         raise NameError, "Redefinition of variable #{declaration.name}"
       else
@@ -50,7 +50,7 @@ module MiniJava
       end
     end
 
-    def visit_method_declaration(declaration, scope)
+    def visit_method_declaration(declaration, scope = @root_scope)
       if scope.methods.include?(declaration.name)
         raise NameError, "Redefinition of method #{declaration.name}"
       else
@@ -61,7 +61,7 @@ module MiniJava
       end
     end
 
-    def visit_formal_parameter(parameter, scope)
+    def visit_formal_parameter(parameter, scope = @root_scope)
       if scope.variables.include?(parameter.name)
         raise NameError, "Redefinition of variable #{parameter.name}"
       else

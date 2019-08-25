@@ -3,7 +3,8 @@ module MiniJava
   require "minijava/parser"
 
   require "minijava/syntax"
-  require "minijava/scopes"
+
+  require "minijava/scope"
 
   require "minijava/visitor"
   require "minijava/selector_visitor"
