@@ -15,6 +15,7 @@ module MiniJava
     def visit_program(program)
       visit program.main_class_declaration
       visit_all program.class_declarations
+      resolve_class_inheritance program
     end
 
 
@@ -42,6 +43,8 @@ module MiniJava
       end
     end
 
+    alias_method :visit_subclass_declaration, :visit_class_declaration
+
     def visit_variable_declaration(declaration, scope = @root_scope)
       if scope.variables.include?(declaration.name)
         raise NameError, "Redefinition of variable #{declaration.name}"
@@ -68,5 +71,17 @@ module MiniJava
         scope.variables.add(name: parameter.name, type: parameter.type)
       end
     end
+
+    private
+      def resolve_class_inheritance(program)
+        program.class_declarations.each do |declaration|
+          unless declaration.superclass_name.nil?
+            class_scope      = @root_scope.class_scope_by(name: declaration.name)
+            superclass_scope = @root_scope.class_scope_by(name: declaration.superclass_name)
+
+            class_scope.reparent(superclass_scope)
+          end
+        end
+      end
   end
 end

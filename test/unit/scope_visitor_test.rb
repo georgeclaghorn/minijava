@@ -19,11 +19,19 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
           return number;
         }
       }
+
+      class Decrementor extends Incrementor {
+        public int next(boolean bar) {
+          foo = foo - 1;
+          return foo;
+        }
+      }
     JAVA
 
     program_scope = MiniJava::ScopeVisitor.scope_for(program)
     assert program_scope.class?("HelloWorld")
     assert program_scope.class?("Incrementor")
+
 
     class_scope = program_scope.class_scope_by(name: "HelloWorld")
     assert class_scope.method?("main")
@@ -33,7 +41,9 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
     assert method_scope.variable?("args")
     assert_equal MiniJava::Syntax::ArrayType.instance, method_scope.variable_type_by(name: "args")
 
+
     class_scope = program_scope.class_scope_by(name: "Incrementor")
+
     assert class_scope.variable?("foo")
     assert_equal MiniJava::Syntax::IntegerType.instance, class_scope.variable_type_by(name: "foo")
 
@@ -50,6 +60,22 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
 
     assert method_scope.variable?("number")
     assert_equal MiniJava::Syntax::IntegerType.instance, method_scope.variable_type_by(name: "number")
+
+
+    class_scope = program_scope.class_scope_by(name: "Decrementor")
+
+    assert class_scope.variable?("foo")
+    assert_equal MiniJava::Syntax::IntegerType.instance, class_scope.variable_type_by(name: "foo")
+
+    assert class_scope.method?("next")
+    assert_equal MiniJava::Syntax::IntegerType.instance, class_scope.method_type_by(name: "next")
+
+    method_scope = class_scope.method_scope_by(name: "next")
+
+    assert method_scope.variable?("foo")
+    assert_equal MiniJava::Syntax::IntegerType.instance, method_scope.variable_type_by(name: "foo")
+
+    assert !method_scope.variable?("number")
   end
 
   def test_forbidding_class_redefinition

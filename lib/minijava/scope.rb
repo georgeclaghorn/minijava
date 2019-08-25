@@ -13,6 +13,10 @@ module MiniJava
       @variables = VariableSet.new
     end
 
+    def reparent(parent)
+      @parent = parent
+    end
+
 
     def class?(name)
       classes.include?(name) || parent.class?(name)
@@ -48,7 +52,7 @@ module MiniJava
   class NullScope
     include Singleton
 
-    def class?
+    def class?(name)
       false
     end
 
@@ -57,7 +61,7 @@ module MiniJava
     end
 
 
-    def method?
+    def method?(name)
       false
     end
 
@@ -70,7 +74,7 @@ module MiniJava
     end
 
 
-    def variable?
+    def variable?(name)
       false
     end
 

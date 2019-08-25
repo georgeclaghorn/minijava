@@ -24,7 +24,12 @@ module MiniJava
       end
     end
 
-    ClassDeclaration    = Struct.new(:name, :variable_declarations, :method_declarations)
+    ClassDeclaration = Struct.new(:name, :variable_declarations, :method_declarations) do
+      def superclass_name
+        nil
+      end
+    end
+
     SubclassDeclaration = Struct.new(:name, :superclass_name, :variable_declarations, :method_declarations)
 
     MethodDeclaration =
