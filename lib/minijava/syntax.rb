@@ -7,6 +7,10 @@ module MiniJava
       def select(selector)
         MiniJava::SelectorVisitor.select(selector, self)
       end
+
+      def subclass_declarations
+        class_declarations.reject { |declaration| declaration.superclass_name.nil? }
+      end
     end
 
 
