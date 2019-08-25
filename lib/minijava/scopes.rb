@@ -1,10 +1,12 @@
 module MiniJava
-  class ProgramScope
-    attr_reader :classes
-
-    def self.build(&block)
-      new.tap(&block)
+  class Scope
+    def self.build(*args, &block)
+      new(*args).tap(&block)
     end
+  end
+
+  class ProgramScope < Scope
+    attr_reader :classes
 
     def initialize
       @classes = ClassSet.new
@@ -19,12 +21,8 @@ module MiniJava
     end
   end
 
-  class ClassScope
+  class ClassScope < Scope
     attr_reader :variables, :methods
-
-    def self.build(&block)
-      new.tap(&block)
-    end
 
     def initialize
       @variables = VariableSet.new
@@ -52,12 +50,8 @@ module MiniJava
     end
   end
 
-  class MethodScope
+  class MethodScope < Scope
     attr_reader :parent, :variables
-
-    def self.build(parent, &block)
-      new(parent).tap(&block)
-    end
 
     def initialize(parent)
       @parent    = parent
