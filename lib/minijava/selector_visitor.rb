@@ -115,6 +115,9 @@ module MiniJava
       visit assignment.right
     end
 
+    alias_method :visit_simple_assignment, :visit_assignment
+    alias_method :visit_array_element_assignment, :visit_assignment
+
 
     def visit_unary_operation(operation)
       match operation

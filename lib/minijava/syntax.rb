@@ -47,33 +47,72 @@ module MiniJava
 
     class ArrayType
       include Singleton
+
+      def callable?
+        false
+      end
+
+      def to_s
+        "int[]"
+      end
     end
 
     class BooleanType
       include Singleton
+
+      def callable?
+        false
+      end
+
+      def to_s
+        "boolean"
+      end
     end
 
     class IntegerType
       include Singleton
+
+      def callable?
+        false
+      end
+
+      def to_s
+        "int"
+      end
     end
 
     class VoidType
       include Singleton
+
+      def callable?
+        false
+      end
+
+      def to_s
+        "void"
+      end
     end
 
-    IdentifierType = Struct.new(:identifier)
+    ObjectType = Struct.new(:class_name) do
+      def callable?
+        true
+      end
+
+      def to_s
+        class_name.to_s
+      end
+    end
 
 
     #== Statements
 
-    Block           = Struct.new(:statements)
+    Block          = Struct.new(:statements)
+    IfStatement    = Struct.new(:condition, :affirmative, :negative)
+    WhileStatement = Struct.new(:condition, :substatement)
+    PrintStatement = Struct.new(:expression)
 
-    IfStatement     = Struct.new(:condition, :affirmative, :negative)
-    WhileStatement  = Struct.new(:condition, :substatement)
-    PrintStatement  = Struct.new(:expression)
-
-    Assignment      = Struct.new(:left, :right)
-
+    SimpleAssignment = Struct.new(:left, :right)
+    ArrayElementAssignment = Struct.new(:left, :right)
 
     #== Expressions
 

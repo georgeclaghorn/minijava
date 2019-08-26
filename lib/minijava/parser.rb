@@ -550,7 +550,7 @@ module_eval(<<'.,.,', 'parser.racc', 57)
 
 module_eval(<<'.,.,', 'parser.racc', 58)
   def _reduce_23(val, _values)
-     MiniJava::Syntax::IdentifierType.new(val[0]) 
+     MiniJava::Syntax::ObjectType.new(val[0]) 
   end
 .,.,
 
@@ -622,13 +622,13 @@ module_eval(<<'.,.,', 'parser.racc', 74)
 
 module_eval(<<'.,.,', 'parser.racc', 75)
   def _reduce_35(val, _values)
-     MiniJava::Syntax::Assignment.new(val[0], val[2]) 
+     MiniJava::Syntax::SimpleAssignment.new(val[0], val[2]) 
   end
 .,.,
 
 module_eval(<<'.,.,', 'parser.racc', 76)
   def _reduce_36(val, _values)
-     MiniJava::Syntax::Assignment.new(val[0], val[2]) 
+     MiniJava::Syntax::ArrayElementAssignment.new(val[0], val[2]) 
   end
 .,.,
 

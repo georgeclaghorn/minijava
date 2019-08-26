@@ -47,6 +47,20 @@ module MiniJava
     def variable_type_by(name:)
       variables.type_for(name) || parent.variable_type_by(name: name)
     end
+
+
+    def reference_type_by(name:)
+      case
+      when variable?(name)
+        variable_type_by name: name
+      when method?(name)
+        :method
+      when class?(name)
+        :class
+      else
+        nil
+      end
+    end
   end
 
   class NullScope

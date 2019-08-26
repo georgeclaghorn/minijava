@@ -37,7 +37,8 @@ class MiniJava::ParserTest < Minitest::Test
       }
     JAVA
 
-    assignments = program.select(MiniJava::Syntax::Assignment)
+    assignments =
+      program.select(MiniJava::Syntax::SimpleAssignment) + program.select(MiniJava::Syntax::ArrayElementAssignment)
     assert_equal 2, assignments.count
 
     assignment = assignments.second
@@ -139,7 +140,7 @@ class MiniJava::ParserTest < Minitest::Test
 
     block = conditional.affirmative
     assert block.statements.one?
-    assert_kind_of MiniJava::Syntax::Assignment, block.statements.first
+    assert_kind_of MiniJava::Syntax::SimpleAssignment, block.statements.first
 
     assignment = block.statements.first
     assert_equal "result", assignment.left.name
@@ -147,7 +148,7 @@ class MiniJava::ParserTest < Minitest::Test
 
     block = conditional.negative
     assert block.statements.one?
-    assert_kind_of MiniJava::Syntax::Assignment, block.statements.first
+    assert_kind_of MiniJava::Syntax::SimpleAssignment, block.statements.first
 
     assignment = block.statements.first
     assert_equal "result", assignment.left.name
@@ -185,7 +186,7 @@ class MiniJava::ParserTest < Minitest::Test
 
     block = loop.substatement
     assert block.statements.one?
-    assert_kind_of MiniJava::Syntax::Assignment, block.statements.first
+    assert_kind_of MiniJava::Syntax::SimpleAssignment, block.statements.first
 
     assignment = block.statements.first
     assert_equal "number", assignment.left.name
@@ -277,7 +278,7 @@ class MiniJava::ParserTest < Minitest::Test
     class_declaration = program.class_declarations.first
     method_declaration = class_declaration.method_declarations.first
     assert_kind_of MiniJava::Syntax::InvalidVariableDeclaration, method_declaration.variable_declarations.first
-    assert_kind_of MiniJava::Syntax::Assignment, method_declaration.statements.first
+    assert_kind_of MiniJava::Syntax::SimpleAssignment, method_declaration.statements.first
   end
 
   def test_detecting_invalid_method_body_syntax

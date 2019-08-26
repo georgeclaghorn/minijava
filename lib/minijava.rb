@@ -9,6 +9,7 @@ module MiniJava
   require "minijava/visitor"
   require "minijava/selector_visitor"
   require "minijava/scope_visitor"
+  require "minijava/type_check_visitor"
 
   require "minijava/errors"
 end

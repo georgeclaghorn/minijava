@@ -56,7 +56,7 @@ rule
       INT LBRACKET RBRACKET { MiniJava::Syntax::ArrayType.instance }
     | BOOLEAN { MiniJava::Syntax::BooleanType.instance }
     | INT { MiniJava::Syntax::IntegerType.instance }
-    | Identifier { MiniJava::Syntax::IdentifierType.new(val[0]) }
+    | Identifier { MiniJava::Syntax::ObjectType.new(val[0]) }
 
   FormalParameters: { [] } | OneOrMoreFormalParameters { val[0] }
 
@@ -73,8 +73,8 @@ rule
     | IF LPAREN Expression RPAREN Statement ELSE Statement { MiniJava::Syntax::IfStatement.new(val[2], val[4], val[6]) }
     | WHILE LPAREN Expression RPAREN Statement { MiniJava::Syntax::WhileStatement.new(val[2], val[4]) }
     | PRINTLN LPAREN Expression RPAREN SEMICOLON { MiniJava::Syntax::PrintStatement.new(val[2]) }
-    | Identifier EQUAL Expression SEMICOLON { MiniJava::Syntax::Assignment.new(val[0], val[2]) }
-    | ArraySubscript EQUAL Expression SEMICOLON { MiniJava::Syntax::Assignment.new(val[0], val[2]) }
+    | Identifier EQUAL Expression SEMICOLON { MiniJava::Syntax::SimpleAssignment.new(val[0], val[2]) }
+    | ArraySubscript EQUAL Expression SEMICOLON { MiniJava::Syntax::ArrayElementAssignment.new(val[0], val[2]) }
     | error SEMICOLON { MiniJava::Syntax::InvalidStatement.instance }
 
   Expression:
