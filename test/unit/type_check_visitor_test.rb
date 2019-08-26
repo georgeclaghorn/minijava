@@ -534,6 +534,20 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     assert_equal "Invalid operand: expected boolean, got Foo", error.message
   end
 
+  def test_print_statement_with_non_integer_parameter
+    error = assert_raises(MiniJava::TypeError) do
+      check <<~JAVA
+        class HelloWorld {
+          public static void main(String[] args) {
+            System.out.println(true);
+          }
+        }
+      JAVA
+    end
+
+    assert_equal "Call to System.out.println does not match its signature", error.message
+  end
+
   private
     def check(source)
       program = MiniJava::Parser.program_from(source)

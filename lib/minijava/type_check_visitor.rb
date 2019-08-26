@@ -57,7 +57,11 @@ module MiniJava
     end
 
     def visit_print_statement(statement, scope = @root_scope)
-      visit statement.expression, scope
+      parameter_type = visit(statement.expression, scope)
+
+      if parameter_type != MiniJava::Syntax::IntegerType.instance
+        raise TypeError, "Call to System.out.println does not match its signature"
+      end
     end
 
     def visit_simple_assignment(assignment, scope = @root_scope)
@@ -164,6 +168,14 @@ module MiniJava
 
     def visit_integer_literal(literal, scope = @root_scope)
       MiniJava::Syntax::IntegerType.instance
+    end
+
+    def visit_true_literal(literal, scope = @root_scope)
+      MiniJava::Syntax::BooleanType.instance
+    end
+
+    def visit_false_literal(literal, scope = @root_scope)
+      MiniJava::Syntax::BooleanType.instance
     end
 
 
