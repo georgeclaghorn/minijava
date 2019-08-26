@@ -425,7 +425,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     assert_equal "Invalid operand: expected boolean, got int", error.message
   end
 
-  def test_logical_not_with_non_boolean_operand
+  def test_logical_not_with_int_variable_operand
     error = assert_raises(MiniJava::TypeError) do
       check <<~JAVA
         class HelloWorld {
@@ -450,6 +450,88 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     end
 
     assert_equal "Invalid operand: expected boolean, got int", error.message
+  end
+
+  def test_logical_not_with_int_literal_operand
+    error = assert_raises(MiniJava::TypeError) do
+      check <<~JAVA
+        class HelloWorld {
+          public static void main(String[] args) {
+            System.out.println(new Foo().bar());
+          }
+        }
+
+        class Foo {
+          public int bar() {
+            int glorp;
+
+            if (!3)
+              glorp = 3;
+            else
+              glorp = 1;
+
+            return glorp;
+          }
+        }
+      JAVA
+    end
+
+    assert_equal "Invalid operand: expected boolean, got int", error.message
+  end
+
+  def test_logical_not_with_object_operand
+    error = assert_raises(MiniJava::TypeError) do
+      check <<~JAVA
+        class HelloWorld {
+          public static void main(String[] args) {
+            System.out.println(new Foo().bar());
+          }
+        }
+
+        class Foo {
+          public int bar() {
+            int glorp;
+
+            if (!new Foo())
+              glorp = 3;
+            else
+              glorp = 1;
+
+            return glorp;
+          }
+        }
+      JAVA
+    end
+
+    assert_equal "Invalid operand: expected boolean, got Foo", error.message
+  end
+
+  def test_logical_not_with_object_variable_operand
+    error = assert_raises(MiniJava::TypeError) do
+      check <<~JAVA
+        class HelloWorld {
+          public static void main(String[] args) {
+            System.out.println(new Foo().bar());
+          }
+        }
+
+        class Foo {
+          public int bar() {
+            Foo baz;
+            int glorp;
+
+            if (!baz)
+              glorp = 3;
+            else
+              glorp = 1;
+
+            return glorp;
+          }
+        }
+      JAVA
+    end
+
+    assert_equal "Invalid operand: expected boolean, got Foo", error.message
   end
 
   private
