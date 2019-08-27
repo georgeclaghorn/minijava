@@ -104,9 +104,8 @@ module MiniJava
       @scopes = {}
     end
 
-    def add(name, &block)
-      @scopes[name.to_s] = Scope.build(@parent, &block)
-      nil
+    def add(name)
+      @scopes[name.to_s] = Scope.new(@parent)
     end
 
     def include?(name)
@@ -127,8 +126,7 @@ module MiniJava
     end
 
     def add(name:, type:, &block)
-      @entries[name.to_s] = Entry.new(type, Scope.build(@parent, &block))
-      nil
+      Scope.new(@parent).tap { |scope| @entries[name.to_s] = Entry.new(type, scope) }
     end
 
     def include?(name)

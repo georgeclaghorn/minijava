@@ -7,8 +7,8 @@ module MiniJava
       new(scope).visit(program)
     end
 
-    def initialize(root_scope)
-      @root_scope = root_scope
+    def initialize(scope)
+      @scope = scope
     end
 
     def visit_program(program)
@@ -18,55 +18,64 @@ module MiniJava
 
 
     def visit_main_class_declaration(declaration)
-      visit declaration.method_declaration, @root_scope.class_scope_by(name: declaration.name)
+      within class_scope_by(name: declaration.name) do
+        visit declaration.method_declaration
+      end
     end
 
-    def visit_main_method_declaration(declaration, scope = @root_scope)
-      visit declaration.statement, scope.method_scope_by(name: declaration.name)
+    def visit_main_method_declaration(declaration)
+      within method_scope_by(name: declaration.name) do
+        visit declaration.statement
+      end
     end
 
 
     def visit_class_declaration(declaration)
-      visit_all declaration.method_declarations, @root_scope.class_scope_by(name: declaration.name)
+      within class_scope_by(name: declaration.name) do
+        visit_all declaration.method_declarations
+      end
     end
 
     def visit_subclass_declaration(declaration)
-      visit_all declaration.method_declarations, @root_scope.class_scope_by(name: declaration.name)
+      within class_scope_by(name: declaration.name) do
+        visit_all declaration.method_declarations
+      end
     end
 
-    def visit_method_declaration(declaration, scope = @root_scope)
-      scope = scope.method_scope_by(name: declaration.name)
-      visit_all declaration.statements, scope
-      visit declaration.return_expression, scope
+    def visit_method_declaration(declaration)
+      within method_scope_by(name: declaration.name) do
+        visit_all declaration.statements
+        visit declaration.return_expression
+      end
     end
 
 
-    def visit_block(block, scope = @root_scope)
-      visit_all block.statements, scope
+    def visit_block(block)
+      visit_all block.statements
     end
 
-    def visit_if_statement(statement, scope = @root_scope)
-      visit statement.condition, scope
-      visit statement.affirmative, scope
-      visit statement.negative, scope
+    def visit_if_statement(statement)
+      visit statement.condition
+      visit statement.affirmative
+      visit statement.negative
     end
 
-    def visit_while_statement(statement, scope = @root_scope)
-      visit statement.condition, scope
-      visit statement.substatement, scope
+    def visit_while_statement(statement)
+      visit statement.condition
+      visit statement.substatement
     end
 
-    def visit_print_statement(statement, scope = @root_scope)
-      parameter_type = visit(statement.expression, scope)
+    def visit_print_statement(statement)
+      parameter_type = visit(statement.expression)
 
       if parameter_type != MiniJava::Syntax::IntegerType.instance
         raise TypeError, "Call to System.out.println does not match its signature"
       end
     end
 
-    def visit_simple_assignment(assignment, scope = @root_scope)
-      left_type  = visit(assignment.left, scope)
-      right_type = visit(assignment.right, scope)
+    def visit_simple_assignment(assignment)
+      left_type  = visit(assignment.left)
+      right_type = visit(assignment.right)
 
       if left_type == :class || left_type == :method
         raise TypeError, "Invalid l-value: #{assignment.left} is a #{left_type}"
@@ -77,8 +86,8 @@ module MiniJava
       end
     end
 
-    def visit_array_element_assignment(assignment, scope = @root_scope)
-      right_type = visit(assignment.right, scope)
+    def visit_array_element_assignment(assignment)
+      right_type = visit(assignment.right)
 
       if right_type == :class || right_type == :method
         raise TypeError, "Invalid r-value: #{assignment.right} is a #{right_type}"
@@ -86,17 +95,17 @@ module MiniJava
     end
 
 
-    def visit_not(operation, scope = @root_scope)
-      visit(operation.expression, scope).tap do |type|
+    def visit_not(operation)
+      visit(operation.expression).tap do |type|
         if type != MiniJava::Syntax::BooleanType.instance
           raise TypeError, "Invalid operand: expected boolean, got #{type}"
         end
       end
     end
 
-    def visit_and(operation, scope = @root_scope)
-      left_type  = visit(operation.left, scope)
-      right_type = visit(operation.right, scope)
+    def visit_and(operation)
+      left_type  = visit(operation.left)
+      right_type = visit(operation.right)
 
       if left_type == :class || left_type == :method
         raise TypeError, "Invalid operand: #{operation.left} is a #{left_type}"
@@ -117,9 +126,9 @@ module MiniJava
       MiniJava::Syntax::BooleanType.instance
     end
 
-    def visit_binary_arithmetic_operation(operation, scope = @root_scope)
-      left_type  = visit(operation.left, scope)
-      right_type = visit(operation.right, scope)
+    def visit_binary_arithmetic_operation(operation)
+      left_type  = visit(operation.left)
+      right_type = visit(operation.right)
 
       if left_type == :class || left_type == :method
         raise TypeError, "Invalid operand: #{operation.left} is a #{left_type}"
@@ -145,9 +154,9 @@ module MiniJava
     alias_method :visit_minus,     :visit_binary_arithmetic_operation
     alias_method :visit_times,     :visit_binary_arithmetic_operation
 
-    def visit_array_subscript(subscript, scope = @root_scope)
-      array_type = visit(subscript.array, scope)
-      index_type = visit(subscript.index, scope)
+    def visit_array_subscript(subscript)
+      array_type = visit(subscript.array)
+      index_type = visit(subscript.index)
 
       unless array_type == MiniJava::Syntax::ArrayType.instance
         raise TypeError, "Expected array, got #{array_type}"
@@ -160,8 +169,8 @@ module MiniJava
       MiniJava::Syntax::IntegerType.instance
     end
 
-    def visit_array_length(length, scope = @root_scope)
-      array_type = visit(length.array, scope)
+    def visit_array_length(length)
+      array_type = visit(length.array)
 
       unless array_type == MiniJava::Syntax::ArrayType.instance
         raise TypeError, "Expected array, got #{array_type}"
@@ -170,8 +179,8 @@ module MiniJava
       MiniJava::Syntax::IntegerType.instance
     end
 
-    def visit_call(call, scope = @root_scope)
-      if (receiver_type = visit(call.receiver, scope)).callable?
+    def visit_call(call)
+      if (receiver_type = visit(call.receiver)).callable?
         if receiver_scope = scope.class_scope_by(name: receiver_type.class_name)
           receiver_scope.method_type_by(name: call.method_name) ||
             raise(NameError, "Attempt to call undefined method #{call.method_name}")
@@ -183,29 +192,40 @@ module MiniJava
       end
     end
 
-    def visit_new_array(expression, scope = @root_scope)
+    def visit_new_array(expression)
       MiniJava::Syntax::ArrayType.instance
     end
 
-    def visit_new_object(expression, scope = @root_scope)
+    def visit_new_object(expression)
       MiniJava::Syntax::ObjectType.new expression.class_name
     end
 
-    def visit_integer_literal(literal, scope = @root_scope)
+    def visit_integer_literal(literal)
       MiniJava::Syntax::IntegerType.instance
     end
 
-    def visit_true_literal(literal, scope = @root_scope)
+    def visit_true_literal(literal)
       MiniJava::Syntax::BooleanType.instance
     end
 
-    def visit_false_literal(literal, scope = @root_scope)
+    def visit_false_literal(literal)
       MiniJava::Syntax::BooleanType.instance
     end
 
 
-    def visit_identifier(identifier, scope = @root_scope)
+    def visit_identifier(identifier)
       scope.reference_type_by(name: identifier.name)
     end
+
+    private
+      attr_reader :scope
+      delegate :class_scope_by, :method_scope_by, to: :scope
+
+      def within(subscope)
+        superscope, @scope = @scope, subscope
+        yield
+      ensure
+        @scope = superscope
+      end
   end
 end

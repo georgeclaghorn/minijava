@@ -8,8 +8,8 @@ module MiniJava
       Scope.build { |scope| new(scope).visit(root) }
     end
 
-    def initialize(root_scope)
-      @root_scope = root_scope
+    def initialize(scope)
+      @scope = scope
     end
 
     def visit_program(program)
@@ -20,32 +20,32 @@ module MiniJava
 
 
     def visit_main_class_declaration(declaration)
-      @root_scope.classes.add(declaration.name) do |scope|
-        visit declaration.method_declaration, scope
+      within scope.classes.add(declaration.name) do
+        visit declaration.method_declaration
       end
     end
 
-    def visit_main_method_declaration(declaration, scope = @root_scope)
-      scope.methods.add(name: declaration.name, type: declaration.type) do |own_scope|
-        own_scope.variables.add(name: declaration.formal_parameter_name, type: MiniJava::Syntax::ArrayType.instance)
+    def visit_main_method_declaration(declaration)
+      within scope.methods.add(name: declaration.name, type: declaration.type) do
+        scope.variables.add(name: declaration.formal_parameter_name, type: MiniJava::Syntax::ArrayType.instance)
       end
     end
 
 
     def visit_class_declaration(declaration)
-      if @root_scope.classes.include?(declaration.name)
+      if scope.classes.include?(declaration.name)
         raise NameError, "Redefinition of class #{declaration.name}"
       else
-        @root_scope.classes.add(declaration.name) do |own_scope|
-          visit_all declaration.variable_declarations, own_scope
-          visit_all declaration.method_declarations, own_scope
+        within scope.classes.add(declaration.name) do
+          visit_all declaration.variable_declarations
+          visit_all declaration.method_declarations
         end
       end
     end
 
     alias_method :visit_subclass_declaration, :visit_class_declaration
 
-    def visit_variable_declaration(declaration, scope = @root_scope)
+    def visit_variable_declaration(declaration)
       if scope.variables.include?(declaration.name)
         raise NameError, "Redefinition of variable #{declaration.name}"
       else
@@ -53,18 +53,18 @@ module MiniJava
       end
     end
 
-    def visit_method_declaration(declaration, scope = @root_scope)
+    def visit_method_declaration(declaration)
       if scope.methods.include?(declaration.name)
         raise NameError, "Redefinition of method #{declaration.name}"
       else
-        scope.methods.add(name: declaration.name, type: declaration.type) do |own_scope|
-          visit_all declaration.formal_parameters, own_scope
-          visit_all declaration.variable_declarations, own_scope
+        within scope.methods.add(name: declaration.name, type: declaration.type) do
+          visit_all declaration.formal_parameters
+          visit_all declaration.variable_declarations
         end
       end
     end
 
-    def visit_formal_parameter(parameter, scope = @root_scope)
+    def visit_formal_parameter(parameter)
       if scope.variables.include?(parameter.name)
         raise NameError, "Redefinition of variable #{parameter.name}"
       else
@@ -73,16 +73,25 @@ module MiniJava
     end
 
     private
+      attr_reader :scope
+
       def resolve_class_inheritance(program)
         program.subclass_declarations.each do |declaration|
-          class_scope = @root_scope.class_scope_by(name: declaration.name)
+          class_scope = scope.class_scope_by(name: declaration.name)
 
-          if superclass_scope = @root_scope.class_scope_by(name: declaration.superclass_name)
+          if superclass_scope = scope.class_scope_by(name: declaration.superclass_name)
             class_scope.reparent(superclass_scope)
           else
             raise NameError, "Class #{declaration.name} extends undefined class #{declaration.superclass_name}"
           end
         end
+      end
+
+      def within(subscope)
+        superscope, @scope = @scope, subscope
+        yield
+      ensure
+        @scope = superscope
       end
   end
 end
