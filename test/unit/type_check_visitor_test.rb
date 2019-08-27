@@ -548,6 +548,101 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     assert_equal "Call to System.out.println does not match its signature", error.message
   end
 
+  def test_array_subscript_with_boolean_variable_as_array
+    error = assert_raises(MiniJava::TypeError) do
+      check <<~JAVA
+        class HelloWorld {
+          public static void main(String[] args) {
+            System.out.println(new Foo().bar());
+          }
+        }
+
+        class Foo {
+          boolean baz;
+
+          public int bar() {
+            int glorp;
+            glorp = baz[0];
+            return glorp;
+          }
+        }
+      JAVA
+    end
+
+    assert_equal "Expected array, got boolean", error.message
+  end
+
+  def test_array_subscript_with_integer_literal_as_array
+    error = assert_raises(MiniJava::TypeError) do
+      check <<~JAVA
+        class HelloWorld {
+          public static void main(String[] args) {
+            System.out.println(new Foo().bar());
+          }
+        }
+
+        class Foo {
+          public int bar() {
+            int glorp;
+            glorp = 300[0];
+            return glorp;
+          }
+        }
+      JAVA
+    end
+
+    assert_equal "Expected array, got int", error.message
+  end
+
+  def test_array_subscript_with_true_literal_as_index
+    error = assert_raises(MiniJava::TypeError) do
+      check <<~JAVA
+        class HelloWorld {
+          public static void main(String[] args) {
+            System.out.println(new Foo().bar());
+          }
+        }
+
+        class Foo {
+          int[] baz;
+
+          public int bar() {
+            int glorp;
+            glorp = baz[true];
+            return glorp;
+          }
+        }
+      JAVA
+    end
+
+    assert_equal "Expected integer index into array, got boolean", error.message
+  end
+
+  def test_array_subscript_with_boolean_variable_as_index
+    error = assert_raises(MiniJava::TypeError) do
+      check <<~JAVA
+        class HelloWorld {
+          public static void main(String[] args) {
+            System.out.println(new Foo().bar());
+          }
+        }
+
+        class Foo {
+          int[] baz;
+
+          public int bar() {
+            int glorp;
+            boolean quux;
+            glorp = baz[quux];
+            return glorp;
+          }
+        }
+      JAVA
+    end
+
+    assert_equal "Expected integer index into array, got boolean", error.message
+  end
+
   private
     def check(source)
       program = MiniJava::Parser.program_from(source)

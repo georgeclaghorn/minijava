@@ -145,6 +145,21 @@ module MiniJava
     alias_method :visit_minus,     :visit_binary_arithmetic_operation
     alias_method :visit_times,     :visit_binary_arithmetic_operation
 
+    def visit_array_subscript(subscript, scope = @root_scope)
+      array_type = visit(subscript.array, scope)
+      index_type = visit(subscript.index, scope)
+
+      unless array_type == MiniJava::Syntax::ArrayType.instance
+        raise TypeError, "Expected array, got #{array_type}"
+      end
+
+      unless index_type == MiniJava::Syntax::IntegerType.instance
+        raise TypeError, "Expected integer index into array, got #{index_type}"
+      end
+
+      MiniJava::Syntax::IntegerType.instance
+    end
+
     def visit_call(call, scope = @root_scope)
       if (receiver_type = visit(call.receiver, scope)).callable?
         if receiver_scope = scope.class_scope_by(name: receiver_type.class_name)
