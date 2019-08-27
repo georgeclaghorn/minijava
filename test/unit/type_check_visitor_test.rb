@@ -161,7 +161,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Invalid operand: NumberPicker is a class", error.message
+    assert_equal "Invalid operand: expected int, got class", error.message
   end
 
   def test_less_than_with_class_name_on_right
@@ -188,7 +188,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Invalid operand: NumberPicker is a class", error.message
+    assert_equal "Invalid operand: expected int, got class", error.message
   end
 
   def test_less_than_with_method_name_on_left
@@ -215,7 +215,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Invalid operand: pick is a method", error.message
+    assert_equal "Invalid operand: expected int, got method", error.message
   end
 
   def test_less_than_with_method_name_on_right
@@ -242,7 +242,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Invalid operand: pick is a method", error.message
+    assert_equal "Invalid operand: expected int, got method", error.message
   end
 
   def test_calling_a_method_on_a_primitive
@@ -569,7 +569,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Expected array, got boolean", error.message
+    assert_equal "Expected int[], got boolean", error.message
   end
 
   def test_array_subscript_with_integer_literal_as_array
@@ -591,7 +591,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Expected array, got int", error.message
+    assert_equal "Expected int[], got int", error.message
   end
 
   def test_array_subscript_with_true_literal_as_index
@@ -661,7 +661,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Expected array, got int", error.message
+    assert_equal "Expected int[], got int", error.message
   end
 
   def test_array_length_with_true_literal_as_array
@@ -675,7 +675,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Expected array, got boolean", error.message
+    assert_equal "Expected int[], got boolean", error.message
   end
 
   private

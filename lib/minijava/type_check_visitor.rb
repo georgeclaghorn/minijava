@@ -66,11 +66,7 @@ module MiniJava
     end
 
     def visit_print_statement(statement)
-      parameter_type = visit(statement.expression)
-
-      if parameter_type != MiniJava::Syntax::IntegerType.instance
-        raise TypeError, "Call to System.out.println does not match its signature"
-      end
+      assert_type_of statement.expression, "int", "Call to System.out.println does not match its signature"
     end
 
     def visit_simple_assignment(assignment)
@@ -96,56 +92,19 @@ module MiniJava
 
 
     def visit_not(operation)
-      visit(operation.expression).tap do |type|
-        if type != MiniJava::Syntax::BooleanType.instance
-          raise TypeError, "Invalid operand: expected boolean, got #{type}"
-        end
-      end
+      assert_type_of operation.expression, "boolean", "Invalid operand: expected boolean, got %<actual>s"
+      MiniJava::Syntax::BooleanType.instance
     end
 
     def visit_and(operation)
-      left_type  = visit(operation.left)
-      right_type = visit(operation.right)
-
-      if left_type == :class || left_type == :method
-        raise TypeError, "Invalid operand: #{operation.left} is a #{left_type}"
-      end
-
-      if right_type == :class || right_type == :method
-        raise TypeError, "Invalid operand: #{operation.right} is a #{right_type}"
-      end
-
-      if left_type != MiniJava::Syntax::BooleanType.instance
-        raise TypeError, "Invalid operand: expected boolean, got #{left_type}"
-      end
-
-      if right_type != MiniJava::Syntax::BooleanType.instance
-        raise TypeError, "Invalid operand: expected boolean, got #{right_type}"
-      end
-
+      assert_type_of operation.left, "boolean", "Invalid operand: expected boolean, got %<actual>s"
+      assert_type_of operation.right, "boolean", "Invalid operand: expected boolean, got %<actual>s"
       MiniJava::Syntax::BooleanType.instance
     end
 
     def visit_binary_arithmetic_operation(operation)
-      left_type  = visit(operation.left)
-      right_type = visit(operation.right)
-
-      if left_type == :class || left_type == :method
-        raise TypeError, "Invalid operand: #{operation.left} is a #{left_type}"
-      end
-
-      if right_type == :class || right_type == :method
-        raise TypeError, "Invalid operand: #{operation.right} is a #{right_type}"
-      end
-
-      if left_type != MiniJava::Syntax::IntegerType.instance
-        raise TypeError, "Invalid operand: expected int, got #{left_type}"
-      end
-
-      if right_type != MiniJava::Syntax::IntegerType.instance
-        raise TypeError, "Invalid operand: expected int, got #{right_type}"
-      end
-
+      assert_type_of operation.left, "int", "Invalid operand: expected int, got %<actual>s"
+      assert_type_of operation.right, "int", "Invalid operand: expected int, got %<actual>s"
       MiniJava::Syntax::IntegerType.instance
     end
 
@@ -155,27 +114,13 @@ module MiniJava
     alias_method :visit_times,     :visit_binary_arithmetic_operation
 
     def visit_array_subscript(subscript)
-      array_type = visit(subscript.array)
-      index_type = visit(subscript.index)
-
-      unless array_type == MiniJava::Syntax::ArrayType.instance
-        raise TypeError, "Expected array, got #{array_type}"
-      end
-
-      unless index_type == MiniJava::Syntax::IntegerType.instance
-        raise TypeError, "Expected integer index into array, got #{index_type}"
-      end
-
+      assert_type_of subscript.array, "int[]"
+      assert_type_of subscript.index, "int", "Expected integer index into array, got %<actual>s"
       MiniJava::Syntax::IntegerType.instance
     end
 
     def visit_array_length(length)
-      array_type = visit(length.array)
-
-      unless array_type == MiniJava::Syntax::ArrayType.instance
-        raise TypeError, "Expected array, got #{array_type}"
-      end
-
+      assert_type_of length.array, "int[]"
       MiniJava::Syntax::IntegerType.instance
     end
 
@@ -226,6 +171,14 @@ module MiniJava
         yield
       ensure
         @scope = superscope
+      end
+
+      def assert_type_of(visitable, expected, message = "Expected %<expected>s, got %<actual>s")
+        visit(visitable).then do |actual|
+          unless actual == expected || actual.to_s == expected
+            raise TypeError, sprintf(message, expected: expected, actual: actual)
+          end
+        end
       end
   end
 end
