@@ -160,6 +160,16 @@ module MiniJava
       MiniJava::Syntax::IntegerType.instance
     end
 
+    def visit_array_length(length, scope = @root_scope)
+      array_type = visit(length.array, scope)
+
+      unless array_type == MiniJava::Syntax::ArrayType.instance
+        raise TypeError, "Expected array, got #{array_type}"
+      end
+
+      MiniJava::Syntax::IntegerType.instance
+    end
+
     def visit_call(call, scope = @root_scope)
       if (receiver_type = visit(call.receiver, scope)).callable?
         if receiver_scope = scope.class_scope_by(name: receiver_type.class_name)

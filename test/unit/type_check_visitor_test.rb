@@ -643,6 +643,41 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     assert_equal "Expected integer index into array, got boolean", error.message
   end
 
+  def test_array_length_with_integer_variable_as_array
+    error = assert_raises(MiniJava::TypeError) do
+      check <<~JAVA
+        class HelloWorld {
+          public static void main(String[] args) {
+            System.out.println(new Foo().bar());
+          }
+        }
+
+        class Foo {
+          public int bar() {
+            int baz;
+            return baz.length;
+          }
+        }
+      JAVA
+    end
+
+    assert_equal "Expected array, got int", error.message
+  end
+
+  def test_array_length_with_true_literal_as_array
+    error = assert_raises(MiniJava::TypeError) do
+      check <<~JAVA
+        class HelloWorld {
+          public static void main(String[] args) {
+            System.out.println(true.length);
+          }
+        }
+      JAVA
+    end
+
+    assert_equal "Expected array, got boolean", error.message
+  end
+
   private
     def check(source)
       program = MiniJava::Parser.program_from(source)
