@@ -80,9 +80,9 @@ module MiniJava
       match type
     end
 
-    def visit_identifier_type(type)
+    def visit_object_type(type)
       match type
-      visit type.identifier
+      visit type.class_name
     end
 
 
