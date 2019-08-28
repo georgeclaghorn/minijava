@@ -156,6 +156,11 @@ module MiniJava
       visit_all call.parameters
     end
 
+    def visit_access(access)
+      match access
+      visit access.variable_name
+    end
+
     def visit_new_array(expression)
       match expression
       visit expression.size

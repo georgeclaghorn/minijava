@@ -706,7 +706,7 @@ module_eval(<<'.,.,', 'parser.racc', 90)
 
 module_eval(<<'.,.,', 'parser.racc', 91)
   def _reduce_49(val, _values)
-     val[0] 
+     MiniJava::Syntax::Access.new(val[0]) 
   end
 .,.,
 

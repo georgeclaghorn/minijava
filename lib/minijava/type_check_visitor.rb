@@ -70,24 +70,12 @@ module MiniJava
     end
 
     def visit_simple_assignment(assignment)
-      left_type  = visit(assignment.left)
-      right_type = visit(assignment.right)
-
-      if left_type == :class || left_type == :method
-        raise TypeError, "Invalid l-value: #{assignment.left} is a #{left_type}"
-      end
-
-      if right_type == :class || right_type == :method
-        raise TypeError, "Invalid r-value: #{assignment.right} is a #{right_type}"
-      end
+      assert_type_of assignment.right, scope.variable_type_by!(name: assignment.left),
+        "Incompatible types: expected %<expected>s, got %<actual>s"
     end
 
     def visit_array_element_assignment(assignment)
-      right_type = visit(assignment.right)
-
-      if right_type == :class || right_type == :method
-        raise TypeError, "Invalid r-value: #{assignment.right} is a #{right_type}"
-      end
+      assert_type_of assignment.right, "int", "Incompatible types: expected int, got %<actual>s"
     end
 
 
@@ -137,6 +125,10 @@ module MiniJava
       end
     end
 
+    def visit_access(access)
+      scope.variable_type_by!(name: access.variable_name)
+    end
+
     def visit_new_array(expression)
       MiniJava::Syntax::ArrayType.instance
     end
@@ -157,14 +149,9 @@ module MiniJava
       MiniJava::Syntax::BooleanType.instance
     end
 
-
-    def visit_identifier(identifier)
-      scope.reference_type_by(name: identifier.name)
-    end
-
     private
       attr_reader :scope
-      delegate :class_scope_by, :method_scope_by, to: :scope
+      delegate :class_scope_by, :method_scope_by, :variable_type_by!, to: :scope
 
       def within(subscope)
         superscope, @scope = @scope, subscope

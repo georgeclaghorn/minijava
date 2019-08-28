@@ -89,7 +89,7 @@ rule
     | IntegerLiteral { val[0] }
     | TRUE { MiniJava::Syntax::TrueLiteral.instance }
     | FALSE { MiniJava::Syntax::FalseLiteral.instance }
-    | Identifier { val[0] }
+    | Identifier { MiniJava::Syntax::Access.new(val[0]) }
     | THIS { MiniJava::Syntax::This.instance }
     | NEW INT LBRACKET Expression RBRACKET { MiniJava::Syntax::NewArray.new(val[3]) }
     | NEW Identifier LPAREN RPAREN { MiniJava::Syntax::NewObject.new(val[1]) }

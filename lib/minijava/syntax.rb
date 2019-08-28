@@ -127,6 +127,7 @@ module MiniJava
     ArrayLength    = Struct.new(:array)
 
     Call           = Struct.new(:receiver, :method_name, :parameters)
+    Access         = Struct.new(:variable_name)
 
     NewArray       = Struct.new(:size)
     NewObject      = Struct.new(:class_name)

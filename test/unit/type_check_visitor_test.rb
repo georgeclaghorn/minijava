@@ -2,7 +2,7 @@ require "test_helper"
 
 class MiniJava::TypeCheckVisitorTest < MiniTest::Test
   def test_simple_assignment_to_class_name
-    error = assert_raises(MiniJava::TypeError) do
+    error = assert_raises(MiniJava::NameError) do
       check <<~JAVA
         class HelloWorld {
           public static void main(String[] args) {
@@ -20,11 +20,11 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Invalid l-value: NumberPicker is a class", error.message
+    assert_equal "Cannot find variable: NumberPicker", error.message
   end
 
   def test_simple_assignment_to_method_name
-    error = assert_raises(MiniJava::TypeError) do
+    error = assert_raises(MiniJava::NameError) do
       check <<~JAVA
         class HelloWorld {
           public static void main(String[] args) {
@@ -42,11 +42,11 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Invalid l-value: pick is a method", error.message
+    assert_equal "Cannot find variable: pick", error.message
   end
 
   def test_simple_assignment_from_class_name
-    error = assert_raises(MiniJava::TypeError) do
+    error = assert_raises(MiniJava::NameError) do
       check <<~JAVA
         class HelloWorld {
           public static void main(String[] args) {
@@ -64,11 +64,11 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Invalid r-value: NumberPicker is a class", error.message
+    assert_equal "Cannot find variable: NumberPicker", error.message
   end
 
   def test_simple_assignment_from_method_name
-    error = assert_raises(MiniJava::TypeError) do
+    error = assert_raises(MiniJava::NameError) do
       check <<~JAVA
         class HelloWorld {
           public static void main(String[] args) {
@@ -86,11 +86,11 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Invalid r-value: pick is a method", error.message
+    assert_equal "Cannot find variable: pick", error.message
   end
 
   def test_array_element_assignment_from_class_name
-    error = assert_raises(MiniJava::TypeError) do
+    error = assert_raises(MiniJava::NameError) do
       check <<~JAVA
         class HelloWorld {
           public static void main(String[] args) {
@@ -110,11 +110,11 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Invalid r-value: NumberPicker is a class", error.message
+    assert_equal "Cannot find variable: NumberPicker", error.message
   end
 
   def test_array_element_assignment_from_method_name
-    error = assert_raises(MiniJava::TypeError) do
+    error = assert_raises(MiniJava::NameError) do
       check <<~JAVA
         class HelloWorld {
           public static void main(String[] args) {
@@ -134,11 +134,11 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Invalid r-value: pick is a method", error.message
+    assert_equal "Cannot find variable: pick", error.message
   end
 
   def test_less_than_with_class_name_on_left
-    error = assert_raises(MiniJava::TypeError) do
+    error = assert_raises(MiniJava::NameError) do
       check <<~JAVA
         class HelloWorld {
           public static void main(String[] args) {
@@ -161,11 +161,11 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Invalid operand: expected int, got class", error.message
+    assert_equal "Cannot find variable: NumberPicker", error.message
   end
 
   def test_less_than_with_class_name_on_right
-    error = assert_raises(MiniJava::TypeError) do
+    error = assert_raises(MiniJava::NameError) do
       check <<~JAVA
         class HelloWorld {
           public static void main(String[] args) {
@@ -188,11 +188,11 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Invalid operand: expected int, got class", error.message
+    assert_equal "Cannot find variable: NumberPicker", error.message
   end
 
   def test_less_than_with_method_name_on_left
-    error = assert_raises(MiniJava::TypeError) do
+    error = assert_raises(MiniJava::NameError) do
       check <<~JAVA
         class HelloWorld {
           public static void main(String[] args) {
@@ -215,11 +215,11 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Invalid operand: expected int, got method", error.message
+    assert_equal "Cannot find variable: pick", error.message
   end
 
   def test_less_than_with_method_name_on_right
-    error = assert_raises(MiniJava::TypeError) do
+    error = assert_raises(MiniJava::NameError) do
       check <<~JAVA
         class HelloWorld {
           public static void main(String[] args) {
@@ -242,7 +242,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Invalid operand: expected int, got method", error.message
+    assert_equal "Cannot find variable: pick", error.message
   end
 
   def test_calling_a_method_on_a_primitive
@@ -676,6 +676,51 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     end
 
     assert_equal "Expected int[], got boolean", error.message
+  end
+
+  def test_assigning_a_boolean_literal_to_an_int_variable
+    error = assert_raises(MiniJava::TypeError) do
+      check <<~JAVA
+        class HelloWorld {
+          public static void main(String[] args) {
+            System.out.println(new Foo().bar());
+          }
+        }
+
+        class Foo {
+          public int bar() {
+            int baz;
+            baz = true;
+            return baz;
+          }
+        }
+      JAVA
+    end
+
+    assert_equal "Incompatible types: expected int, got boolean", error.message
+  end
+
+  def test_assigning_an_integer_variable_to_a_boolean_variable
+    error = assert_raises(MiniJava::TypeError) do
+      check <<~JAVA
+        class HelloWorld {
+          public static void main(String[] args) {
+            System.out.println(new Foo().bar());
+          }
+        }
+
+        class Foo {
+          public int bar() {
+            int baz;
+            boolean glorp;
+            glorp = baz;
+            return baz;
+          }
+        }
+      JAVA
+    end
+
+    assert_equal "Incompatible types: expected boolean, got int", error.message
   end
 
   private
