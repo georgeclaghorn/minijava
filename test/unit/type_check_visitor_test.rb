@@ -332,7 +332,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Invalid operand: expected int, got boolean", error.message
+    assert_equal "Incompatible types: expected int, got boolean", error.message
   end
 
   def test_binary_arithmetic_operation_with_non_integer_operand_on_right
@@ -362,7 +362,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Invalid operand: expected int, got boolean", error.message
+    assert_equal "Incompatible types: expected int, got boolean", error.message
   end
 
   def test_logical_and_with_non_boolean_operand_on_left
@@ -392,7 +392,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Invalid operand: expected boolean, got int", error.message
+    assert_equal "Incompatible types: expected boolean, got int", error.message
   end
 
   def test_logical_and_with_non_boolean_operand_on_right
@@ -422,7 +422,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Invalid operand: expected boolean, got int", error.message
+    assert_equal "Incompatible types: expected boolean, got int", error.message
   end
 
   def test_logical_not_with_int_variable_operand
@@ -449,7 +449,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Invalid operand: expected boolean, got int", error.message
+    assert_equal "Incompatible types: expected boolean, got int", error.message
   end
 
   def test_logical_not_with_int_literal_operand
@@ -476,7 +476,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Invalid operand: expected boolean, got int", error.message
+    assert_equal "Incompatible types: expected boolean, got int", error.message
   end
 
   def test_logical_not_with_object_operand
@@ -503,7 +503,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Invalid operand: expected boolean, got Foo", error.message
+    assert_equal "Incompatible types: expected boolean, got Foo", error.message
   end
 
   def test_logical_not_with_object_variable_operand
@@ -531,7 +531,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Invalid operand: expected boolean, got Foo", error.message
+    assert_equal "Incompatible types: expected boolean, got Foo", error.message
   end
 
   def test_print_statement_with_non_integer_parameter
@@ -569,7 +569,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Expected int[], got boolean", error.message
+    assert_equal "Incompatible types: expected int[], got boolean", error.message
   end
 
   def test_array_subscript_with_integer_literal_as_array
@@ -591,7 +591,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Expected int[], got int", error.message
+    assert_equal "Incompatible types: expected int[], got int", error.message
   end
 
   def test_array_subscript_with_true_literal_as_index
@@ -615,7 +615,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Expected integer index into array, got boolean", error.message
+    assert_equal "Incompatible types: expected int, got boolean", error.message
   end
 
   def test_array_subscript_with_boolean_variable_as_index
@@ -640,7 +640,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Expected integer index into array, got boolean", error.message
+    assert_equal "Incompatible types: expected int, got boolean", error.message
   end
 
   def test_array_length_with_integer_variable_as_array
@@ -661,7 +661,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Expected int[], got int", error.message
+    assert_equal "Incompatible types: expected int[], got int", error.message
   end
 
   def test_array_length_with_true_literal_as_array
@@ -675,7 +675,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Expected int[], got boolean", error.message
+    assert_equal "Incompatible types: expected int[], got boolean", error.message
   end
 
   def test_assigning_a_boolean_literal_to_an_int_variable
@@ -714,6 +714,87 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
             int baz;
             boolean glorp;
             glorp = baz;
+            return baz;
+          }
+        }
+      JAVA
+    end
+
+    assert_equal "Incompatible types: expected boolean, got int", error.message
+  end
+
+  def test_if_statement_with_integer_literal_as_condition
+    error = assert_raises(MiniJava::TypeError) do
+      check <<~JAVA
+        class HelloWorld {
+          public static void main(String[] args) {
+            System.out.println(new Foo().bar());
+          }
+        }
+
+        class Foo {
+          public int bar() {
+            int baz;
+
+            if (3)
+              baz = 3;
+            else
+              baz = 2;
+
+            return baz;
+          }
+        }
+      JAVA
+    end
+
+    assert_equal "Incompatible types: expected boolean, got int", error.message
+  end
+
+  def test_if_statement_with_integer_variable_as_condition
+    error = assert_raises(MiniJava::TypeError) do
+      check <<~JAVA
+        class HelloWorld {
+          public static void main(String[] args) {
+            System.out.println(new Foo().bar());
+          }
+        }
+
+        class Foo {
+          public int bar() {
+            int baz;
+            int glorp;
+
+            if (glorp)
+              baz = 3;
+            else
+              baz = 2;
+
+            return baz;
+          }
+        }
+      JAVA
+    end
+
+    assert_equal "Incompatible types: expected boolean, got int", error.message
+  end
+
+  def test_while_statement_with_integer_variable_as_condition
+    error = assert_raises(MiniJava::TypeError) do
+      check <<~JAVA
+        class HelloWorld {
+          public static void main(String[] args) {
+            System.out.println(new Foo().bar());
+          }
+        }
+
+        class Foo {
+          public int bar() {
+            int baz;
+            int glorp;
+
+            while (glorp)
+              baz = baz + 1;
+
             return baz;
           }
         }

@@ -55,13 +55,13 @@ module MiniJava
     end
 
     def visit_if_statement(statement)
-      visit statement.condition
+      assert_type_of statement.condition, "boolean"
       visit statement.affirmative
       visit statement.negative
     end
 
     def visit_while_statement(statement)
-      visit statement.condition
+      assert_type_of statement.condition, "boolean"
       visit statement.substatement
     end
 
@@ -70,29 +70,28 @@ module MiniJava
     end
 
     def visit_simple_assignment(assignment)
-      assert_type_of assignment.right, scope.variable_type_by!(name: assignment.left),
-        "Incompatible types: expected %<expected>s, got %<actual>s"
+      assert_type_of assignment.right, scope.variable_type_by!(name: assignment.left)
     end
 
     def visit_array_element_assignment(assignment)
-      assert_type_of assignment.right, "int", "Incompatible types: expected int, got %<actual>s"
+      assert_type_of assignment.right, "int"
     end
 
 
     def visit_not(operation)
-      assert_type_of operation.expression, "boolean", "Invalid operand: expected boolean, got %<actual>s"
+      assert_type_of operation.expression, "boolean"
       MiniJava::Syntax::BooleanType.instance
     end
 
     def visit_and(operation)
-      assert_type_of operation.left, "boolean", "Invalid operand: expected boolean, got %<actual>s"
-      assert_type_of operation.right, "boolean", "Invalid operand: expected boolean, got %<actual>s"
+      assert_type_of operation.left, "boolean"
+      assert_type_of operation.right, "boolean"
       MiniJava::Syntax::BooleanType.instance
     end
 
     def visit_binary_arithmetic_operation(operation)
-      assert_type_of operation.left, "int", "Invalid operand: expected int, got %<actual>s"
-      assert_type_of operation.right, "int", "Invalid operand: expected int, got %<actual>s"
+      assert_type_of operation.left, "int"
+      assert_type_of operation.right, "int"
       MiniJava::Syntax::IntegerType.instance
     end
 
@@ -103,7 +102,7 @@ module MiniJava
 
     def visit_array_subscript(subscript)
       assert_type_of subscript.array, "int[]"
-      assert_type_of subscript.index, "int", "Expected integer index into array, got %<actual>s"
+      assert_type_of subscript.index, "int"
       MiniJava::Syntax::IntegerType.instance
     end
 
@@ -160,7 +159,7 @@ module MiniJava
         @scope = superscope
       end
 
-      def assert_type_of(visitable, expected, message = "Expected %<expected>s, got %<actual>s")
+      def assert_type_of(visitable, expected, message = "Incompatible types: expected %<expected>s, got %<actual>s")
         visit(visitable).then do |actual|
           unless actual == expected || actual.to_s == expected
             raise TypeError, sprintf(message, expected: expected, actual: actual)
