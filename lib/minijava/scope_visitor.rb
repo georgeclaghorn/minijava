@@ -58,7 +58,7 @@ module MiniJava
         raise NameError, "Redefinition of method #{declaration.name}"
       else
         within scope.methods.add(name: declaration.name, type: declaration.type) do
-          visit_all declaration.formal_parameters
+          visit_all declaration.parameters
           visit_all declaration.variable_declarations
         end
       end

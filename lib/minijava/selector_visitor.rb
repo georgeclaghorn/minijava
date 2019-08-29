@@ -55,7 +55,7 @@ module MiniJava
       match declaration
       visit declaration.type
       visit declaration.name
-      visit_all declaration.formal_parameters
+      visit_all declaration.parameters
       visit_all declaration.variable_declarations
       visit_all declaration.statements
       visit declaration.return_expression

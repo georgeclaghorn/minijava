@@ -96,13 +96,13 @@ class MiniJava::ParserTest < Minitest::Test
     assert_equal MiniJava::Syntax::FalseLiteral.instance, call.parameters.second
 
     method_declaration = program.select(MiniJava::Syntax::MethodDeclaration).first
-    assert_equal 2, method_declaration.formal_parameters.count
+    assert_equal 2, method_declaration.parameters.count
 
-    parameter = method_declaration.formal_parameters.first
+    parameter = method_declaration.parameters.first
     assert_equal MiniJava::Syntax::IntegerType.instance, parameter.type
     assert_equal "glorp", parameter.name.to_s
 
-    parameter = method_declaration.formal_parameters.second
+    parameter = method_declaration.parameters.second
     assert_equal MiniJava::Syntax::BooleanType.instance, parameter.type
     assert_equal "quux", parameter.name.to_s
   end

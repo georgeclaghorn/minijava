@@ -36,11 +36,10 @@ module MiniJava
 
     SubclassDeclaration = Struct.new(:name, :superclass_name, :variable_declarations, :method_declarations)
 
-    MethodDeclaration =
-      Struct.new(:type, :name, :formal_parameters, :variable_declarations, :statements, :return_expression)
+    MethodDeclaration   = Struct.new(:type, :name, :parameters, :variable_declarations, :statements, :return_expression)
+    FormalParameter     = Struct.new(:type, :name)
 
     VariableDeclaration = Struct.new(:type, :name)
-    FormalParameter     = Struct.new(:type, :name)
 
 
     #== Types
