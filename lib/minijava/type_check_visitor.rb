@@ -45,7 +45,7 @@ module MiniJava
     def visit_method_declaration(declaration)
       within method_scope_by(name: declaration.name) do
         visit_all declaration.statements
-        visit declaration.return_expression
+        assert_type_of declaration.return_expression, declaration.type
       end
     end
 

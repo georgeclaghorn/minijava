@@ -804,6 +804,48 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     assert_equal "Incompatible types: expected boolean, got int", error.message
   end
 
+  def test_int_method_returning_boolean_literal
+    error = assert_raises(MiniJava::TypeError) do
+      check <<~JAVA
+        class HelloWorld {
+          public static void main(String[] args) {
+            System.out.println(new Foo().bar());
+          }
+        }
+
+        class Foo {
+          public int bar() {
+            return true;
+          }
+        }
+      JAVA
+    end
+
+    assert_equal "Incompatible types: expected int, got boolean", error.message
+  end
+
+  def test_int_method_returning_object_variable
+    error = assert_raises(MiniJava::TypeError) do
+      check <<~JAVA
+        class HelloWorld {
+          public static void main(String[] args) {
+            System.out.println(new Foo().bar());
+          }
+        }
+
+        class Foo {
+          public int bar() {
+            Foo baz;
+            baz = new Foo();
+            return baz;
+          }
+        }
+      JAVA
+    end
+
+    assert_equal "Incompatible types: expected int, got Foo", error.message
+  end
+
   private
     def check(source)
       program = MiniJava::Parser.program_from(source)
