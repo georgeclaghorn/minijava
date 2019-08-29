@@ -70,7 +70,7 @@ module MiniJava
     end
 
     def visit_simple_assignment(assignment)
-      assert_type_of assignment.right, scope.variable_type_by!(name: assignment.left)
+      assert_type_of assignment.value, scope.variable_type_by!(name: assignment.variable_name)
     end
 
     def visit_array_element_assignment(assignment)

@@ -137,16 +137,16 @@ class MiniJava::ParserTest < Minitest::Test
     assert_kind_of MiniJava::Syntax::SimpleAssignment, block.statements.first
 
     assignment = block.statements.first
-    assert_equal "result", assignment.left.name
-    assert_equal MiniJava::Syntax::TrueLiteral.instance, assignment.right
+    assert_equal "result", assignment.variable_name.to_s
+    assert_equal MiniJava::Syntax::TrueLiteral.instance, assignment.value
 
     block = conditional.negative
     assert block.statements.one?
     assert_kind_of MiniJava::Syntax::SimpleAssignment, block.statements.first
 
     assignment = block.statements.first
-    assert_equal "result", assignment.left.name
-    assert_equal MiniJava::Syntax::FalseLiteral.instance, assignment.right
+    assert_equal "result", assignment.variable_name.to_s
+    assert_equal MiniJava::Syntax::FalseLiteral.instance, assignment.value
   end
 
   def test_parsing_while_loops
@@ -183,10 +183,10 @@ class MiniJava::ParserTest < Minitest::Test
     assert_kind_of MiniJava::Syntax::SimpleAssignment, block.statements.first
 
     assignment = block.statements.first
-    assert_equal "number", assignment.left.name
-    assert_kind_of MiniJava::Syntax::Plus, assignment.right
+    assert_equal "number", assignment.variable_name.to_s
+    assert_kind_of MiniJava::Syntax::Plus, assignment.value
 
-    plus = assignment.right
+    plus = assignment.value
     assert_equal 1, plus.left.value
     assert_equal "number", plus.right.variable_name.to_s
   end

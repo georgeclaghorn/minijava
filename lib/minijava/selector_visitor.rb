@@ -110,8 +110,8 @@ module MiniJava
 
     def visit_simple_assignment(assignment)
       match assignment
-      visit assignment.left
-      visit assignment.right
+      visit assignment.variable_name
+      visit assignment.value
     end
 
     def visit_array_element_assignment(assignment)
