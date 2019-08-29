@@ -111,40 +111,41 @@ module MiniJava
     PrintStatement = Struct.new(:expression)
 
     SimpleAssignment = Struct.new(:left, :right)
-    ArrayElementAssignment = Struct.new(:left, :right)
+    ArrayElementAssignment = Struct.new(:array, :index, :value)
+
 
     #== Expressions
 
-    Not            = Struct.new(:expression)
-    And            = Struct.new(:left, :right)
-    LessThan       = Struct.new(:left, :right)
-    Plus           = Struct.new(:left, :right)
-    Minus          = Struct.new(:left, :right)
-    Times          = Struct.new(:left, :right)
+    Not      = Struct.new(:expression)
+    And      = Struct.new(:left, :right)
+    LessThan = Struct.new(:left, :right)
+    Plus     = Struct.new(:left, :right)
+    Minus    = Struct.new(:left, :right)
+    Times    = Struct.new(:left, :right)
 
-    ArraySubscript = Struct.new(:array, :index)
-    ArrayLength    = Struct.new(:array)
+    ArrayElementAccess = Struct.new(:array, :index)
+    ArrayLength = Struct.new(:array)
 
-    Call           = Struct.new(:receiver, :method_name, :parameters)
-    Access         = Struct.new(:variable_name)
+    Call   = Struct.new(:receiver, :method_name, :parameters)
+    Access = Struct.new(:variable_name)
 
-    NewArray       = Struct.new(:size)
-    NewObject      = Struct.new(:class_name)
+    NewArray  = Struct.new(:size)
+    NewObject = Struct.new(:class_name)
 
 
     #== Literals
 
-    IntegerLiteral = Struct.new(:value)
+    IntegerLiteral = Struct.new(:value) do
+      def to_i
+        value
+      end
+    end
 
     class TrueLiteral
       include Singleton
     end
 
     class FalseLiteral
-      include Singleton
-    end
-
-    class This
       include Singleton
     end
 
@@ -174,6 +175,10 @@ module MiniJava
       def to_s
         name
       end
+    end
+
+    class This
+      include Singleton
     end
   end
 end

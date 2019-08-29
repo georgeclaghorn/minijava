@@ -37,18 +37,12 @@ class MiniJava::ParserTest < Minitest::Test
       }
     JAVA
 
-    assignments =
-      program.select(MiniJava::Syntax::SimpleAssignment) + program.select(MiniJava::Syntax::ArrayElementAssignment)
-    assert_equal 2, assignments.count
+    assignment = program.select(MiniJava::Syntax::ArrayElementAssignment).first
+    assert_equal "numbers", assignment.array.name
+    assert_equal 0, assignment.index.value
 
-    assignment = assignments.second
-
-    assert_kind_of MiniJava::Syntax::ArraySubscript, assignment.left
-    assert_equal "numbers", assignment.left.array.variable_name.to_s
-    assert_equal 0, assignment.left.index.value
-
-    assert_kind_of MiniJava::Syntax::IntegerLiteral, assignment.right
-    assert_equal 1, assignment.right.value
+    assert_kind_of MiniJava::Syntax::IntegerLiteral, assignment.value
+    assert_equal 1, assignment.value.to_i
   end
 
   def test_parsing_array_length

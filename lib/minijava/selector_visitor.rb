@@ -108,14 +108,18 @@ module MiniJava
       visit statement.expression
     end
 
-    def visit_assignment(assignment)
+    def visit_simple_assignment(assignment)
       match assignment
       visit assignment.left
       visit assignment.right
     end
 
-    alias_method :visit_simple_assignment, :visit_assignment
-    alias_method :visit_array_element_assignment, :visit_assignment
+    def visit_array_element_assignment(assignment)
+      match assignment
+      visit assignment.array
+      visit assignment.index
+      visit assignment.value
+    end
 
 
     def visit_unary_operation(operation)
@@ -137,10 +141,10 @@ module MiniJava
     alias_method :visit_minus,     :visit_binary_operation
     alias_method :visit_times,     :visit_binary_operation
 
-    def visit_array_subscript(subscript)
-      match subscript
-      visit subscript.array
-      visit subscript.index
+    def visit_array_element_access(access)
+      match access
+      visit access.array
+      visit access.index
     end
 
     def visit_array_length(length)

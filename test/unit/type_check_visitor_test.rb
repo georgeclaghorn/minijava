@@ -548,7 +548,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     assert_equal "Call to System.out.println does not match its signature", error.message
   end
 
-  def test_array_subscript_with_boolean_variable_as_array
+  def test_array_element_access_with_boolean_variable_as_array
     error = assert_raises(MiniJava::TypeError) do
       check <<~JAVA
         class HelloWorld {
@@ -572,7 +572,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     assert_equal "Incompatible types: expected int[], got boolean", error.message
   end
 
-  def test_array_subscript_with_integer_literal_as_array
+  def test_array_element_access_with_integer_literal_as_array
     error = assert_raises(MiniJava::TypeError) do
       check <<~JAVA
         class HelloWorld {
@@ -594,7 +594,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     assert_equal "Incompatible types: expected int[], got int", error.message
   end
 
-  def test_array_subscript_with_true_literal_as_index
+  def test_array_element_access_with_true_literal_as_index
     error = assert_raises(MiniJava::TypeError) do
       check <<~JAVA
         class HelloWorld {
@@ -618,7 +618,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     assert_equal "Incompatible types: expected int, got boolean", error.message
   end
 
-  def test_array_subscript_with_boolean_variable_as_index
+  def test_array_element_access_with_boolean_variable_as_index
     error = assert_raises(MiniJava::TypeError) do
       check <<~JAVA
         class HelloWorld {

@@ -74,7 +74,7 @@ rule
     | WHILE LPAREN Expression RPAREN Statement { MiniJava::Syntax::WhileStatement.new(val[2], val[4]) }
     | PRINTLN LPAREN Expression RPAREN SEMICOLON { MiniJava::Syntax::PrintStatement.new(val[2]) }
     | Identifier EQUAL Expression SEMICOLON { MiniJava::Syntax::SimpleAssignment.new(val[0], val[2]) }
-    | ArraySubscript EQUAL Expression SEMICOLON { MiniJava::Syntax::ArrayElementAssignment.new(val[0], val[2]) }
+    | Identifier LBRACKET Expression RBRACKET EQUAL Expression SEMICOLON { MiniJava::Syntax::ArrayElementAssignment.new(val[0], val[2], val[5]) }
     | error SEMICOLON { MiniJava::Syntax::InvalidStatement.instance }
 
   Expression:
@@ -83,7 +83,7 @@ rule
     | Expression PLUS Expression { MiniJava::Syntax::Plus.new(val[0], val[2]) }
     | Expression MINUS Expression { MiniJava::Syntax::Minus.new(val[0], val[2]) }
     | Expression STAR Expression { MiniJava::Syntax::Times.new(val[0], val[2]) }
-    | ArraySubscript { val[0] }
+    | Expression LBRACKET Expression RBRACKET { MiniJava::Syntax::ArrayElementAccess.new(val[0], val[2]) }
     | Expression DOT LENGTH { MiniJava::Syntax::ArrayLength.new(val[0]) }
     | Expression DOT Identifier LPAREN ActualParameters RPAREN { MiniJava::Syntax::Call.new(val[0], val[2], val[4]) }
     | IntegerLiteral { val[0] }
@@ -95,8 +95,6 @@ rule
     | NEW Identifier LPAREN RPAREN { MiniJava::Syntax::NewObject.new(val[1]) }
     | NOT Expression { MiniJava::Syntax::Not.new(val[1]) }
     | LPAREN Expression RPAREN { val[1] }
-
-  ArraySubscript: Expression LBRACKET Expression RBRACKET { MiniJava::Syntax::ArraySubscript.new(val[0], val[2]) }
 
   ActualParameters: { [] } | OneOrMoreActualParameters { val[0] }
 

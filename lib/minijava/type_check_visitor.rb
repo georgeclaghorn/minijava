@@ -74,7 +74,11 @@ module MiniJava
     end
 
     def visit_array_element_assignment(assignment)
-      assert_type_of assignment.right, "int"
+      assert_equal "int[]", scope.variable_type_by!(name: assignment.array),
+        "Incompatible types: expected %<expected>s, got %<actual>s"
+
+      assert_type_of assignment.index, "int"
+      assert_type_of assignment.value, "int"
     end
 
 
@@ -100,9 +104,9 @@ module MiniJava
     alias_method :visit_minus,     :visit_binary_arithmetic_operation
     alias_method :visit_times,     :visit_binary_arithmetic_operation
 
-    def visit_array_subscript(subscript)
-      assert_type_of subscript.array, "int[]"
-      assert_type_of subscript.index, "int"
+    def visit_array_element_access(access)
+      assert_type_of access.array, "int[]"
+      assert_type_of access.index, "int"
       MiniJava::Syntax::IntegerType.instance
     end
 
@@ -160,10 +164,12 @@ module MiniJava
       end
 
       def assert_type_of(visitable, expected, message = "Incompatible types: expected %<expected>s, got %<actual>s")
-        visit(visitable).then do |actual|
-          unless actual == expected || actual.to_s == expected
-            raise TypeError, sprintf(message, expected: expected, actual: actual)
-          end
+        assert_equal expected, visit(visitable), message
+      end
+
+      def assert_equal(expected, actual, message = "Expected %<expected>s, got %<actual>s")
+        unless actual == expected || actual.to_s == expected.to_s
+          raise TypeError, sprintf(message, expected: expected, actual: actual)
         end
       end
   end
