@@ -21,9 +21,9 @@ rule
     CLASS Identifier LBRACE MainMethodDeclaration RBRACE { MiniJava::Syntax::MainClassDeclaration.new(val[1], val[3]) }
 
   MainMethodDeclaration:
-    PUBLIC STATIC VOID MAIN LPAREN STRING LBRACKET RBRACKET Identifier RPAREN LBRACE
+    PUBLIC STATIC VOID MAIN LPAREN RPAREN LBRACE
       Statement
-    RBRACE { MiniJava::Syntax::MainMethodDeclaration.new(val[8], val[11]) }
+    RBRACE { MiniJava::Syntax::MainMethodDeclaration.new(val[7]) }
 
   ClassDeclarations: { [] } | ClassDeclarations ClassDeclaration { val[0].append(val[1]) }
 

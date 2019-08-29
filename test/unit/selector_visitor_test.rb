@@ -4,7 +4,7 @@ class MiniJava::SelectorVisitorTest < MiniTest::Test
   def test_selecting_identifiers_in_depth_first_order
     program = MiniJava::Parser.program_from(<<~JAVA)
       class HelloWorld {
-        public static void main(String[] args) {
+        public static void main() {
           System.out.println(new NumberPicker().pick());
         }
       }
@@ -19,8 +19,8 @@ class MiniJava::SelectorVisitorTest < MiniTest::Test
     JAVA
 
     identifiers = MiniJava::SelectorVisitor.select(MiniJava::Syntax::Identifier, program)
-    assert_equal 9, identifiers.count
-    assert_equal %w[ HelloWorld args NumberPicker pick number ], identifiers.collect(&:name).uniq
+    assert_equal 8, identifiers.count
+    assert_equal %w[ HelloWorld NumberPicker pick number ], identifiers.collect(&:name).uniq
   end
 
   def test_selecting_errors
@@ -29,7 +29,7 @@ class MiniJava::SelectorVisitorTest < MiniTest::Test
     capture $stderr do
       program = MiniJava::Parser.program_from(<<~JAVA)
         class Foo {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new Bar().getGlorp());
           }
         }

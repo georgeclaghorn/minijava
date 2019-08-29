@@ -106,9 +106,6 @@ module MiniJava
           when scan(/int/)
             emit :INT
 
-          when scan(/String/)
-            emit :STRING
-
           when scan(/System\.out\.println/)
             emit :PRINTLN
 

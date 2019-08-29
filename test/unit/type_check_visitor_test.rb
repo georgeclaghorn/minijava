@@ -5,7 +5,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::NameError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new NumberPicker().pick());
           }
         }
@@ -27,7 +27,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::NameError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new NumberPicker().pick());
           }
         }
@@ -49,7 +49,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::NameError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new NumberPicker().pick());
           }
         }
@@ -71,7 +71,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::NameError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new NumberPicker().pick());
           }
         }
@@ -93,7 +93,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::NameError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new NumberPicker().pick());
           }
         }
@@ -117,7 +117,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::NameError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new NumberPicker().pick());
           }
         }
@@ -141,7 +141,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::NameError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new NumberPicker().pick());
           }
         }
@@ -168,7 +168,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::NameError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new NumberPicker().pick());
           }
         }
@@ -195,7 +195,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::NameError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new NumberPicker().pick());
           }
         }
@@ -222,7 +222,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::NameError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new NumberPicker().pick());
           }
         }
@@ -249,7 +249,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::TypeError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new NumberPicker().pick(3));
           }
         }
@@ -269,7 +269,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::TypeError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new NumberPicker().pick(3));
           }
         }
@@ -289,7 +289,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::NameError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new Foo().baz());
           }
         }
@@ -309,7 +309,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::TypeError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new Foo().baz());
           }
         }
@@ -339,7 +339,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::TypeError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new Foo().baz());
           }
         }
@@ -369,7 +369,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::TypeError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new Foo().baz());
           }
         }
@@ -399,7 +399,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::TypeError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new Foo().baz());
           }
         }
@@ -429,7 +429,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::TypeError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new Foo().bar());
           }
         }
@@ -456,7 +456,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::TypeError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new Foo().bar());
           }
         }
@@ -483,7 +483,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::TypeError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new Foo().bar());
           }
         }
@@ -510,7 +510,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::TypeError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new Foo().bar());
           }
         }
@@ -538,7 +538,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::TypeError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(true);
           }
         }
@@ -552,7 +552,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::TypeError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new Foo().bar());
           }
         }
@@ -576,7 +576,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::TypeError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new Foo().bar());
           }
         }
@@ -598,7 +598,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::TypeError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new Foo().bar());
           }
         }
@@ -622,7 +622,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::TypeError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new Foo().bar());
           }
         }
@@ -647,7 +647,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::TypeError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new Foo().bar());
           }
         }
@@ -668,7 +668,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::TypeError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(true.length);
           }
         }
@@ -682,7 +682,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::TypeError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new Foo().bar());
           }
         }
@@ -704,7 +704,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::TypeError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new Foo().bar());
           }
         }
@@ -727,7 +727,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::TypeError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new Foo().bar());
           }
         }
@@ -754,7 +754,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::TypeError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new Foo().bar());
           }
         }
@@ -782,7 +782,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::TypeError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new Foo().bar());
           }
         }
@@ -808,7 +808,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::TypeError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new Foo().bar());
           }
         }
@@ -828,7 +828,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     error = assert_raises(MiniJava::TypeError) do
       check <<~JAVA
         class HelloWorld {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new Foo().bar());
           }
         }

@@ -18,7 +18,7 @@ module MiniJava
 
     MainClassDeclaration = Struct.new(:name, :method_declaration)
 
-    MainMethodDeclaration = Struct.new(:formal_parameter_name, :statement) do
+    MainMethodDeclaration = Struct.new(:statement) do
       def type
         VoidType.instance
       end

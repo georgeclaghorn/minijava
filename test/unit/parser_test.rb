@@ -5,7 +5,7 @@ class MiniJava::ParserTest < Minitest::Test
   def test_parsing_decimal_integer_literals
     program = parse <<~JAVA
       class Foo {
-        public static void main(String[] args) {
+        public static void main() {
           System.out.println(0 + 100 + 123 + 37);
         }
       }
@@ -21,7 +21,7 @@ class MiniJava::ParserTest < Minitest::Test
   def test_parsing_array_element_assignments
     program = parse <<~JAVA
       class Foo {
-        public static void main(String[] args) {
+        public static void main() {
           System.out.println(new NumberPicker().pick());
         }
       }
@@ -54,7 +54,7 @@ class MiniJava::ParserTest < Minitest::Test
   def test_parsing_array_length
     program = parse <<~JAVA
       class Foo {
-        public static void main(String[] args) {
+        public static void main() {
           System.out.println(new NumberPicker().pick());
         }
       }
@@ -78,7 +78,7 @@ class MiniJava::ParserTest < Minitest::Test
   def test_parsing_parameter_lists
     program = parse <<~JAVA
       class Foo {
-        public static void main(String[] args) {
+        public static void main() {
           System.out.println(new Bar().baz(20, false));
         }
       }
@@ -110,7 +110,7 @@ class MiniJava::ParserTest < Minitest::Test
   def test_parsing_conditionals
     program = parse <<~JAVA
       class Foo {
-        public static void main(String[] args) {
+        public static void main() {
           System.out.println(new Bar().baz(20, 30));
         }
       }
@@ -158,7 +158,7 @@ class MiniJava::ParserTest < Minitest::Test
   def test_parsing_while_loops
     program = parse <<~JAVA
       class Foo {
-        public static void main(String[] args) {
+        public static void main() {
           System.out.println(new NumberPicker().pick());
         }
       }
@@ -203,7 +203,7 @@ class MiniJava::ParserTest < Minitest::Test
     output = capture $stderr do
       program = parse <<~JAVA
         class Foo {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(int);
           }
         }
@@ -223,7 +223,7 @@ class MiniJava::ParserTest < Minitest::Test
     output = capture $stderr do
       program = parse <<~JAVA
         class Foo {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new Bar().getBaz());
           }
         }
@@ -255,7 +255,7 @@ class MiniJava::ParserTest < Minitest::Test
     output = capture $stderr do
       program = parse <<~JAVA
         class Foo {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new Bar().getGlorp());
           }
         }
@@ -287,7 +287,7 @@ class MiniJava::ParserTest < Minitest::Test
     output = capture $stderr do
       program = parse <<~JAVA
         class Foo {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new Bar().getBaz(5));
           }
         }
@@ -316,7 +316,7 @@ class MiniJava::ParserTest < Minitest::Test
     output = capture $stderr do
       program = parse <<~JAVA
         class Foo {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new Bar().getBaz(5));
           }
         }
@@ -342,7 +342,7 @@ class MiniJava::ParserTest < Minitest::Test
     output = capture $stderr do
       parse <<~JAVA
         class Foo {
-          public static void main(String[] args) {
+          public static void main() {
             System.out.println(new Bar().getBaz(int));
           }
         }
@@ -369,7 +369,7 @@ class MiniJava::ParserTest < Minitest::Test
     output = capture $stderr do
       parse <<~JAVA
         class Foo {
-          public static void main(String[] args) {
+          public static void main() {
             // Oops!
             System.out.println(int);
           }
@@ -384,7 +384,7 @@ class MiniJava::ParserTest < Minitest::Test
     output = capture $stderr do
       parse <<~JAVA
         class Foo {
-          public static void main(String[] args) {
+          public static void main() {
             /*
              *
              *

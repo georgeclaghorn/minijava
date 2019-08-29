@@ -25,7 +25,6 @@ module MiniJava
 
     def visit_main_method_declaration(declaration)
       match declaration
-      visit declaration.formal_parameter_name
       visit declaration.statement
     end
 

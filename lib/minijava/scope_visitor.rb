@@ -26,9 +26,7 @@ module MiniJava
     end
 
     def visit_main_method_declaration(declaration)
-      within scope.methods.add(name: declaration.name, type: declaration.type) do
-        scope.variables.add(name: declaration.formal_parameter_name, type: MiniJava::Syntax::ArrayType.instance)
-      end
+      scope.methods.add(name: declaration.name, type: declaration.type)
     end
 
 

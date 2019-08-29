@@ -4,7 +4,7 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
   def test_building_program_scope
     program = MiniJava::Parser.program_from(<<~JAVA)
       class HelloWorld {
-        public static void main(String[] args) {
+        public static void main() {
           System.out.println(new Incrementor().next(true));
         }
       }
@@ -36,10 +36,6 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
     class_scope = program_scope.class_scope_by(name: "HelloWorld")
     assert class_scope.method?("main")
     assert_equal MiniJava::Syntax::VoidType.instance, class_scope.method_type_by(name: "main")
-
-    method_scope = class_scope.method_scope_by(name: "main")
-    assert method_scope.variable?("args")
-    assert_equal MiniJava::Syntax::ArrayType.instance, method_scope.variable_type_by(name: "args")
 
 
     class_scope = program_scope.class_scope_by(name: "Incrementor")
@@ -81,7 +77,7 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
   def test_forbidding_class_redefinition
     program = MiniJava::Parser.program_from(<<~JAVA)
       class HelloWorld {
-        public static void main(String[] args) {
+        public static void main() {
           System.out.println(9);
         }
       }
@@ -96,7 +92,7 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
   def test_forbidding_variable_redefinition
     program = MiniJava::Parser.program_from(<<~JAVA)
       class HelloWorld {
-        public static void main(String[] args) {
+        public static void main() {
           System.out.println(9);
         }
       }
@@ -114,7 +110,7 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
   def test_forbidding_method_redefinition
     program = MiniJava::Parser.program_from(<<~JAVA)
       class HelloWorld {
-        public static void main(String[] args) {
+        public static void main() {
           System.out.println(new Foo().bar());
         }
       }
@@ -137,7 +133,7 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
   def test_variable_shadowing
     program = MiniJava::Parser.program_from(<<~JAVA)
       class HelloWorld {
-        public static void main(String[] args) {
+        public static void main() {
           System.out.println(new Foo().bar());
         }
       }
@@ -163,7 +159,7 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
   def test_forbidding_inheritance_from_undefined_class
     program = MiniJava::Parser.program_from(<<~JAVA)
       class HelloWorld {
-        public static void main(String[] args) {
+        public static void main() {
           System.out.println(new Foo().bar());
         }
       }
@@ -178,7 +174,7 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
   def test_double_inheritance
     program = MiniJava::Parser.program_from(<<~JAVA)
       class HelloWorld {
-        public static void main(String[] args) {
+        public static void main() {
           System.out.println(new Foo().bar());
         }
       }

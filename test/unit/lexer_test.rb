@@ -5,13 +5,13 @@ class MiniJava::LexerTest < Minitest::Test
     lexer = MiniJava::Lexer.new(<<~JAVA)
       boolean
       int
-      String
+      true
       System.out.println
     JAVA
 
     assert_equal [ :BOOLEAN, nil ], lexer.next_token
     assert_equal [ :INT,     nil ], lexer.next_token
-    assert_equal [ :STRING,  nil ], lexer.next_token
+    assert_equal [ :TRUE,    nil ], lexer.next_token
     assert_equal [ :PRINTLN, nil ], lexer.next_token
   end
 
