@@ -39,23 +39,23 @@ rule 34 Statement: PRINTLN LPAREN Expression RPAREN SEMICOLON
 rule 35 Statement: Identifier EQUAL Expression SEMICOLON
 rule 36 Statement: Identifier LBRACKET Expression RBRACKET EQUAL Expression SEMICOLON
 rule 37 Statement: error SEMICOLON
-rule 38 Expression: Expression AND Expression
-rule 39 Expression: Expression LT Expression
-rule 40 Expression: Expression PLUS Expression
-rule 41 Expression: Expression MINUS Expression
-rule 42 Expression: Expression STAR Expression
-rule 43 Expression: Expression LBRACKET Expression RBRACKET
-rule 44 Expression: Expression DOT LENGTH
-rule 45 Expression: Expression DOT Identifier LPAREN ActualParameters RPAREN
-rule 46 Expression: IntegerLiteral
-rule 47 Expression: TRUE
-rule 48 Expression: FALSE
-rule 49 Expression: Identifier
-rule 50 Expression: THIS
-rule 51 Expression: NEW INT LBRACKET Expression RBRACKET
-rule 52 Expression: NEW Identifier LPAREN RPAREN
-rule 53 Expression: NOT Expression
-rule 54 Expression: LPAREN Expression RPAREN
+rule 38 Expression: LPAREN Expression RPAREN
+rule 39 Expression: NOT Expression
+rule 40 Expression: Expression AND Expression
+rule 41 Expression: Expression LT Expression
+rule 42 Expression: Expression PLUS Expression
+rule 43 Expression: Expression MINUS Expression
+rule 44 Expression: Expression STAR Expression
+rule 45 Expression: Identifier
+rule 46 Expression: Expression LBRACKET Expression RBRACKET
+rule 47 Expression: Expression DOT LENGTH
+rule 48 Expression: Expression DOT Identifier LPAREN ActualParameters RPAREN
+rule 49 Expression: NEW INT LBRACKET Expression RBRACKET
+rule 50 Expression: NEW Identifier LPAREN RPAREN
+rule 51 Expression: IntegerLiteral
+rule 52 Expression: TRUE
+rule 53 Expression: FALSE
+rule 54 Expression: THIS
 rule 55 ActualParameters: 
 rule 56 ActualParameters: OneOrMoreActualParameters
 rule 57 OneOrMoreActualParameters: Expression
@@ -81,7 +81,7 @@ rule 61 Identifier: IDENTIFIER
     on right: 1 5
     on left : 4 5
   Identifier (42)
-    on right: 2 6 7 12 18 23 28 35 36 45 49 52
+    on right: 2 6 7 12 18 23 28 35 36 45 48 50
     on left : 61
   MainMethodDeclaration (43)
     on right: 2
@@ -123,7 +123,7 @@ rule 61 Identifier: IDENTIFIER
     on right: 19 30 31
     on left : 29 30
   Expression (56)
-    on right: 19 32 33 34 35 36 38 39 40 41 42 43 44 45 51 53 54 57 58
+    on right: 19 32 33 34 35 36 38 39 40 41 42 43 44 46 47 48 49 57 58
     on left : 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54
   OneOrMoreFormalParameters (57)
     on right: 25 27
@@ -132,10 +132,10 @@ rule 61 Identifier: IDENTIFIER
     on right: 26 27
     on left : 28
   ActualParameters (59)
-    on right: 45
+    on right: 48
     on left : 55 56
   IntegerLiteral (60)
-    on right: 46
+    on right: 51
     on left : 59
   OneOrMoreActualParameters (61)
     on right: 56 58
@@ -148,17 +148,17 @@ rule 61 Identifier: IDENTIFIER
 
   $end (0) 
   error (1) 8 13 17 37
-  LPAREN (2) 3 18 32 33 34 45 52 54
-  RPAREN (3) 3 18 32 33 34 45 52 54
-  LBRACKET (4) 20 36 43 51
-  RBRACKET (5) 20 36 43 51
-  DOT (6) 44 45
-  NOT (7) 53
-  STAR (8) 42
-  PLUS (9) 40
-  MINUS (10) 41
-  LT (11) 39
-  AND (12) 38
+  LPAREN (2) 3 18 32 33 34 38 48 50
+  RPAREN (3) 3 18 32 33 34 38 48 50
+  LBRACKET (4) 20 36 46 49
+  RBRACKET (5) 20 36 46 49
+  DOT (6) 47 48
+  NOT (7) 39
+  STAR (8) 44
+  PLUS (9) 42
+  MINUS (10) 43
+  LT (11) 41
+  AND (12) 40
   EQUAL (13) 35 36
   CLASS (14) 2 6 7
   LBRACE (15) 2 3 6 7 16 31
@@ -170,18 +170,18 @@ rule 61 Identifier: IDENTIFIER
   EXTENDS (21) 7
   SEMICOLON (22) 12 13 19 34 35 36 37
   RETURN (23) 19
-  INT (24) 20 22 51
+  INT (24) 20 22 49
   BOOLEAN (25) 21
   COMMA (26) 27 58
   IF (27) 32
   ELSE (28) 32
   WHILE (29) 33
   PRINTLN (30) 34
-  LENGTH (31) 44
-  TRUE (32) 47
-  FALSE (33) 48
-  THIS (34) 50
-  NEW (35) 51 52
+  LENGTH (31) 47
+  NEW (32) 49 50
+  TRUE (33) 52
+  FALSE (34) 53
+  THIS (35) 54
   DECIMAL_NUMERAL (36) 60
   IDENTIFIER (37) 61
 
@@ -752,54 +752,54 @@ state 67
 
   19) MethodBody : VariableDeclarations Statements RETURN _ Expression SEMICOLON
 
-  LPAREN        shift, and go to state 89
-  NOT           shift, and go to state 88
-  TRUE          shift, and go to state 83
-  FALSE         shift, and go to state 84
-  THIS          shift, and go to state 86
-  NEW           shift, and go to state 87
+  LPAREN        shift, and go to state 82
+  NOT           shift, and go to state 83
+  NEW           shift, and go to state 85
+  TRUE          shift, and go to state 87
+  FALSE         shift, and go to state 88
+  THIS          shift, and go to state 89
   DECIMAL_NUMERAL  shift, and go to state 91
   IDENTIFIER    shift, and go to state 7
 
   Expression    go to state 81
-  IntegerLiteral  go to state 82
-  Identifier    go to state 85
+  Identifier    go to state 84
+  IntegerLiteral  go to state 86
   DecimalNumeral  go to state 90
 
 state 68
 
   35) Statement : Identifier EQUAL _ Expression SEMICOLON
 
-  LPAREN        shift, and go to state 89
-  NOT           shift, and go to state 88
-  TRUE          shift, and go to state 83
-  FALSE         shift, and go to state 84
-  THIS          shift, and go to state 86
-  NEW           shift, and go to state 87
+  LPAREN        shift, and go to state 82
+  NOT           shift, and go to state 83
+  NEW           shift, and go to state 85
+  TRUE          shift, and go to state 87
+  FALSE         shift, and go to state 88
+  THIS          shift, and go to state 89
   DECIMAL_NUMERAL  shift, and go to state 91
   IDENTIFIER    shift, and go to state 7
 
   Expression    go to state 92
-  IntegerLiteral  go to state 82
-  Identifier    go to state 85
+  Identifier    go to state 84
+  IntegerLiteral  go to state 86
   DecimalNumeral  go to state 90
 
 state 69
 
   36) Statement : Identifier LBRACKET _ Expression RBRACKET EQUAL Expression SEMICOLON
 
-  LPAREN        shift, and go to state 89
-  NOT           shift, and go to state 88
-  TRUE          shift, and go to state 83
-  FALSE         shift, and go to state 84
-  THIS          shift, and go to state 86
-  NEW           shift, and go to state 87
+  LPAREN        shift, and go to state 82
+  NOT           shift, and go to state 83
+  NEW           shift, and go to state 85
+  TRUE          shift, and go to state 87
+  FALSE         shift, and go to state 88
+  THIS          shift, and go to state 89
   DECIMAL_NUMERAL  shift, and go to state 91
   IDENTIFIER    shift, and go to state 7
 
   Expression    go to state 93
-  IntegerLiteral  go to state 82
-  Identifier    go to state 85
+  Identifier    go to state 84
+  IntegerLiteral  go to state 86
   DecimalNumeral  go to state 90
 
 state 70
@@ -820,54 +820,54 @@ state 72
 
   32) Statement : IF LPAREN _ Expression RPAREN Statement ELSE Statement
 
-  LPAREN        shift, and go to state 89
-  NOT           shift, and go to state 88
-  TRUE          shift, and go to state 83
-  FALSE         shift, and go to state 84
-  THIS          shift, and go to state 86
-  NEW           shift, and go to state 87
+  LPAREN        shift, and go to state 82
+  NOT           shift, and go to state 83
+  NEW           shift, and go to state 85
+  TRUE          shift, and go to state 87
+  FALSE         shift, and go to state 88
+  THIS          shift, and go to state 89
   DECIMAL_NUMERAL  shift, and go to state 91
   IDENTIFIER    shift, and go to state 7
 
   Expression    go to state 95
-  IntegerLiteral  go to state 82
-  Identifier    go to state 85
+  Identifier    go to state 84
+  IntegerLiteral  go to state 86
   DecimalNumeral  go to state 90
 
 state 73
 
   33) Statement : WHILE LPAREN _ Expression RPAREN Statement
 
-  LPAREN        shift, and go to state 89
-  NOT           shift, and go to state 88
-  TRUE          shift, and go to state 83
-  FALSE         shift, and go to state 84
-  THIS          shift, and go to state 86
-  NEW           shift, and go to state 87
+  LPAREN        shift, and go to state 82
+  NOT           shift, and go to state 83
+  NEW           shift, and go to state 85
+  TRUE          shift, and go to state 87
+  FALSE         shift, and go to state 88
+  THIS          shift, and go to state 89
   DECIMAL_NUMERAL  shift, and go to state 91
   IDENTIFIER    shift, and go to state 7
 
   Expression    go to state 96
-  IntegerLiteral  go to state 82
-  Identifier    go to state 85
+  Identifier    go to state 84
+  IntegerLiteral  go to state 86
   DecimalNumeral  go to state 90
 
 state 74
 
   34) Statement : PRINTLN LPAREN _ Expression RPAREN SEMICOLON
 
-  LPAREN        shift, and go to state 89
-  NOT           shift, and go to state 88
-  TRUE          shift, and go to state 83
-  FALSE         shift, and go to state 84
-  THIS          shift, and go to state 86
-  NEW           shift, and go to state 87
+  LPAREN        shift, and go to state 82
+  NOT           shift, and go to state 83
+  NEW           shift, and go to state 85
+  TRUE          shift, and go to state 87
+  FALSE         shift, and go to state 88
+  THIS          shift, and go to state 89
   DECIMAL_NUMERAL  shift, and go to state 91
   IDENTIFIER    shift, and go to state 7
 
   Expression    go to state 97
-  IntegerLiteral  go to state 82
-  Identifier    go to state 85
+  Identifier    go to state 84
+  IntegerLiteral  go to state 86
   DecimalNumeral  go to state 90
 
 state 75
@@ -918,14 +918,14 @@ state 80
 state 81
 
   19) MethodBody : VariableDeclarations Statements RETURN Expression _ SEMICOLON
-  38) Expression : Expression _ AND Expression
-  39) Expression : Expression _ LT Expression
-  40) Expression : Expression _ PLUS Expression
-  41) Expression : Expression _ MINUS Expression
-  42) Expression : Expression _ STAR Expression
-  43) Expression : Expression _ LBRACKET Expression RBRACKET
-  44) Expression : Expression _ DOT LENGTH
-  45) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
+  40) Expression : Expression _ AND Expression
+  41) Expression : Expression _ LT Expression
+  42) Expression : Expression _ PLUS Expression
+  43) Expression : Expression _ MINUS Expression
+  44) Expression : Expression _ STAR Expression
+  46) Expression : Expression _ LBRACKET Expression RBRACKET
+  47) Expression : Expression _ DOT LENGTH
+  48) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
 
   LBRACKET      shift, and go to state 107
   DOT           shift, and go to state 108
@@ -939,84 +939,84 @@ state 81
 
 state 82
 
-  46) Expression : IntegerLiteral _
+  38) Expression : LPAREN _ Expression RPAREN
 
-  $default      reduce using rule 46 (Expression)
+  LPAREN        shift, and go to state 82
+  NOT           shift, and go to state 83
+  NEW           shift, and go to state 85
+  TRUE          shift, and go to state 87
+  FALSE         shift, and go to state 88
+  THIS          shift, and go to state 89
+  DECIMAL_NUMERAL  shift, and go to state 91
+  IDENTIFIER    shift, and go to state 7
 
+  Expression    go to state 109
+  Identifier    go to state 84
+  IntegerLiteral  go to state 86
+  DecimalNumeral  go to state 90
 
 state 83
 
-  47) Expression : TRUE _
+  39) Expression : NOT _ Expression
 
-  $default      reduce using rule 47 (Expression)
+  LPAREN        shift, and go to state 82
+  NOT           shift, and go to state 83
+  NEW           shift, and go to state 85
+  TRUE          shift, and go to state 87
+  FALSE         shift, and go to state 88
+  THIS          shift, and go to state 89
+  DECIMAL_NUMERAL  shift, and go to state 91
+  IDENTIFIER    shift, and go to state 7
 
+  Expression    go to state 110
+  Identifier    go to state 84
+  IntegerLiteral  go to state 86
+  DecimalNumeral  go to state 90
 
 state 84
 
-  48) Expression : FALSE _
+  45) Expression : Identifier _
 
-  $default      reduce using rule 48 (Expression)
+  $default      reduce using rule 45 (Expression)
 
 
 state 85
 
-  49) Expression : Identifier _
+  49) Expression : NEW _ INT LBRACKET Expression RBRACKET
+  50) Expression : NEW _ Identifier LPAREN RPAREN
 
-  $default      reduce using rule 49 (Expression)
+  INT           shift, and go to state 111
+  IDENTIFIER    shift, and go to state 7
 
+  Identifier    go to state 112
 
 state 86
 
-  50) Expression : THIS _
+  51) Expression : IntegerLiteral _
 
-  $default      reduce using rule 50 (Expression)
+  $default      reduce using rule 51 (Expression)
 
 
 state 87
 
-  51) Expression : NEW _ INT LBRACKET Expression RBRACKET
-  52) Expression : NEW _ Identifier LPAREN RPAREN
+  52) Expression : TRUE _
 
-  INT           shift, and go to state 109
-  IDENTIFIER    shift, and go to state 7
+  $default      reduce using rule 52 (Expression)
 
-  Identifier    go to state 110
 
 state 88
 
-  53) Expression : NOT _ Expression
+  53) Expression : FALSE _
 
-  LPAREN        shift, and go to state 89
-  NOT           shift, and go to state 88
-  TRUE          shift, and go to state 83
-  FALSE         shift, and go to state 84
-  THIS          shift, and go to state 86
-  NEW           shift, and go to state 87
-  DECIMAL_NUMERAL  shift, and go to state 91
-  IDENTIFIER    shift, and go to state 7
+  $default      reduce using rule 53 (Expression)
 
-  Expression    go to state 111
-  IntegerLiteral  go to state 82
-  Identifier    go to state 85
-  DecimalNumeral  go to state 90
 
 state 89
 
-  54) Expression : LPAREN _ Expression RPAREN
+  54) Expression : THIS _
 
-  LPAREN        shift, and go to state 89
-  NOT           shift, and go to state 88
-  TRUE          shift, and go to state 83
-  FALSE         shift, and go to state 84
-  THIS          shift, and go to state 86
-  NEW           shift, and go to state 87
-  DECIMAL_NUMERAL  shift, and go to state 91
-  IDENTIFIER    shift, and go to state 7
+  $default      reduce using rule 54 (Expression)
 
-  Expression    go to state 112
-  IntegerLiteral  go to state 82
-  Identifier    go to state 85
-  DecimalNumeral  go to state 90
 
 state 90
 
@@ -1035,14 +1035,14 @@ state 91
 state 92
 
   35) Statement : Identifier EQUAL Expression _ SEMICOLON
-  38) Expression : Expression _ AND Expression
-  39) Expression : Expression _ LT Expression
-  40) Expression : Expression _ PLUS Expression
-  41) Expression : Expression _ MINUS Expression
-  42) Expression : Expression _ STAR Expression
-  43) Expression : Expression _ LBRACKET Expression RBRACKET
-  44) Expression : Expression _ DOT LENGTH
-  45) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
+  40) Expression : Expression _ AND Expression
+  41) Expression : Expression _ LT Expression
+  42) Expression : Expression _ PLUS Expression
+  43) Expression : Expression _ MINUS Expression
+  44) Expression : Expression _ STAR Expression
+  46) Expression : Expression _ LBRACKET Expression RBRACKET
+  47) Expression : Expression _ DOT LENGTH
+  48) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
 
   LBRACKET      shift, and go to state 107
   DOT           shift, and go to state 108
@@ -1057,14 +1057,14 @@ state 92
 state 93
 
   36) Statement : Identifier LBRACKET Expression _ RBRACKET EQUAL Expression SEMICOLON
-  38) Expression : Expression _ AND Expression
-  39) Expression : Expression _ LT Expression
-  40) Expression : Expression _ PLUS Expression
-  41) Expression : Expression _ MINUS Expression
-  42) Expression : Expression _ STAR Expression
-  43) Expression : Expression _ LBRACKET Expression RBRACKET
-  44) Expression : Expression _ DOT LENGTH
-  45) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
+  40) Expression : Expression _ AND Expression
+  41) Expression : Expression _ LT Expression
+  42) Expression : Expression _ PLUS Expression
+  43) Expression : Expression _ MINUS Expression
+  44) Expression : Expression _ STAR Expression
+  46) Expression : Expression _ LBRACKET Expression RBRACKET
+  47) Expression : Expression _ DOT LENGTH
+  48) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
 
   LBRACKET      shift, and go to state 107
   RBRACKET      shift, and go to state 114
@@ -1086,14 +1086,14 @@ state 94
 state 95
 
   32) Statement : IF LPAREN Expression _ RPAREN Statement ELSE Statement
-  38) Expression : Expression _ AND Expression
-  39) Expression : Expression _ LT Expression
-  40) Expression : Expression _ PLUS Expression
-  41) Expression : Expression _ MINUS Expression
-  42) Expression : Expression _ STAR Expression
-  43) Expression : Expression _ LBRACKET Expression RBRACKET
-  44) Expression : Expression _ DOT LENGTH
-  45) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
+  40) Expression : Expression _ AND Expression
+  41) Expression : Expression _ LT Expression
+  42) Expression : Expression _ PLUS Expression
+  43) Expression : Expression _ MINUS Expression
+  44) Expression : Expression _ STAR Expression
+  46) Expression : Expression _ LBRACKET Expression RBRACKET
+  47) Expression : Expression _ DOT LENGTH
+  48) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
 
   RPAREN        shift, and go to state 115
   LBRACKET      shift, and go to state 107
@@ -1108,14 +1108,14 @@ state 95
 state 96
 
   33) Statement : WHILE LPAREN Expression _ RPAREN Statement
-  38) Expression : Expression _ AND Expression
-  39) Expression : Expression _ LT Expression
-  40) Expression : Expression _ PLUS Expression
-  41) Expression : Expression _ MINUS Expression
-  42) Expression : Expression _ STAR Expression
-  43) Expression : Expression _ LBRACKET Expression RBRACKET
-  44) Expression : Expression _ DOT LENGTH
-  45) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
+  40) Expression : Expression _ AND Expression
+  41) Expression : Expression _ LT Expression
+  42) Expression : Expression _ PLUS Expression
+  43) Expression : Expression _ MINUS Expression
+  44) Expression : Expression _ STAR Expression
+  46) Expression : Expression _ LBRACKET Expression RBRACKET
+  47) Expression : Expression _ DOT LENGTH
+  48) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
 
   RPAREN        shift, and go to state 116
   LBRACKET      shift, and go to state 107
@@ -1130,14 +1130,14 @@ state 96
 state 97
 
   34) Statement : PRINTLN LPAREN Expression _ RPAREN SEMICOLON
-  38) Expression : Expression _ AND Expression
-  39) Expression : Expression _ LT Expression
-  40) Expression : Expression _ PLUS Expression
-  41) Expression : Expression _ MINUS Expression
-  42) Expression : Expression _ STAR Expression
-  43) Expression : Expression _ LBRACKET Expression RBRACKET
-  44) Expression : Expression _ DOT LENGTH
-  45) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
+  40) Expression : Expression _ AND Expression
+  41) Expression : Expression _ LT Expression
+  42) Expression : Expression _ PLUS Expression
+  43) Expression : Expression _ MINUS Expression
+  44) Expression : Expression _ STAR Expression
+  46) Expression : Expression _ LBRACKET Expression RBRACKET
+  47) Expression : Expression _ DOT LENGTH
+  48) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
 
   RPAREN        shift, and go to state 117
   LBRACKET      shift, and go to state 107
@@ -1185,116 +1185,116 @@ state 101
 
 state 102
 
-  38) Expression : Expression AND _ Expression
+  40) Expression : Expression AND _ Expression
 
-  LPAREN        shift, and go to state 89
-  NOT           shift, and go to state 88
-  TRUE          shift, and go to state 83
-  FALSE         shift, and go to state 84
-  THIS          shift, and go to state 86
-  NEW           shift, and go to state 87
+  LPAREN        shift, and go to state 82
+  NOT           shift, and go to state 83
+  NEW           shift, and go to state 85
+  TRUE          shift, and go to state 87
+  FALSE         shift, and go to state 88
+  THIS          shift, and go to state 89
   DECIMAL_NUMERAL  shift, and go to state 91
   IDENTIFIER    shift, and go to state 7
 
   Expression    go to state 119
-  IntegerLiteral  go to state 82
-  Identifier    go to state 85
+  Identifier    go to state 84
+  IntegerLiteral  go to state 86
   DecimalNumeral  go to state 90
 
 state 103
 
-  39) Expression : Expression LT _ Expression
+  41) Expression : Expression LT _ Expression
 
-  LPAREN        shift, and go to state 89
-  NOT           shift, and go to state 88
-  TRUE          shift, and go to state 83
-  FALSE         shift, and go to state 84
-  THIS          shift, and go to state 86
-  NEW           shift, and go to state 87
+  LPAREN        shift, and go to state 82
+  NOT           shift, and go to state 83
+  NEW           shift, and go to state 85
+  TRUE          shift, and go to state 87
+  FALSE         shift, and go to state 88
+  THIS          shift, and go to state 89
   DECIMAL_NUMERAL  shift, and go to state 91
   IDENTIFIER    shift, and go to state 7
 
   Expression    go to state 120
-  IntegerLiteral  go to state 82
-  Identifier    go to state 85
+  Identifier    go to state 84
+  IntegerLiteral  go to state 86
   DecimalNumeral  go to state 90
 
 state 104
 
-  40) Expression : Expression PLUS _ Expression
+  42) Expression : Expression PLUS _ Expression
 
-  LPAREN        shift, and go to state 89
-  NOT           shift, and go to state 88
-  TRUE          shift, and go to state 83
-  FALSE         shift, and go to state 84
-  THIS          shift, and go to state 86
-  NEW           shift, and go to state 87
+  LPAREN        shift, and go to state 82
+  NOT           shift, and go to state 83
+  NEW           shift, and go to state 85
+  TRUE          shift, and go to state 87
+  FALSE         shift, and go to state 88
+  THIS          shift, and go to state 89
   DECIMAL_NUMERAL  shift, and go to state 91
   IDENTIFIER    shift, and go to state 7
 
   Expression    go to state 121
-  IntegerLiteral  go to state 82
-  Identifier    go to state 85
+  Identifier    go to state 84
+  IntegerLiteral  go to state 86
   DecimalNumeral  go to state 90
 
 state 105
 
-  41) Expression : Expression MINUS _ Expression
+  43) Expression : Expression MINUS _ Expression
 
-  LPAREN        shift, and go to state 89
-  NOT           shift, and go to state 88
-  TRUE          shift, and go to state 83
-  FALSE         shift, and go to state 84
-  THIS          shift, and go to state 86
-  NEW           shift, and go to state 87
+  LPAREN        shift, and go to state 82
+  NOT           shift, and go to state 83
+  NEW           shift, and go to state 85
+  TRUE          shift, and go to state 87
+  FALSE         shift, and go to state 88
+  THIS          shift, and go to state 89
   DECIMAL_NUMERAL  shift, and go to state 91
   IDENTIFIER    shift, and go to state 7
 
   Expression    go to state 122
-  IntegerLiteral  go to state 82
-  Identifier    go to state 85
+  Identifier    go to state 84
+  IntegerLiteral  go to state 86
   DecimalNumeral  go to state 90
 
 state 106
 
-  42) Expression : Expression STAR _ Expression
+  44) Expression : Expression STAR _ Expression
 
-  LPAREN        shift, and go to state 89
-  NOT           shift, and go to state 88
-  TRUE          shift, and go to state 83
-  FALSE         shift, and go to state 84
-  THIS          shift, and go to state 86
-  NEW           shift, and go to state 87
+  LPAREN        shift, and go to state 82
+  NOT           shift, and go to state 83
+  NEW           shift, and go to state 85
+  TRUE          shift, and go to state 87
+  FALSE         shift, and go to state 88
+  THIS          shift, and go to state 89
   DECIMAL_NUMERAL  shift, and go to state 91
   IDENTIFIER    shift, and go to state 7
 
   Expression    go to state 123
-  IntegerLiteral  go to state 82
-  Identifier    go to state 85
+  Identifier    go to state 84
+  IntegerLiteral  go to state 86
   DecimalNumeral  go to state 90
 
 state 107
 
-  43) Expression : Expression LBRACKET _ Expression RBRACKET
+  46) Expression : Expression LBRACKET _ Expression RBRACKET
 
-  LPAREN        shift, and go to state 89
-  NOT           shift, and go to state 88
-  TRUE          shift, and go to state 83
-  FALSE         shift, and go to state 84
-  THIS          shift, and go to state 86
-  NEW           shift, and go to state 87
+  LPAREN        shift, and go to state 82
+  NOT           shift, and go to state 83
+  NEW           shift, and go to state 85
+  TRUE          shift, and go to state 87
+  FALSE         shift, and go to state 88
+  THIS          shift, and go to state 89
   DECIMAL_NUMERAL  shift, and go to state 91
   IDENTIFIER    shift, and go to state 7
 
   Expression    go to state 124
-  IntegerLiteral  go to state 82
-  Identifier    go to state 85
+  Identifier    go to state 84
+  IntegerLiteral  go to state 86
   DecimalNumeral  go to state 90
 
 state 108
 
-  44) Expression : Expression DOT _ LENGTH
-  45) Expression : Expression DOT _ Identifier LPAREN ActualParameters RPAREN
+  47) Expression : Expression DOT _ LENGTH
+  48) Expression : Expression DOT _ Identifier LPAREN ActualParameters RPAREN
 
   LENGTH        shift, and go to state 125
   IDENTIFIER    shift, and go to state 7
@@ -1303,48 +1303,17 @@ state 108
 
 state 109
 
-  51) Expression : NEW INT _ LBRACKET Expression RBRACKET
+  38) Expression : LPAREN Expression _ RPAREN
+  40) Expression : Expression _ AND Expression
+  41) Expression : Expression _ LT Expression
+  42) Expression : Expression _ PLUS Expression
+  43) Expression : Expression _ MINUS Expression
+  44) Expression : Expression _ STAR Expression
+  46) Expression : Expression _ LBRACKET Expression RBRACKET
+  47) Expression : Expression _ DOT LENGTH
+  48) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
 
-  LBRACKET      shift, and go to state 127
-
-
-state 110
-
-  52) Expression : NEW Identifier _ LPAREN RPAREN
-
-  LPAREN        shift, and go to state 128
-
-
-state 111
-
-  38) Expression : Expression _ AND Expression
-  39) Expression : Expression _ LT Expression
-  40) Expression : Expression _ PLUS Expression
-  41) Expression : Expression _ MINUS Expression
-  42) Expression : Expression _ STAR Expression
-  43) Expression : Expression _ LBRACKET Expression RBRACKET
-  44) Expression : Expression _ DOT LENGTH
-  45) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
-  53) Expression : NOT Expression _
-
-  LBRACKET      shift, and go to state 107
-  DOT           shift, and go to state 108
-  $default      reduce using rule 53 (Expression)
-
-
-state 112
-
-  38) Expression : Expression _ AND Expression
-  39) Expression : Expression _ LT Expression
-  40) Expression : Expression _ PLUS Expression
-  41) Expression : Expression _ MINUS Expression
-  42) Expression : Expression _ STAR Expression
-  43) Expression : Expression _ LBRACKET Expression RBRACKET
-  44) Expression : Expression _ DOT LENGTH
-  45) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
-  54) Expression : LPAREN Expression _ RPAREN
-
-  RPAREN        shift, and go to state 129
+  RPAREN        shift, and go to state 127
   LBRACKET      shift, and go to state 107
   DOT           shift, and go to state 108
   STAR          shift, and go to state 106
@@ -1352,6 +1321,37 @@ state 112
   MINUS         shift, and go to state 105
   LT            shift, and go to state 103
   AND           shift, and go to state 102
+
+
+state 110
+
+  39) Expression : NOT Expression _
+  40) Expression : Expression _ AND Expression
+  41) Expression : Expression _ LT Expression
+  42) Expression : Expression _ PLUS Expression
+  43) Expression : Expression _ MINUS Expression
+  44) Expression : Expression _ STAR Expression
+  46) Expression : Expression _ LBRACKET Expression RBRACKET
+  47) Expression : Expression _ DOT LENGTH
+  48) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
+
+  LBRACKET      shift, and go to state 107
+  DOT           shift, and go to state 108
+  $default      reduce using rule 39 (Expression)
+
+
+state 111
+
+  49) Expression : NEW INT _ LBRACKET Expression RBRACKET
+
+  LBRACKET      shift, and go to state 128
+
+
+state 112
+
+  50) Expression : NEW Identifier _ LPAREN RPAREN
+
+  LPAREN        shift, and go to state 129
 
 
 state 113
@@ -1412,15 +1412,15 @@ state 118
 
 state 119
 
-  38) Expression : Expression _ AND Expression
-  38) Expression : Expression AND Expression _
-  39) Expression : Expression _ LT Expression
-  40) Expression : Expression _ PLUS Expression
-  41) Expression : Expression _ MINUS Expression
-  42) Expression : Expression _ STAR Expression
-  43) Expression : Expression _ LBRACKET Expression RBRACKET
-  44) Expression : Expression _ DOT LENGTH
-  45) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
+  40) Expression : Expression _ AND Expression
+  40) Expression : Expression AND Expression _
+  41) Expression : Expression _ LT Expression
+  42) Expression : Expression _ PLUS Expression
+  43) Expression : Expression _ MINUS Expression
+  44) Expression : Expression _ STAR Expression
+  46) Expression : Expression _ LBRACKET Expression RBRACKET
+  47) Expression : Expression _ DOT LENGTH
+  48) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
 
   LBRACKET      shift, and go to state 107
   DOT           shift, and go to state 108
@@ -1428,93 +1428,93 @@ state 119
   PLUS          shift, and go to state 104
   MINUS         shift, and go to state 105
   LT            shift, and go to state 103
-  $default      reduce using rule 38 (Expression)
+  $default      reduce using rule 40 (Expression)
 
 
 state 120
 
-  38) Expression : Expression _ AND Expression
-  39) Expression : Expression _ LT Expression
-  39) Expression : Expression LT Expression _
-  40) Expression : Expression _ PLUS Expression
-  41) Expression : Expression _ MINUS Expression
-  42) Expression : Expression _ STAR Expression
-  43) Expression : Expression _ LBRACKET Expression RBRACKET
-  44) Expression : Expression _ DOT LENGTH
-  45) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
+  40) Expression : Expression _ AND Expression
+  41) Expression : Expression _ LT Expression
+  41) Expression : Expression LT Expression _
+  42) Expression : Expression _ PLUS Expression
+  43) Expression : Expression _ MINUS Expression
+  44) Expression : Expression _ STAR Expression
+  46) Expression : Expression _ LBRACKET Expression RBRACKET
+  47) Expression : Expression _ DOT LENGTH
+  48) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
 
   LBRACKET      shift, and go to state 107
   DOT           shift, and go to state 108
   STAR          shift, and go to state 106
   PLUS          shift, and go to state 104
   MINUS         shift, and go to state 105
-  $default      reduce using rule 39 (Expression)
+  $default      reduce using rule 41 (Expression)
 
 
 state 121
 
-  38) Expression : Expression _ AND Expression
-  39) Expression : Expression _ LT Expression
-  40) Expression : Expression _ PLUS Expression
-  40) Expression : Expression PLUS Expression _
-  41) Expression : Expression _ MINUS Expression
-  42) Expression : Expression _ STAR Expression
-  43) Expression : Expression _ LBRACKET Expression RBRACKET
-  44) Expression : Expression _ DOT LENGTH
-  45) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
+  40) Expression : Expression _ AND Expression
+  41) Expression : Expression _ LT Expression
+  42) Expression : Expression _ PLUS Expression
+  42) Expression : Expression PLUS Expression _
+  43) Expression : Expression _ MINUS Expression
+  44) Expression : Expression _ STAR Expression
+  46) Expression : Expression _ LBRACKET Expression RBRACKET
+  47) Expression : Expression _ DOT LENGTH
+  48) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
 
   LBRACKET      shift, and go to state 107
   DOT           shift, and go to state 108
   STAR          shift, and go to state 106
-  $default      reduce using rule 40 (Expression)
+  $default      reduce using rule 42 (Expression)
 
 
 state 122
 
-  38) Expression : Expression _ AND Expression
-  39) Expression : Expression _ LT Expression
-  40) Expression : Expression _ PLUS Expression
-  41) Expression : Expression _ MINUS Expression
-  41) Expression : Expression MINUS Expression _
-  42) Expression : Expression _ STAR Expression
-  43) Expression : Expression _ LBRACKET Expression RBRACKET
-  44) Expression : Expression _ DOT LENGTH
-  45) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
+  40) Expression : Expression _ AND Expression
+  41) Expression : Expression _ LT Expression
+  42) Expression : Expression _ PLUS Expression
+  43) Expression : Expression _ MINUS Expression
+  43) Expression : Expression MINUS Expression _
+  44) Expression : Expression _ STAR Expression
+  46) Expression : Expression _ LBRACKET Expression RBRACKET
+  47) Expression : Expression _ DOT LENGTH
+  48) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
 
   LBRACKET      shift, and go to state 107
   DOT           shift, and go to state 108
   STAR          shift, and go to state 106
-  $default      reduce using rule 41 (Expression)
+  $default      reduce using rule 43 (Expression)
 
 
 state 123
 
-  38) Expression : Expression _ AND Expression
-  39) Expression : Expression _ LT Expression
-  40) Expression : Expression _ PLUS Expression
-  41) Expression : Expression _ MINUS Expression
-  42) Expression : Expression _ STAR Expression
-  42) Expression : Expression STAR Expression _
-  43) Expression : Expression _ LBRACKET Expression RBRACKET
-  44) Expression : Expression _ DOT LENGTH
-  45) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
+  40) Expression : Expression _ AND Expression
+  41) Expression : Expression _ LT Expression
+  42) Expression : Expression _ PLUS Expression
+  43) Expression : Expression _ MINUS Expression
+  44) Expression : Expression _ STAR Expression
+  44) Expression : Expression STAR Expression _
+  46) Expression : Expression _ LBRACKET Expression RBRACKET
+  47) Expression : Expression _ DOT LENGTH
+  48) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
 
   LBRACKET      shift, and go to state 107
   DOT           shift, and go to state 108
-  $default      reduce using rule 42 (Expression)
+  $default      reduce using rule 44 (Expression)
 
 
 state 124
 
-  38) Expression : Expression _ AND Expression
-  39) Expression : Expression _ LT Expression
-  40) Expression : Expression _ PLUS Expression
-  41) Expression : Expression _ MINUS Expression
-  42) Expression : Expression _ STAR Expression
-  43) Expression : Expression _ LBRACKET Expression RBRACKET
-  43) Expression : Expression LBRACKET Expression _ RBRACKET
-  44) Expression : Expression _ DOT LENGTH
-  45) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
+  40) Expression : Expression _ AND Expression
+  41) Expression : Expression _ LT Expression
+  42) Expression : Expression _ PLUS Expression
+  43) Expression : Expression _ MINUS Expression
+  44) Expression : Expression _ STAR Expression
+  46) Expression : Expression _ LBRACKET Expression RBRACKET
+  46) Expression : Expression LBRACKET Expression _ RBRACKET
+  47) Expression : Expression _ DOT LENGTH
+  48) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
 
   LBRACKET      shift, and go to state 107
   RBRACKET      shift, and go to state 134
@@ -1528,66 +1528,66 @@ state 124
 
 state 125
 
-  44) Expression : Expression DOT LENGTH _
+  47) Expression : Expression DOT LENGTH _
 
-  $default      reduce using rule 44 (Expression)
+  $default      reduce using rule 47 (Expression)
 
 
 state 126
 
-  45) Expression : Expression DOT Identifier _ LPAREN ActualParameters RPAREN
+  48) Expression : Expression DOT Identifier _ LPAREN ActualParameters RPAREN
 
   LPAREN        shift, and go to state 135
 
 
 state 127
 
-  51) Expression : NEW INT LBRACKET _ Expression RBRACKET
+  38) Expression : LPAREN Expression RPAREN _
 
-  LPAREN        shift, and go to state 89
-  NOT           shift, and go to state 88
-  TRUE          shift, and go to state 83
-  FALSE         shift, and go to state 84
-  THIS          shift, and go to state 86
-  NEW           shift, and go to state 87
+  $default      reduce using rule 38 (Expression)
+
+
+state 128
+
+  49) Expression : NEW INT LBRACKET _ Expression RBRACKET
+
+  LPAREN        shift, and go to state 82
+  NOT           shift, and go to state 83
+  NEW           shift, and go to state 85
+  TRUE          shift, and go to state 87
+  FALSE         shift, and go to state 88
+  THIS          shift, and go to state 89
   DECIMAL_NUMERAL  shift, and go to state 91
   IDENTIFIER    shift, and go to state 7
 
   Expression    go to state 136
-  IntegerLiteral  go to state 82
-  Identifier    go to state 85
+  Identifier    go to state 84
+  IntegerLiteral  go to state 86
   DecimalNumeral  go to state 90
-
-state 128
-
-  52) Expression : NEW Identifier LPAREN _ RPAREN
-
-  RPAREN        shift, and go to state 137
-
 
 state 129
 
-  54) Expression : LPAREN Expression RPAREN _
+  50) Expression : NEW Identifier LPAREN _ RPAREN
 
-  $default      reduce using rule 54 (Expression)
+  RPAREN        shift, and go to state 137
 
 
 state 130
 
   36) Statement : Identifier LBRACKET Expression RBRACKET EQUAL _ Expression SEMICOLON
 
-  LPAREN        shift, and go to state 89
-  NOT           shift, and go to state 88
-  TRUE          shift, and go to state 83
-  FALSE         shift, and go to state 84
-  THIS          shift, and go to state 86
-  NEW           shift, and go to state 87
+  LPAREN        shift, and go to state 82
+  NOT           shift, and go to state 83
+  NEW           shift, and go to state 85
+  TRUE          shift, and go to state 87
+  FALSE         shift, and go to state 88
+  THIS          shift, and go to state 89
   DECIMAL_NUMERAL  shift, and go to state 91
   IDENTIFIER    shift, and go to state 7
 
   Expression    go to state 138
-  IntegerLiteral  go to state 82
-  Identifier    go to state 85
+  Identifier    go to state 84
+  IntegerLiteral  go to state 86
   DecimalNumeral  go to state 90
 
 state 131
@@ -1613,43 +1613,43 @@ state 133
 
 state 134
 
-  43) Expression : Expression LBRACKET Expression RBRACKET _
+  46) Expression : Expression LBRACKET Expression RBRACKET _
 
-  $default      reduce using rule 43 (Expression)
+  $default      reduce using rule 46 (Expression)
 
 
 state 135
 
-  45) Expression : Expression DOT Identifier LPAREN _ ActualParameters RPAREN
+  48) Expression : Expression DOT Identifier LPAREN _ ActualParameters RPAREN
 
-  LPAREN        shift, and go to state 89
-  NOT           shift, and go to state 88
-  TRUE          shift, and go to state 83
-  FALSE         shift, and go to state 84
-  THIS          shift, and go to state 86
-  NEW           shift, and go to state 87
+  LPAREN        shift, and go to state 82
+  NOT           shift, and go to state 83
+  NEW           shift, and go to state 85
+  TRUE          shift, and go to state 87
+  FALSE         shift, and go to state 88
+  THIS          shift, and go to state 89
   DECIMAL_NUMERAL  shift, and go to state 91
   IDENTIFIER    shift, and go to state 7
   $default      reduce using rule 55 (ActualParameters)
 
   Expression    go to state 140
+  Identifier    go to state 84
   ActualParameters  go to state 141
-  IntegerLiteral  go to state 82
-  Identifier    go to state 85
+  IntegerLiteral  go to state 86
   OneOrMoreActualParameters  go to state 142
   DecimalNumeral  go to state 90
 
 state 136
 
-  38) Expression : Expression _ AND Expression
-  39) Expression : Expression _ LT Expression
-  40) Expression : Expression _ PLUS Expression
-  41) Expression : Expression _ MINUS Expression
-  42) Expression : Expression _ STAR Expression
-  43) Expression : Expression _ LBRACKET Expression RBRACKET
-  44) Expression : Expression _ DOT LENGTH
-  45) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
-  51) Expression : NEW INT LBRACKET Expression _ RBRACKET
+  40) Expression : Expression _ AND Expression
+  41) Expression : Expression _ LT Expression
+  42) Expression : Expression _ PLUS Expression
+  43) Expression : Expression _ MINUS Expression
+  44) Expression : Expression _ STAR Expression
+  46) Expression : Expression _ LBRACKET Expression RBRACKET
+  47) Expression : Expression _ DOT LENGTH
+  48) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
+  49) Expression : NEW INT LBRACKET Expression _ RBRACKET
 
   LBRACKET      shift, and go to state 107
   RBRACKET      shift, and go to state 143
@@ -1663,22 +1663,22 @@ state 136
 
 state 137
 
-  52) Expression : NEW Identifier LPAREN RPAREN _
+  50) Expression : NEW Identifier LPAREN RPAREN _
 
-  $default      reduce using rule 52 (Expression)
+  $default      reduce using rule 50 (Expression)
 
 
 state 138
 
   36) Statement : Identifier LBRACKET Expression RBRACKET EQUAL Expression _ SEMICOLON
-  38) Expression : Expression _ AND Expression
-  39) Expression : Expression _ LT Expression
-  40) Expression : Expression _ PLUS Expression
-  41) Expression : Expression _ MINUS Expression
-  42) Expression : Expression _ STAR Expression
-  43) Expression : Expression _ LBRACKET Expression RBRACKET
-  44) Expression : Expression _ DOT LENGTH
-  45) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
+  40) Expression : Expression _ AND Expression
+  41) Expression : Expression _ LT Expression
+  42) Expression : Expression _ PLUS Expression
+  43) Expression : Expression _ MINUS Expression
+  44) Expression : Expression _ STAR Expression
+  46) Expression : Expression _ LBRACKET Expression RBRACKET
+  47) Expression : Expression _ DOT LENGTH
+  48) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
 
   LBRACKET      shift, and go to state 107
   DOT           shift, and go to state 108
@@ -1706,14 +1706,14 @@ state 139
 
 state 140
 
-  38) Expression : Expression _ AND Expression
-  39) Expression : Expression _ LT Expression
-  40) Expression : Expression _ PLUS Expression
-  41) Expression : Expression _ MINUS Expression
-  42) Expression : Expression _ STAR Expression
-  43) Expression : Expression _ LBRACKET Expression RBRACKET
-  44) Expression : Expression _ DOT LENGTH
-  45) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
+  40) Expression : Expression _ AND Expression
+  41) Expression : Expression _ LT Expression
+  42) Expression : Expression _ PLUS Expression
+  43) Expression : Expression _ MINUS Expression
+  44) Expression : Expression _ STAR Expression
+  46) Expression : Expression _ LBRACKET Expression RBRACKET
+  47) Expression : Expression _ DOT LENGTH
+  48) Expression : Expression _ DOT Identifier LPAREN ActualParameters RPAREN
   57) OneOrMoreActualParameters : Expression _
   58) OneOrMoreActualParameters : Expression _ COMMA OneOrMoreActualParameters
 
@@ -1730,7 +1730,7 @@ state 140
 
 state 141
 
-  45) Expression : Expression DOT Identifier LPAREN ActualParameters _ RPAREN
+  48) Expression : Expression DOT Identifier LPAREN ActualParameters _ RPAREN
 
   RPAREN        shift, and go to state 147
 
@@ -1744,9 +1744,9 @@ state 142
 
 state 143
 
-  51) Expression : NEW INT LBRACKET Expression RBRACKET _
+  49) Expression : NEW INT LBRACKET Expression RBRACKET _
 
-  $default      reduce using rule 51 (Expression)
+  $default      reduce using rule 49 (Expression)
 
 
 state 144
@@ -1767,26 +1767,26 @@ state 146
 
   58) OneOrMoreActualParameters : Expression COMMA _ OneOrMoreActualParameters
 
-  LPAREN        shift, and go to state 89
-  NOT           shift, and go to state 88
-  TRUE          shift, and go to state 83
-  FALSE         shift, and go to state 84
-  THIS          shift, and go to state 86
-  NEW           shift, and go to state 87
+  LPAREN        shift, and go to state 82
+  NOT           shift, and go to state 83
+  NEW           shift, and go to state 85
+  TRUE          shift, and go to state 87
+  FALSE         shift, and go to state 88
+  THIS          shift, and go to state 89
   DECIMAL_NUMERAL  shift, and go to state 91
   IDENTIFIER    shift, and go to state 7
 
   Expression    go to state 140
-  IntegerLiteral  go to state 82
-  Identifier    go to state 85
+  Identifier    go to state 84
+  IntegerLiteral  go to state 86
   OneOrMoreActualParameters  go to state 148
   DecimalNumeral  go to state 90
 
 state 147
 
-  45) Expression : Expression DOT Identifier LPAREN ActualParameters RPAREN _
+  48) Expression : Expression DOT Identifier LPAREN ActualParameters RPAREN _
 
-  $default      reduce using rule 45 (Expression)
+  $default      reduce using rule 48 (Expression)
 
 
 state 148

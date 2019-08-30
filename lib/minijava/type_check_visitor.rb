@@ -104,6 +104,10 @@ module MiniJava
     alias_method :visit_minus,     :visit_binary_arithmetic_operation
     alias_method :visit_times,     :visit_binary_arithmetic_operation
 
+    def visit_variable_access(access)
+      scope.variable_type_by_name!(access.variable)
+    end
+
     def visit_array_access(access)
       assert_type_of "int[]", access.array
       assert_type_of "int", access.index
@@ -126,10 +130,6 @@ module MiniJava
       else
         raise TypeError, "#{receiver_type} cannot be dereferenced"
       end
-    end
-
-    def visit_variable_access(access)
-      scope.variable_type_by_name!(access.variable)
     end
 
     def visit_new_array(expression)

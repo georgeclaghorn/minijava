@@ -122,12 +122,10 @@ module MiniJava
     end
 
 
-    def visit_unary_operation(operation)
+    def visit_not(operation)
       match operation
       visit operation.expression
     end
-
-    alias_method :visit_not, :visit_unary_operation
 
     def visit_binary_operation(operation)
       match operation
@@ -140,6 +138,11 @@ module MiniJava
     alias_method :visit_plus,      :visit_binary_operation
     alias_method :visit_minus,     :visit_binary_operation
     alias_method :visit_times,     :visit_binary_operation
+
+    def visit_variable_access(access)
+      match access
+      visit access.variable
+    end
 
     def visit_array_access(access)
       match access
@@ -157,11 +160,6 @@ module MiniJava
       visit invocation.receiver
       visit invocation.name
       visit_all invocation.parameters
-    end
-
-    def visit_variable_access(access)
-      match access
-      visit access.variable
     end
 
     def visit_this(this)
