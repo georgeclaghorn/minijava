@@ -4,11 +4,11 @@ require "minijava/errors"
 module MiniJava
   class TypeCheckVisitor < Visitor
     def self.check(program, scope)
-      new(scope).visit(program)
+      [].tap { |errors| new(scope, errors).visit(program) }
     end
 
-    def initialize(scope)
-      @scope = scope
+    def initialize(scope, errors)
+      @scope, @errors = scope, errors
     end
 
     def visit_program(program)
@@ -70,12 +70,19 @@ module MiniJava
     end
 
     def visit_variable_assignment(assignment)
-      assert_type_of scope.variable_type_by_name!(assignment.variable), assignment.value
+      if type = variable_type_by_name(assignment.variable)
+        assert_type_of type, assignment.value
+      else
+        flunk "Cannot find variable: #{assignment.variable}"
+      end
     end
 
     def visit_array_element_assignment(assignment)
-      assert_equal array, scope.variable_type_by_name!(assignment.array),
-        "Incompatible types: expected %<expected>s, got %<actual>s"
+      if type = variable_type_by_name(assignment.array)
+        assert_equal array, type, "Incompatible types: expected %<expected>s, got %<actual>s"
+      else
+        flunk "Cannot find variable: #{assignment.array}"
+      end
 
       assert_type_of integer, assignment.index
       assert_type_of integer, assignment.value
@@ -105,7 +112,12 @@ module MiniJava
     alias_method :visit_times,     :visit_binary_arithmetic_operation
 
     def visit_variable_access(access)
-      scope.variable_type_by_name!(access.variable)
+      if type = variable_type_by_name(access.variable)
+        type
+      else
+        flunk "Cannot find variable: #{access.variable}"
+        unknown
+      end
     end
 
     def visit_array_access(access)
@@ -122,13 +134,19 @@ module MiniJava
     def visit_method_invocation(invocation)
       if (receiver_type = visit(invocation.receiver)).dereferenceable?
         if receiver_scope = scope.class_scope_by_name(receiver_type.class_name)
-          receiver_scope.method_type_by_name(invocation.name) ||
-            raise(NameError, "Cannot find method #{receiver_type}.#{invocation.name}()")
+          if type = receiver_scope.method_type_by_name(invocation.name)
+            type
+          else
+            flunk "Cannot find method #{receiver_type}.#{invocation.name}()"
+            unknown
+          end
         else
-          raise TypeError, "Cannot find method #{receiver_type}.#{invocation.name}()"
+          flunk "Cannot find method #{receiver_type}.#{invocation.name}()"
+          unknown
         end
       else
-        raise TypeError, "#{receiver_type} cannot be dereferenced"
+        flunk "#{receiver_type} cannot be dereferenced"
+        unknown
       end
     end
 
@@ -153,8 +171,8 @@ module MiniJava
     end
 
     private
-      attr_reader :scope
-      delegate :class_scope_by_name, :method_scope_by_name, to: :scope
+      attr_reader :scope, :errors
+      delegate :class_scope_by_name, :method_scope_by_name, :variable_type_by_name, to: :scope
 
       def within(subscope)
         superscope, @scope = @scope, subscope
@@ -180,14 +198,23 @@ module MiniJava
         MiniJava::Syntax::ObjectType.new(class_name)
       end
 
+      def unknown
+        MiniJava::Syntax::UnknownType.instance
+      end
+
       def assert_type_of(expected, visitable, message = "Incompatible types: expected %<expected>s, got %<actual>s")
-        assert_equal expected, visit(visitable), message
+        if (actual = visit(visitable)).known?
+          assert_equal expected, actual, message
+        end
       end
 
       def assert_equal(expected, actual, message = "Expected %<expected>s, got %<actual>s")
-        unless actual == expected
-          raise TypeError, sprintf(message, expected: expected, actual: actual)
-        end
+        flunk sprintf(message, expected: expected, actual: actual) unless actual == expected
+      end
+
+      def flunk(message)
+        errors.append(message)
+        nil
       end
   end
 end

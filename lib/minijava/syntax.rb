@@ -44,61 +44,81 @@ module MiniJava
 
     #== Types
 
-    class ArrayType
-      include Singleton
-
+    class Type
       def dereferenceable?
         false
       end
+
+      def known?
+        true
+      end
+    end
+
+    class ArrayType < Type
+      include Singleton
 
       def to_s
         "int[]"
       end
     end
 
-    class BooleanType
+    class BooleanType < Type
       include Singleton
-
-      def dereferenceable?
-        false
-      end
 
       def to_s
         "boolean"
       end
     end
 
-    class IntegerType
+    class IntegerType < Type
       include Singleton
-
-      def dereferenceable?
-        false
-      end
 
       def to_s
         "int"
       end
     end
 
-    class VoidType
+    class VoidType < Type
       include Singleton
-
-      def dereferenceable?
-        false
-      end
 
       def to_s
         "void"
       end
     end
 
-    ObjectType = Struct.new(:class_name) do
+    class ObjectType < Type
+      attr_reader :class_name
+
+      def initialize(class_name)
+        @class_name = class_name
+      end
+
       def dereferenceable?
         true
       end
 
+      def ==(other)
+        other.is_a?(ObjectType) && other.class_name == class_name
+      end
+
       def to_s
         class_name.to_s
+      end
+    end
+
+    class UnknownType < Type
+      include Singleton
+
+      def dereferenceable?
+        true
+      end
+
+      def known?
+        false
+      end
+
+      def to_s
+        "<unknown>"
       end
     end
 

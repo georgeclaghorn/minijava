@@ -1,5 +1,3 @@
-require "minijava/errors"
-
 module MiniJava
   class Scope
     attr_reader :parent, :classes, :methods, :variables
@@ -48,10 +46,6 @@ module MiniJava
 
     def variable_type_by_name(name)
       variables.type_for(name) || parent.variable_type_by_name(name)
-    end
-
-    def variable_type_by_name!(name)
-      variable_type_by_name(name) || raise(NameError, "Cannot find variable: #{name}")
     end
   end
 
