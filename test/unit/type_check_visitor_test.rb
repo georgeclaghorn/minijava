@@ -125,6 +125,25 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     assert_equal "Cannot find variable: pick", errors.first
   end
 
+  def test_array_element_assignment_with_undefined_array_variable
+    errors = check(<<~JAVA)
+      class HelloWorld {
+        public static void main() {
+          System.out.println(new Foo().bar());
+        }
+      }
+
+      class Foo {
+        public int bar() {
+          baz[0] = 1;
+          return 1;
+        }
+      }
+    JAVA
+
+    assert_equal [ "Cannot find variable: baz" ], errors
+  end
+
   def test_less_than_with_class_name_on_left
     errors = check(<<~JAVA)
       class HelloWorld {
