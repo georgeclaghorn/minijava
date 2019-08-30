@@ -100,16 +100,21 @@ module MiniJava
       boolean
     end
 
+    def visit_less_than(operation)
+      assert_type_of integer, operation.left
+      assert_type_of integer, operation.right
+      boolean
+    end
+
     def visit_binary_arithmetic_operation(operation)
       assert_type_of integer, operation.left
       assert_type_of integer, operation.right
       integer
     end
 
-    alias_method :visit_less_than, :visit_binary_arithmetic_operation
-    alias_method :visit_plus,      :visit_binary_arithmetic_operation
-    alias_method :visit_minus,     :visit_binary_arithmetic_operation
-    alias_method :visit_times,     :visit_binary_arithmetic_operation
+    alias_method :visit_plus,  :visit_binary_arithmetic_operation
+    alias_method :visit_minus, :visit_binary_arithmetic_operation
+    alias_method :visit_times, :visit_binary_arithmetic_operation
 
     def visit_variable_access(access)
       if type = variable_type_by_name(access.variable)

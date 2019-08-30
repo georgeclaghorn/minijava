@@ -18,7 +18,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "Cannot find variable: NumberPicker", errors.first
+    assert_equal [ "Cannot find variable: NumberPicker" ], errors
   end
 
   def test_simple_assignment_to_method_name
@@ -38,7 +38,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
         }
     JAVA
 
-    assert_equal "Cannot find variable: pick", errors.first
+    assert_equal [ "Cannot find variable: pick" ], errors
   end
 
   def test_simple_assignment_from_class_name
@@ -58,7 +58,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
         }
     JAVA
 
-    assert_equal "Cannot find variable: NumberPicker", errors.first
+    assert_equal [ "Cannot find variable: NumberPicker" ], errors
   end
 
   def test_simple_assignment_from_method_name
@@ -78,7 +78,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "Cannot find variable: pick", errors.first
+    assert_equal [ "Cannot find variable: pick" ], errors
   end
 
   def test_array_element_assignment_from_class_name
@@ -100,7 +100,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "Cannot find variable: NumberPicker", errors.first
+    assert_equal [ "Cannot find variable: NumberPicker" ], errors
   end
 
   def test_array_element_assignment_from_method_name
@@ -122,7 +122,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "Cannot find variable: pick", errors.first
+    assert_equal [ "Cannot find variable: pick" ], errors
   end
 
   def test_array_element_assignment_with_undefined_array_variable
@@ -166,7 +166,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "Cannot find variable: NumberPicker", errors.first
+    assert_equal [ "Cannot find variable: NumberPicker" ], errors
   end
 
   def test_less_than_with_class_name_on_right
@@ -191,7 +191,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "Cannot find variable: NumberPicker", errors.first
+    assert_equal [ "Cannot find variable: NumberPicker" ], errors
   end
 
   def test_less_than_with_method_name_on_left
@@ -216,7 +216,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
         }
     JAVA
 
-    assert_equal "Cannot find variable: pick", errors.first
+    assert_equal [ "Cannot find variable: pick" ], errors
   end
 
   def test_less_than_with_method_name_on_right
@@ -241,7 +241,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "Cannot find variable: pick", errors.first
+    assert_equal [ "Cannot find variable: pick" ], errors
   end
 
   def test_calling_a_method_on_a_primitive
@@ -259,7 +259,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
         }
     JAVA
 
-    assert_equal "Attempt to call non-method baz", errors.first
+    assert_equal [ "Attempt to call non-method baz" ], errors
   end
 
   def test_calling_a_method_on_a_primitive
@@ -277,7 +277,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
         }
     JAVA
 
-    assert_equal "int cannot be dereferenced", errors.first
+    assert_equal [ "int cannot be dereferenced" ], errors
   end
 
   def test_calling_an_undefined_method
@@ -295,7 +295,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
         }
     JAVA
 
-    assert_equal "Cannot find method Foo.baz()", errors.first
+    assert_equal [ "Cannot find method Foo.baz()" ], errors
   end
 
   def test_binary_arithmetic_operation_with_non_integer_operand_on_left
@@ -323,7 +323,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "Incompatible types: expected int, got boolean", errors.first
+    assert_equal [ "Incompatible types: expected int, got boolean" ], errors
   end
 
   def test_binary_arithmetic_operation_with_non_integer_operand_on_right
@@ -351,7 +351,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "Incompatible types: expected int, got boolean", errors.first
+    assert_equal [ "Incompatible types: expected int, got boolean" ], errors
   end
 
   def test_logical_and_with_non_boolean_operand_on_left
@@ -379,7 +379,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "Incompatible types: expected boolean, got int", errors.first
+    assert_equal [ "Incompatible types: expected boolean, got int" ], errors
   end
 
   def test_logical_and_with_non_boolean_operand_on_right
@@ -407,7 +407,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "Incompatible types: expected boolean, got int", errors.first
+    assert_equal [ "Incompatible types: expected boolean, got int" ], errors
   end
 
   def test_logical_not_with_int_variable_operand
@@ -432,7 +432,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "Incompatible types: expected boolean, got int", errors.first
+    assert_equal [ "Incompatible types: expected boolean, got int" ], errors
   end
 
   def test_logical_not_with_int_literal_operand
@@ -457,7 +457,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "Incompatible types: expected boolean, got int", errors.first
+    assert_equal [ "Incompatible types: expected boolean, got int" ], errors
   end
 
   def test_logical_not_with_object_operand
@@ -482,7 +482,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "Incompatible types: expected boolean, got Foo", errors.first
+    assert_equal [ "Incompatible types: expected boolean, got Foo" ], errors
   end
 
   def test_logical_not_with_object_variable_operand
@@ -508,7 +508,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "Incompatible types: expected boolean, got Foo", errors.first
+    assert_equal [ "Incompatible types: expected boolean, got Foo" ], errors
   end
 
   def test_print_statement_with_non_integer_parameter
@@ -520,7 +520,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "Incompatible types: expected int, got boolean", errors.first
+    assert_equal [ "Incompatible types: expected int, got boolean" ], errors
   end
 
   def test_array_element_access_with_boolean_variable_as_array
@@ -542,7 +542,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "Incompatible types: expected int[], got boolean", errors.first
+    assert_equal [ "Incompatible types: expected int[], got boolean" ], errors
   end
 
   def test_array_element_access_with_integer_literal_as_array
@@ -562,7 +562,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "Incompatible types: expected int[], got int", errors.first
+    assert_equal [ "Incompatible types: expected int[], got int" ], errors
   end
 
   def test_array_element_access_with_true_literal_as_index
@@ -584,7 +584,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "Incompatible types: expected int, got boolean", errors.first
+    assert_equal [ "Incompatible types: expected int, got boolean" ], errors
   end
 
   def test_array_element_access_with_boolean_variable_as_index
@@ -607,7 +607,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "Incompatible types: expected int, got boolean", errors.first
+    assert_equal [ "Incompatible types: expected int, got boolean" ], errors
   end
 
   def test_array_length_with_integer_variable_as_array
@@ -626,7 +626,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "Incompatible types: expected int[], got int", errors.first
+    assert_equal [ "Incompatible types: expected int[], got int" ], errors
   end
 
   def test_array_length_with_true_literal_as_array
@@ -638,7 +638,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "Incompatible types: expected int[], got boolean", errors.first
+    assert_equal [ "Incompatible types: expected int[], got boolean" ], errors
   end
 
   def test_assigning_a_boolean_literal_to_an_int_variable
@@ -658,7 +658,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "Incompatible types: expected int, got boolean", errors.first
+    assert_equal [ "Incompatible types: expected int, got boolean" ], errors
   end
 
   def test_assigning_an_integer_variable_to_a_boolean_variable
@@ -679,7 +679,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "Incompatible types: expected boolean, got int", errors.first
+    assert_equal [ "Incompatible types: expected boolean, got int" ], errors
   end
 
   def test_if_statement_with_integer_literal_as_condition
@@ -704,7 +704,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "Incompatible types: expected boolean, got int", errors.first
+    assert_equal [ "Incompatible types: expected boolean, got int" ], errors
   end
 
   def test_if_statement_with_integer_variable_as_condition
@@ -730,7 +730,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "Incompatible types: expected boolean, got int", errors.first
+    assert_equal [ "Incompatible types: expected boolean, got int" ], errors
   end
 
   def test_while_statement_with_integer_variable_as_condition
@@ -754,7 +754,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "Incompatible types: expected boolean, got int", errors.first
+    assert_equal [ "Incompatible types: expected boolean, got int" ], errors
   end
 
   def test_int_method_returning_boolean_literal
@@ -772,7 +772,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "Incompatible types: expected int, got boolean", errors.first
+    assert_equal [ "Incompatible types: expected int, got boolean" ], errors
   end
 
   def test_int_method_returning_object_variable
@@ -792,7 +792,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "Incompatible types: expected int, got Foo", errors.first
+    assert_equal [ "Incompatible types: expected int, got Foo" ], errors
   end
 
   def test_instantiating_an_object_of_an_undefined_class
