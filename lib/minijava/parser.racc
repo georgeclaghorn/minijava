@@ -83,7 +83,7 @@ rule
     | Expression PLUS Expression { MiniJava::Syntax::Plus.new(val[0], val[2]) }
     | Expression MINUS Expression { MiniJava::Syntax::Minus.new(val[0], val[2]) }
     | Expression STAR Expression { MiniJava::Syntax::Times.new(val[0], val[2]) }
-    | Expression LBRACKET Expression RBRACKET { MiniJava::Syntax::ArrayElementAccess.new(val[0], val[2]) }
+    | Expression LBRACKET Expression RBRACKET { MiniJava::Syntax::ArrayAccess.new(val[0], val[2]) }
     | Expression DOT LENGTH { MiniJava::Syntax::ArrayLength.new(val[0]) }
     | Expression DOT Identifier LPAREN ActualParameters RPAREN { MiniJava::Syntax::Call.new(val[0], val[2], val[4]) }
     | IntegerLiteral { val[0] }

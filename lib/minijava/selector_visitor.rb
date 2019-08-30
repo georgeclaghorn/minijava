@@ -141,7 +141,7 @@ module MiniJava
     alias_method :visit_minus,     :visit_binary_operation
     alias_method :visit_times,     :visit_binary_operation
 
-    def visit_array_element_access(access)
+    def visit_array_access(access)
       match access
       visit access.array
       visit access.index

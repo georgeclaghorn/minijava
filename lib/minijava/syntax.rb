@@ -123,7 +123,7 @@ module MiniJava
     Minus    = Struct.new(:left, :right)
     Times    = Struct.new(:left, :right)
 
-    ArrayElementAccess = Struct.new(:array, :index)
+    ArrayAccess = Struct.new(:array, :index)
     ArrayLength = Struct.new(:array)
 
     Call = Struct.new(:receiver, :method_name, :parameters)

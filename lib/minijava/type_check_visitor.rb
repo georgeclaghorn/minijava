@@ -104,7 +104,7 @@ module MiniJava
     alias_method :visit_minus,     :visit_binary_arithmetic_operation
     alias_method :visit_times,     :visit_binary_arithmetic_operation
 
-    def visit_array_element_access(access)
+    def visit_array_access(access)
       assert_type_of "int[]", access.array
       assert_type_of "int", access.index
       MiniJava::Syntax::IntegerType.instance
