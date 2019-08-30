@@ -45,7 +45,7 @@ module MiniJava
     def visit_method_declaration(declaration)
       within method_scope_by(name: declaration.name) do
         visit_all declaration.statements
-        assert_type_of declaration.return_expression, declaration.type
+        assert_type_of declaration.type, declaration.return_expression
       end
     end
 
@@ -55,47 +55,47 @@ module MiniJava
     end
 
     def visit_if_statement(statement)
-      assert_type_of statement.condition, "boolean"
+      assert_type_of "boolean", statement.condition
       visit statement.affirmative
       visit statement.negative
     end
 
     def visit_while_statement(statement)
-      assert_type_of statement.condition, "boolean"
+      assert_type_of "boolean", statement.condition
       visit statement.substatement
     end
 
     def visit_print_statement(statement)
-      assert_type_of statement.expression, "int", "Call to System.out.println does not match its signature"
+      assert_type_of "int", statement.expression, "Call to System.out.println does not match its signature"
     end
 
     def visit_simple_assignment(assignment)
-      assert_type_of assignment.value, scope.variable_type_by!(name: assignment.variable_name)
+      assert_type_of scope.variable_type_by!(name: assignment.variable_name), assignment.value
     end
 
     def visit_array_element_assignment(assignment)
       assert_equal "int[]", scope.variable_type_by!(name: assignment.array),
         "Incompatible types: expected %<expected>s, got %<actual>s"
 
-      assert_type_of assignment.index, "int"
-      assert_type_of assignment.value, "int"
+      assert_type_of "int", assignment.index
+      assert_type_of "int", assignment.value
     end
 
 
     def visit_not(operation)
-      assert_type_of operation.expression, "boolean"
+      assert_type_of "boolean", operation.expression
       MiniJava::Syntax::BooleanType.instance
     end
 
     def visit_and(operation)
-      assert_type_of operation.left, "boolean"
-      assert_type_of operation.right, "boolean"
+      assert_type_of "boolean", operation.left
+      assert_type_of "boolean", operation.right
       MiniJava::Syntax::BooleanType.instance
     end
 
     def visit_binary_arithmetic_operation(operation)
-      assert_type_of operation.left, "int"
-      assert_type_of operation.right, "int"
+      assert_type_of "int", operation.left
+      assert_type_of "int", operation.right
       MiniJava::Syntax::IntegerType.instance
     end
 
@@ -105,13 +105,13 @@ module MiniJava
     alias_method :visit_times,     :visit_binary_arithmetic_operation
 
     def visit_array_element_access(access)
-      assert_type_of access.array, "int[]"
-      assert_type_of access.index, "int"
+      assert_type_of "int[]", access.array
+      assert_type_of "int", access.index
       MiniJava::Syntax::IntegerType.instance
     end
 
     def visit_array_length(length)
-      assert_type_of length.array, "int[]"
+      assert_type_of "int[]", length.array
       MiniJava::Syntax::IntegerType.instance
     end
 
@@ -163,7 +163,7 @@ module MiniJava
         @scope = superscope
       end
 
-      def assert_type_of(visitable, expected, message = "Incompatible types: expected %<expected>s, got %<actual>s")
+      def assert_type_of(expected, visitable, message = "Incompatible types: expected %<expected>s, got %<actual>s")
         assert_equal expected, visit(visitable), message
       end
 
