@@ -776,6 +776,18 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     assert_equal "Incompatible types: expected int, got Foo", errors.first
   end
 
+  def test_instantiating_an_object_of_an_undefined_class
+    errors = check(<<~JAVA)
+      class HelloWorld {
+        public static void main() {
+          System.out.println(new Foo().bar());
+        }
+      }
+    JAVA
+
+    assert_equal [ "Cannot find class: Foo" ], errors
+  end
+
   def test_access_to_undefined_variable_after_call_to_undefined_method
     errors = check(<<~JAVA)
       class HelloWorld {

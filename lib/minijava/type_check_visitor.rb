@@ -132,20 +132,24 @@ module MiniJava
     end
 
     def visit_method_invocation(invocation)
-      if (receiver_type = visit(invocation.receiver)).dereferenceable?
-        if receiver_scope = scope.class_scope_by_name(receiver_type.class_name)
-          if type = receiver_scope.method_type_by_name(invocation.name)
-            type
+      if (receiver_type = visit(invocation.receiver)).known?
+        if receiver_type.dereferenceable?
+          if receiver_scope = scope.class_scope_by_name(receiver_type.class_name)
+            if type = receiver_scope.method_type_by_name(invocation.name)
+              type
+            else
+              flunk "Cannot find method #{receiver_type}.#{invocation.name}()"
+              unknown
+            end
           else
             flunk "Cannot find method #{receiver_type}.#{invocation.name}()"
             unknown
           end
         else
-          flunk "Cannot find method #{receiver_type}.#{invocation.name}()"
+          flunk "#{receiver_type} cannot be dereferenced"
           unknown
         end
       else
-        flunk "#{receiver_type} cannot be dereferenced"
         unknown
       end
     end
@@ -155,7 +159,12 @@ module MiniJava
     end
 
     def visit_new_object(expression)
-      object expression.class_name
+      if scope.class?(expression.class_name)
+        object expression.class_name
+      else
+        flunk "Cannot find class: #{expression.class_name}"
+        unknown
+      end
     end
 
     def visit_integer_literal(literal)
@@ -209,7 +218,11 @@ module MiniJava
       end
 
       def assert_equal(expected, actual, message = "Expected %<expected>s, got %<actual>s")
-        flunk sprintf(message, expected: expected, actual: actual) unless actual == expected
+        assert actual == expected, sprintf(message, expected: expected, actual: actual)
+      end
+
+      def assert(test, message)
+        flunk message unless test
       end
 
       def flunk(message)
