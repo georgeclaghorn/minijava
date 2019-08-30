@@ -1,5 +1,4 @@
 require "minijava/visitor"
-require "minijava/errors"
 
 module MiniJava
   class TypeCheckVisitor < Visitor
