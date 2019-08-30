@@ -66,7 +66,7 @@ module MiniJava
     end
 
     def visit_print_statement(statement)
-      assert_type_of "int", statement.expression, "Call to System.out.println does not match its signature"
+      assert_type_of "int", statement.expression
     end
 
     def visit_simple_assignment(assignment)

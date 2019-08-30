@@ -545,7 +545,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Call to System.out.println does not match its signature", error.message
+    assert_equal "Incompatible types: expected int, got boolean", error.message
   end
 
   def test_array_element_access_with_boolean_variable_as_array
