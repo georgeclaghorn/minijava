@@ -282,7 +282,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Attempt to call non-method baz", error.message
+    assert_equal "int cannot be dereferenced", error.message
   end
 
   def test_calling_an_undefined_method
@@ -302,7 +302,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       JAVA
     end
 
-    assert_equal "Attempt to call undefined method baz", error.message
+    assert_equal "Cannot find method Foo.baz()", error.message
   end
 
   def test_binary_arithmetic_operation_with_non_integer_operand_on_left

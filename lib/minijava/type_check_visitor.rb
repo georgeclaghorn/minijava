@@ -116,15 +116,15 @@ module MiniJava
     end
 
     def visit_call(call)
-      if (receiver_type = visit(call.receiver)).callable?
+      if (receiver_type = visit(call.receiver)).dereferenceable?
         if receiver_scope = scope.class_scope_by(name: receiver_type.class_name)
           receiver_scope.method_type_by(name: call.method_name) ||
-            raise(NameError, "Attempt to call undefined method #{call.method_name}")
+            raise(NameError, "Cannot find method #{receiver_type}.#{call.method_name}()")
         else
-          raise TypeError, "Attempt to call non-method #{call.method_name}"
+          raise TypeError, "Cannot find method #{receiver_type}.#{call.method_name}()"
         end
       else
-        raise TypeError, "Attempt to call non-method #{call.method_name}"
+        raise TypeError, "#{receiver_type} cannot be dereferenced"
       end
     end
 

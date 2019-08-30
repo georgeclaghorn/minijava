@@ -47,7 +47,7 @@ module MiniJava
     class ArrayType
       include Singleton
 
-      def callable?
+      def dereferenceable?
         false
       end
 
@@ -59,7 +59,7 @@ module MiniJava
     class BooleanType
       include Singleton
 
-      def callable?
+      def dereferenceable?
         false
       end
 
@@ -71,7 +71,7 @@ module MiniJava
     class IntegerType
       include Singleton
 
-      def callable?
+      def dereferenceable?
         false
       end
 
@@ -83,7 +83,7 @@ module MiniJava
     class VoidType
       include Singleton
 
-      def callable?
+      def dereferenceable?
         false
       end
 
@@ -93,7 +93,7 @@ module MiniJava
     end
 
     ObjectType = Struct.new(:class_name) do
-      def callable?
+      def dereferenceable?
         true
       end
 
