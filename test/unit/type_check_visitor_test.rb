@@ -806,6 +806,18 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     assert_equal [ "Cannot find method Foo.baz()", "Cannot find variable: glorp" ], errors
   end
 
+  def test_invoking_method_on_object_of_undefined_class
+    errors = check(<<~JAVA)
+      class HelloWorld {
+        public static void main() {
+          System.out.println(new Foo().bar());
+        }
+      }
+    JAVA
+
+    assert_equal [ "Cannot find class: Foo" ], errors
+  end
+
   private
     def check(source)
       program = MiniJava::Parser.program_from(source)
