@@ -164,6 +164,10 @@ module MiniJava
       visit access.variable_name
     end
 
+    def visit_this(this)
+      match this
+    end
+
     def visit_new_array(expression)
       match expression
       visit expression.size
@@ -182,7 +186,6 @@ module MiniJava
     alias_method :visit_integer_literal, :visit_literal
     alias_method :visit_true_literal,    :visit_literal
     alias_method :visit_false_literal,   :visit_literal
-    alias_method :visit_this,            :visit_literal
 
 
     def visit_identifier(identifier)
