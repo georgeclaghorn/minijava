@@ -115,13 +115,13 @@ module MiniJava
       MiniJava::Syntax::IntegerType.instance
     end
 
-    def visit_call(call)
-      if (receiver_type = visit(call.receiver)).dereferenceable?
+    def visit_method_invocation(invocation)
+      if (receiver_type = visit(invocation.receiver)).dereferenceable?
         if receiver_scope = scope.class_scope_by_name(receiver_type.class_name)
-          receiver_scope.method_type_by_name(call.method_name) ||
-            raise(NameError, "Cannot find method #{receiver_type}.#{call.method_name}()")
+          receiver_scope.method_type_by_name(invocation.name) ||
+            raise(NameError, "Cannot find method #{receiver_type}.#{invocation.name}()")
         else
-          raise TypeError, "Cannot find method #{receiver_type}.#{call.method_name}()"
+          raise TypeError, "Cannot find method #{receiver_type}.#{invocation.name}()"
         end
       else
         raise TypeError, "#{receiver_type} cannot be dereferenced"

@@ -152,11 +152,11 @@ module MiniJava
       visit length.array
     end
 
-    def visit_call(call)
-      match call
-      visit call.receiver
-      visit call.method_name
-      visit_all call.parameters
+    def visit_method_invocation(invocation)
+      match invocation
+      visit invocation.receiver
+      visit invocation.name
+      visit_all invocation.parameters
     end
 
     def visit_variable_access(access)

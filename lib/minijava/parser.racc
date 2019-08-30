@@ -85,7 +85,7 @@ rule
     | Expression STAR Expression { MiniJava::Syntax::Times.new(val[0], val[2]) }
     | Expression LBRACKET Expression RBRACKET { MiniJava::Syntax::ArrayAccess.new(val[0], val[2]) }
     | Expression DOT LENGTH { MiniJava::Syntax::ArrayLength.new(val[0]) }
-    | Expression DOT Identifier LPAREN ActualParameters RPAREN { MiniJava::Syntax::Call.new(val[0], val[2], val[4]) }
+    | Expression DOT Identifier LPAREN ActualParameters RPAREN { MiniJava::Syntax::MethodInvocation.new(val[0], val[2], val[4]) }
     | IntegerLiteral { val[0] }
     | TRUE { MiniJava::Syntax::TrueLiteral.instance }
     | FALSE { MiniJava::Syntax::FalseLiteral.instance }

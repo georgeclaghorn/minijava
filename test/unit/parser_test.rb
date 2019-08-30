@@ -84,10 +84,10 @@ class MiniJava::ParserTest < Minitest::Test
       }
     JAVA
 
-    call = program.select(MiniJava::Syntax::Call).first
-    assert_equal 2, call.parameters.count
-    assert_equal 20, call.parameters.first.value
-    assert_equal MiniJava::Syntax::FalseLiteral.instance, call.parameters.second
+    invocation = program.select(MiniJava::Syntax::MethodInvocation).first
+    assert_equal 2, invocation.parameters.count
+    assert_equal 20, invocation.parameters.first.value
+    assert_equal MiniJava::Syntax::FalseLiteral.instance, invocation.parameters.second
 
     method_declaration = program.select(MiniJava::Syntax::MethodDeclaration).first
     assert_equal 2, method_declaration.parameters.count
