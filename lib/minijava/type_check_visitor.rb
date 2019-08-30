@@ -18,32 +18,32 @@ module MiniJava
 
 
     def visit_main_class_declaration(declaration)
-      within class_scope_by(name: declaration.name) do
+      within class_scope_by_name(declaration.name) do
         visit declaration.method_declaration
       end
     end
 
     def visit_main_method_declaration(declaration)
-      within method_scope_by(name: declaration.name) do
+      within method_scope_by_name(declaration.name) do
         visit declaration.statement
       end
     end
 
 
     def visit_class_declaration(declaration)
-      within class_scope_by(name: declaration.name) do
+      within class_scope_by_name(declaration.name) do
         visit_all declaration.method_declarations
       end
     end
 
     def visit_subclass_declaration(declaration)
-      within class_scope_by(name: declaration.name) do
+      within method_scope_by_name(declaration.name) do
         visit_all declaration.method_declarations
       end
     end
 
     def visit_method_declaration(declaration)
-      within method_scope_by(name: declaration.name) do
+      within method_scope_by_name(declaration.name) do
         visit_all declaration.statements
         assert_type_of declaration.type, declaration.return_expression
       end
@@ -70,11 +70,11 @@ module MiniJava
     end
 
     def visit_simple_assignment(assignment)
-      assert_type_of scope.variable_type_by!(name: assignment.variable_name), assignment.value
+      assert_type_of scope.variable_type_by_name!(assignment.variable_name), assignment.value
     end
 
     def visit_array_element_assignment(assignment)
-      assert_equal "int[]", scope.variable_type_by!(name: assignment.array),
+      assert_equal "int[]", scope.variable_type_by_name!(assignment.array),
         "Incompatible types: expected %<expected>s, got %<actual>s"
 
       assert_type_of "int", assignment.index
@@ -117,8 +117,8 @@ module MiniJava
 
     def visit_call(call)
       if (receiver_type = visit(call.receiver)).dereferenceable?
-        if receiver_scope = scope.class_scope_by(name: receiver_type.class_name)
-          receiver_scope.method_type_by(name: call.method_name) ||
+        if receiver_scope = scope.class_scope_by_name(receiver_type.class_name)
+          receiver_scope.method_type_by_name(call.method_name) ||
             raise(NameError, "Cannot find method #{receiver_type}.#{call.method_name}()")
         else
           raise TypeError, "Cannot find method #{receiver_type}.#{call.method_name}()"
@@ -129,7 +129,7 @@ module MiniJava
     end
 
     def visit_access(access)
-      scope.variable_type_by!(name: access.variable_name)
+      scope.variable_type_by_name!(access.variable_name)
     end
 
     def visit_new_array(expression)
@@ -154,7 +154,7 @@ module MiniJava
 
     private
       attr_reader :scope
-      delegate :class_scope_by, :method_scope_by, :variable_type_by!, to: :scope
+      delegate :class_scope_by_name, :method_scope_by_name, to: :scope
 
       def within(subscope)
         superscope, @scope = @scope, subscope
@@ -162,6 +162,7 @@ module MiniJava
       ensure
         @scope = superscope
       end
+
 
       def assert_type_of(expected, visitable, message = "Incompatible types: expected %<expected>s, got %<actual>s")
         assert_equal expected, visit(visitable), message

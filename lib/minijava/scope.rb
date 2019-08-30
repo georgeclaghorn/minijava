@@ -24,8 +24,8 @@ module MiniJava
       classes.include?(name) || parent.class?(name)
     end
 
-    def class_scope_by(name:)
-      classes.scope_for(name) || parent.class_scope_by(name: name)
+    def class_scope_by_name(name)
+      classes.scope_for(name) || parent.class_scope_by_name(name)
     end
 
 
@@ -33,12 +33,12 @@ module MiniJava
       methods.include?(name) || parent.method?(name)
     end
 
-    def method_type_by(name:)
-      methods.type_for(name) || parent.method_type_by(name: name)
+    def method_type_by_name(name)
+      methods.type_for(name) || parent.method_type_by_name(name)
     end
 
-    def method_scope_by(name:)
-      methods.scope_for(name) || parent.method_scope_by(name: name)
+    def method_scope_by_name(name)
+      methods.scope_for(name) || parent.method_scope_by_name(name)
     end
 
 
@@ -46,12 +46,12 @@ module MiniJava
       variables.include?(name) || parent.variable?(name)
     end
 
-    def variable_type_by(name:)
-      variables.type_for(name) || parent.variable_type_by(name: name)
+    def variable_type_by_name(name)
+      variables.type_for(name) || parent.variable_type_by_name(name)
     end
 
-    def variable_type_by!(name:)
-      variable_type_by(name: name) || raise(NameError, "Cannot find variable: #{name}")
+    def variable_type_by_name!(name)
+      variable_type_by_name(name) || raise(NameError, "Cannot find variable: #{name}")
     end
   end
 
@@ -62,7 +62,7 @@ module MiniJava
       false
     end
 
-    def class_scope_by(name:)
+    def class_scope_by_name(name)
       nil
     end
 
@@ -71,11 +71,11 @@ module MiniJava
       false
     end
 
-    def method_type_by(name:)
+    def method_type_by_name(name)
       nil
     end
 
-    def method_scope_by(name:)
+    def method_scope_by_name(name)
       nil
     end
 
@@ -84,7 +84,7 @@ module MiniJava
       false
     end
 
-    def variable_type_by(name:)
+    def variable_type_by_name(name)
       nil
     end
   end

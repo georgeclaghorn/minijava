@@ -33,43 +33,43 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
     assert program_scope.class?("Incrementor")
 
 
-    class_scope = program_scope.class_scope_by(name: "HelloWorld")
+    class_scope = program_scope.class_scope_by_name("HelloWorld")
     assert class_scope.method?("main")
-    assert_equal MiniJava::Syntax::VoidType.instance, class_scope.method_type_by(name: "main")
+    assert_equal MiniJava::Syntax::VoidType.instance, class_scope.method_type_by_name("main")
 
 
-    class_scope = program_scope.class_scope_by(name: "Incrementor")
+    class_scope = program_scope.class_scope_by_name("Incrementor")
 
     assert class_scope.variable?("foo")
-    assert_equal MiniJava::Syntax::IntegerType.instance, class_scope.variable_type_by(name: "foo")
+    assert_equal MiniJava::Syntax::IntegerType.instance, class_scope.variable_type_by_name("foo")
 
     assert class_scope.method?("next")
-    assert_equal MiniJava::Syntax::IntegerType.instance, class_scope.method_type_by(name: "next")
+    assert_equal MiniJava::Syntax::IntegerType.instance, class_scope.method_type_by_name("next")
 
-    method_scope = class_scope.method_scope_by(name: "next")
+    method_scope = class_scope.method_scope_by_name("next")
 
     assert method_scope.variable?("bar")
-    assert_equal MiniJava::Syntax::BooleanType.instance, method_scope.variable_type_by(name: "bar")
+    assert_equal MiniJava::Syntax::BooleanType.instance, method_scope.variable_type_by_name("bar")
 
     assert method_scope.variable?("foo")
-    assert_equal MiniJava::Syntax::IntegerType.instance, method_scope.variable_type_by(name: "foo")
+    assert_equal MiniJava::Syntax::IntegerType.instance, method_scope.variable_type_by_name("foo")
 
     assert method_scope.variable?("number")
-    assert_equal MiniJava::Syntax::IntegerType.instance, method_scope.variable_type_by(name: "number")
+    assert_equal MiniJava::Syntax::IntegerType.instance, method_scope.variable_type_by_name("number")
 
 
-    class_scope = program_scope.class_scope_by(name: "Decrementor")
+    class_scope = program_scope.class_scope_by_name("Decrementor")
 
     assert class_scope.variable?("foo")
-    assert_equal MiniJava::Syntax::IntegerType.instance, class_scope.variable_type_by(name: "foo")
+    assert_equal MiniJava::Syntax::IntegerType.instance, class_scope.variable_type_by_name("foo")
 
     assert class_scope.method?("next")
-    assert_equal MiniJava::Syntax::IntegerType.instance, class_scope.method_type_by(name: "next")
+    assert_equal MiniJava::Syntax::IntegerType.instance, class_scope.method_type_by_name("next")
 
-    method_scope = class_scope.method_scope_by(name: "next")
+    method_scope = class_scope.method_scope_by_name("next")
 
     assert method_scope.variable?("foo")
-    assert_equal MiniJava::Syntax::IntegerType.instance, method_scope.variable_type_by(name: "foo")
+    assert_equal MiniJava::Syntax::IntegerType.instance, method_scope.variable_type_by_name("foo")
 
     assert !method_scope.variable?("number")
   end
@@ -149,11 +149,11 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
     JAVA
 
     program_scope = MiniJava::ScopeVisitor.scope_for(program)
-    class_scope   = program_scope.class_scope_by(name: "Foo")
-    method_scope  = class_scope.method_scope_by(name: "bar")
+    class_scope   = program_scope.class_scope_by_name("Foo")
+    method_scope  = class_scope.method_scope_by_name("bar")
 
-    assert_equal MiniJava::Syntax::BooleanType.instance, class_scope.variable_type_by(name: "baz")
-    assert_equal MiniJava::Syntax::IntegerType.instance, method_scope.variable_type_by(name: "baz")
+    assert_equal MiniJava::Syntax::BooleanType.instance, class_scope.variable_type_by_name("baz")
+    assert_equal MiniJava::Syntax::IntegerType.instance, method_scope.variable_type_by_name("baz")
   end
 
   def test_forbidding_inheritance_from_undefined_class
@@ -190,9 +190,9 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
     assert program_scope.class?("Bar")
     assert program_scope.class?("Baz")
 
-    foo_scope = program_scope.class_scope_by(name: "Foo")
-    bar_scope = program_scope.class_scope_by(name: "Bar")
-    baz_scope = program_scope.class_scope_by(name: "Baz")
+    foo_scope = program_scope.class_scope_by_name("Foo")
+    bar_scope = program_scope.class_scope_by_name("Bar")
+    baz_scope = program_scope.class_scope_by_name("Baz")
 
     # Weird, albeit intentional, arrangement: Bar and Baz are declared in the program scope but
     # parented by their respective superclass' scopes, *not* the program scope.
