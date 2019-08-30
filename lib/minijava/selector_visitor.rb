@@ -108,9 +108,9 @@ module MiniJava
       visit statement.expression
     end
 
-    def visit_simple_assignment(assignment)
+    def visit_variable_assignment(assignment)
       match assignment
-      visit assignment.variable_name
+      visit assignment.variable
       visit assignment.value
     end
 

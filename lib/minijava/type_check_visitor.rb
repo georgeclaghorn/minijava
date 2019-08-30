@@ -69,8 +69,8 @@ module MiniJava
       assert_type_of "int", statement.expression
     end
 
-    def visit_simple_assignment(assignment)
-      assert_type_of scope.variable_type_by_name!(assignment.variable_name), assignment.value
+    def visit_variable_assignment(assignment)
+      assert_type_of scope.variable_type_by_name!(assignment.variable), assignment.value
     end
 
     def visit_array_element_assignment(assignment)

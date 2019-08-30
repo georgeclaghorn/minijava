@@ -134,18 +134,18 @@ class MiniJava::ParserTest < Minitest::Test
 
     block = conditional.affirmative
     assert block.statements.one?
-    assert_kind_of MiniJava::Syntax::SimpleAssignment, block.statements.first
+    assert_kind_of MiniJava::Syntax::VariableAssignment, block.statements.first
 
     assignment = block.statements.first
-    assert_equal "result", assignment.variable_name.to_s
+    assert_equal "result", assignment.variable.name
     assert_equal MiniJava::Syntax::TrueLiteral.instance, assignment.value
 
     block = conditional.negative
     assert block.statements.one?
-    assert_kind_of MiniJava::Syntax::SimpleAssignment, block.statements.first
+    assert_kind_of MiniJava::Syntax::VariableAssignment, block.statements.first
 
     assignment = block.statements.first
-    assert_equal "result", assignment.variable_name.to_s
+    assert_equal "result", assignment.variable.name
     assert_equal MiniJava::Syntax::FalseLiteral.instance, assignment.value
   end
 
@@ -180,10 +180,10 @@ class MiniJava::ParserTest < Minitest::Test
 
     block = loop.substatement
     assert block.statements.one?
-    assert_kind_of MiniJava::Syntax::SimpleAssignment, block.statements.first
+    assert_kind_of MiniJava::Syntax::VariableAssignment, block.statements.first
 
     assignment = block.statements.first
-    assert_equal "number", assignment.variable_name.to_s
+    assert_equal "number", assignment.variable.name
     assert_kind_of MiniJava::Syntax::Plus, assignment.value
 
     plus = assignment.value
@@ -272,7 +272,7 @@ class MiniJava::ParserTest < Minitest::Test
     class_declaration = program.class_declarations.first
     method_declaration = class_declaration.method_declarations.first
     assert_kind_of MiniJava::Syntax::InvalidVariableDeclaration, method_declaration.variable_declarations.first
-    assert_kind_of MiniJava::Syntax::SimpleAssignment, method_declaration.statements.first
+    assert_kind_of MiniJava::Syntax::VariableAssignment, method_declaration.statements.first
   end
 
   def test_detecting_invalid_method_body_syntax
