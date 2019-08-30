@@ -680,7 +680,7 @@ module_eval(<<'.,.,', 'parser.racc', 90)
 
 module_eval(<<'.,.,', 'parser.racc', 91)
   def _reduce_49(val, _values)
-     MiniJava::Syntax::Access.new(val[0]) 
+     MiniJava::Syntax::VariableAccess.new(val[0]) 
   end
 .,.,
 

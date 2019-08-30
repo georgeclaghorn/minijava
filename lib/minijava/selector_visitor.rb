@@ -159,9 +159,9 @@ module MiniJava
       visit_all call.parameters
     end
 
-    def visit_access(access)
+    def visit_variable_access(access)
       match access
-      visit access.variable_name
+      visit access.variable
     end
 
     def visit_this(this)

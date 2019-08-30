@@ -128,8 +128,8 @@ module MiniJava
       end
     end
 
-    def visit_access(access)
-      scope.variable_type_by_name!(access.variable_name)
+    def visit_variable_access(access)
+      scope.variable_type_by_name!(access.variable)
     end
 
     def visit_new_array(expression)

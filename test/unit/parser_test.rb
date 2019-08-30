@@ -66,7 +66,7 @@ class MiniJava::ParserTest < Minitest::Test
 
     lengths = program.select(MiniJava::Syntax::ArrayLength)
     assert lengths.one?
-    assert_equal "numbers", lengths.first.array.variable_name.to_s
+    assert_equal "numbers", lengths.first.array.variable.name
   end
 
   def test_parsing_parameter_lists
@@ -127,8 +127,8 @@ class MiniJava::ParserTest < Minitest::Test
 
     conditional = program.select(MiniJava::Syntax::IfStatement).first
     assert_kind_of MiniJava::Syntax::LessThan, conditional.condition
-    assert_equal "glorp", conditional.condition.left.variable_name.to_s
-    assert_equal "quux", conditional.condition.right.variable_name.to_s
+    assert_equal "glorp", conditional.condition.left.variable.name
+    assert_equal "quux", conditional.condition.right.variable.name
     assert_kind_of MiniJava::Syntax::Block, conditional.affirmative
     assert_kind_of MiniJava::Syntax::Block, conditional.negative
 
@@ -174,7 +174,7 @@ class MiniJava::ParserTest < Minitest::Test
 
     loop = program.select(MiniJava::Syntax::WhileStatement).first
     assert_kind_of MiniJava::Syntax::LessThan, loop.condition
-    assert_equal "number", loop.condition.left.variable_name.to_s
+    assert_equal "number", loop.condition.left.variable.name
     assert_equal 3, loop.condition.right.value
     assert_kind_of MiniJava::Syntax::Block, loop.substatement
 
@@ -188,7 +188,7 @@ class MiniJava::ParserTest < Minitest::Test
 
     plus = assignment.value
     assert_equal 1, plus.left.value
-    assert_equal "number", plus.right.variable_name.to_s
+    assert_equal "number", plus.right.variable.name
   end
 
   def test_detecting_invalid_statement_syntax
