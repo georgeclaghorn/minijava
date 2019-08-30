@@ -80,7 +80,7 @@ module MiniJava
           if superclass_scope = scope.class_scope_by_name(declaration.superclass_name)
             class_scope.reparent(superclass_scope)
           else
-            raise NameError, "Class #{declaration.name} extends undefined class #{declaration.superclass_name}"
+            raise NameError, "Cannot find class #{declaration.superclass_name}"
           end
         end
       end
