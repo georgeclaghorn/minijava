@@ -42,7 +42,7 @@ module MiniJava
 
     MethodDeclaration = Struct.new(:type, :name, :parameters, :variable_declarations, :statements, :return_expression) do
       def static?
-        true
+        false
       end
     end
 
