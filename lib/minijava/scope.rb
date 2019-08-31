@@ -32,8 +32,8 @@ module MiniJava
       methods.include?(name) || parent.method?(name)
     end
 
-    def method_type_by_name(name)
-      methods.type_for(name) || parent.method_type_by_name(name)
+    def method_declaration_by_name(name)
+      methods.declaration_for(name) || parent.method_declaration_by_name(name)
     end
 
     def method_scope_by_name(name)
@@ -66,7 +66,7 @@ module MiniJava
       false
     end
 
-    def method_type_by_name(name)
+    def method_declaration_by_name(name)
       nil
     end
 
@@ -105,7 +105,7 @@ module MiniJava
   end
 
   class MethodSet
-    Entry = Struct.new(:type, :scope)
+    Entry = Struct.new(:declaration, :scope)
 
     def initialize(parent)
       @parent  = parent
@@ -114,7 +114,7 @@ module MiniJava
 
     def add(declaration, &block)
       Scope.new(@parent, declaration).tap do |scope|
-        @entries[declaration.name.to_s] = Entry.new(declaration.type, scope)
+        @entries[declaration.name.to_s] = Entry.new(declaration, scope)
       end
     end
 
@@ -122,8 +122,8 @@ module MiniJava
       @entries.include?(name.to_s)
     end
 
-    def type_for(name)
-      @entries[name.to_s]&.type
+    def declaration_for(name)
+      @entries[name.to_s]&.declaration
     end
 
     def scope_for(name)

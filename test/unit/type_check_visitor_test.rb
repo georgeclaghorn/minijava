@@ -295,7 +295,50 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
         }
     JAVA
 
-    assert_equal [ "Cannot find method Foo.baz()" ], errors
+    assert_equal [ "Cannot find method Foo.baz" ], errors
+  end
+
+  def test_calling_a_method_with_the_wrong_number_of_parameters
+    errors = check(<<~JAVA)
+        class HelloWorld {
+          public static void main() {
+            System.out.println(new Foo().bar(3));
+          }
+        }
+
+        class Foo {
+          public int bar(int baz, int glorp) {
+            return baz + glorp;
+          }
+        }
+    JAVA
+
+    assert_equal [ "Cannot find method bar(int)" ], errors
+  end
+
+  def test_calling_a_method_with_the_wrong_types_of_parameters
+    errors = check(<<~JAVA)
+        class HelloWorld {
+          public static void main() {
+            System.out.println(new Foo().bar(3, 5, 7));
+          }
+        }
+
+        class Foo {
+          public int bar(boolean add, int baz, int glorp) {
+            int result;
+
+            if (add)
+              result = baz + glorp;
+            else
+              result = baz - glorp;
+
+            return result;
+          }
+        }
+    JAVA
+
+    assert_equal [ "Cannot find method bar(int, int, int)" ], errors
   end
 
   def test_binary_arithmetic_operation_with_non_integer_operand_on_left
@@ -822,7 +865,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal [ "Cannot find method Foo.baz()", "Cannot find variable: glorp" ], errors
+    assert_equal [ "Cannot find method Foo.baz", "Cannot find variable: glorp" ], errors
   end
 
   def test_invoking_method_on_object_of_undefined_class

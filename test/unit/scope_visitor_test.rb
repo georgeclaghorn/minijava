@@ -35,7 +35,9 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
 
     class_scope = program_scope.class_scope_by_name("HelloWorld")
     assert class_scope.method?("main")
-    assert_equal MiniJava::Syntax::VoidType.instance, class_scope.method_type_by_name("main")
+
+    method_declaration = class_scope.method_declaration_by_name("main")
+    assert_equal MiniJava::Syntax::VoidType.instance, method_declaration.type
 
 
     class_scope = program_scope.class_scope_by_name("Incrementor")
@@ -44,7 +46,9 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
     assert_equal MiniJava::Syntax::IntegerType.instance, class_scope.variable_type_by_name("foo")
 
     assert class_scope.method?("next")
-    assert_equal MiniJava::Syntax::IntegerType.instance, class_scope.method_type_by_name("next")
+
+    method_declaration = class_scope.method_declaration_by_name("next")
+    assert_equal MiniJava::Syntax::IntegerType.instance, method_declaration.type
 
     method_scope = class_scope.method_scope_by_name("next")
 
@@ -64,7 +68,9 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
     assert_equal MiniJava::Syntax::IntegerType.instance, class_scope.variable_type_by_name("foo")
 
     assert class_scope.method?("next")
-    assert_equal MiniJava::Syntax::IntegerType.instance, class_scope.method_type_by_name("next")
+
+    method_declaration = class_scope.method_declaration_by_name("next")
+    assert_equal MiniJava::Syntax::IntegerType.instance, method_declaration.type
 
     method_scope = class_scope.method_scope_by_name("next")
 

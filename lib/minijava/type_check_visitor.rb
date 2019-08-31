@@ -136,23 +136,11 @@ module MiniJava
     end
 
     def visit_method_invocation(invocation)
-      if (receiver_type = visit(invocation.receiver)).known?
-        if receiver_type.dereferenceable?
-          if receiver_scope = scope.class_scope_by_name(receiver_type.class_name)
-            if type = receiver_scope.method_type_by_name(invocation.name)
-              type
-            else
-              flunk "Cannot find method #{receiver_type}.#{invocation.name}()"
-              unknown
-            end
-          else
-            flunk "Cannot find method #{receiver_type}.#{invocation.name}()"
-            unknown
-          end
-        else
-          flunk "#{receiver_type} cannot be dereferenced"
-          unknown
-        end
+      if declaration = method_declaration_for_invocation(invocation)
+        assert_types_of declaration.parameters.collect(&:type), invocation.parameters,
+          ->(_, actual) { "Cannot find method #{invocation.name}(#{actual.join(", ")})" }
+
+        declaration.type
       else
         unknown
       end
@@ -204,6 +192,18 @@ module MiniJava
       end
 
 
+      def method_declaration_for_invocation(invocation)
+        if (type = visit(invocation.receiver)).known?
+          if type.dereferenceable?
+            class_scope_by_name(type.class_name).method_declaration_by_name(invocation.name) ||
+              flunk("Cannot find method #{type}.#{invocation.name}")
+          else
+            flunk "#{type} cannot be dereferenced"
+          end
+        end
+      end
+
+
       def boolean
         MiniJava::Syntax::BooleanType.instance
       end
@@ -222,6 +222,13 @@ module MiniJava
 
       def unknown
         MiniJava::Syntax::UnknownType.instance
+      end
+
+      def assert_types_of(expected, visitables,
+          message = ->(expected, actual) { "Incompatible types: expected #{expected.join(", ")}; got #{actual.join(", ")}" })
+        if (actual = visit_all(visitables)).all?(&:known?)
+          assert_equal expected, actual, message.call(expected, actual)
+        end
       end
 
       def assert_type_of(expected, visitable, message = "Incompatible types: expected %<expected>s, got %<actual>s")
