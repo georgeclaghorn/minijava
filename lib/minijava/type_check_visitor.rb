@@ -191,7 +191,6 @@ module MiniJava
         @scope = superscope
       end
 
-
       def method_declaration_for(invocation)
         if (type = visit(invocation.receiver)).known?
           if type.dereferenceable?
