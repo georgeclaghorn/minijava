@@ -136,7 +136,7 @@ module MiniJava
     end
 
     def visit_method_invocation(invocation)
-      if declaration = method_declaration_for_invocation(invocation)
+      if declaration = method_declaration_for(invocation)
         assert_types_of declaration.parameters.collect(&:type), invocation.parameters,
           "Cannot find method #{invocation.name}(%<actual>s) - found #{invocation.name}(%<expected>s)"
 
@@ -192,7 +192,7 @@ module MiniJava
       end
 
 
-      def method_declaration_for_invocation(invocation)
+      def method_declaration_for(invocation)
         if (type = visit(invocation.receiver)).known?
           if type.dereferenceable?
             class_scope_by_name(type.class_name).method_declaration_by_name(invocation.name) ||
