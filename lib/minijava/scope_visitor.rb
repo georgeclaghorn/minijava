@@ -20,13 +20,13 @@ module MiniJava
 
 
     def visit_main_class_declaration(declaration)
-      within scope.classes.add(declaration.name) do
+      within scope.classes.add(declaration) do
         visit declaration.method_declaration
       end
     end
 
     def visit_main_method_declaration(declaration)
-      scope.methods.add(name: declaration.name, type: declaration.type)
+      scope.methods.add(declaration)
     end
 
 
@@ -34,7 +34,7 @@ module MiniJava
       if scope.classes.include?(declaration.name)
         raise NameError, "Redefinition of class #{declaration.name}"
       else
-        within scope.classes.add(declaration.name) do
+        within scope.classes.add(declaration) do
           visit_all declaration.variable_declarations
           visit_all declaration.method_declarations
         end
@@ -55,7 +55,7 @@ module MiniJava
       if scope.methods.include?(declaration.name)
         raise NameError, "Redefinition of method #{declaration.name}"
       else
-        within scope.methods.add(name: declaration.name, type: declaration.type) do
+        within scope.methods.add(declaration) do
           visit_all declaration.parameters
           visit_all declaration.variable_declarations
         end

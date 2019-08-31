@@ -1,13 +1,14 @@
 module MiniJava
   class Scope
-    attr_reader :parent, :classes, :methods, :variables
+    attr_reader :parent, :context, :classes, :methods, :variables
 
     def self.build(*args, &block)
       new(*args).tap(&block)
     end
 
-    def initialize(parent = NullScope.instance)
+    def initialize(parent = NullScope.instance, context = nil)
       @parent    = parent
+      @context   = context
       @classes   = ClassSet.new(self)
       @methods   = MethodSet.new(self)
       @variables = VariableSet.new
@@ -90,8 +91,8 @@ module MiniJava
       @scopes = {}
     end
 
-    def add(name)
-      @scopes[name.to_s] = Scope.new(@parent)
+    def add(declaration)
+      @scopes[declaration.name.to_s] = Scope.new(@parent, declaration)
     end
 
     def include?(name)
@@ -111,8 +112,10 @@ module MiniJava
       @entries = {}
     end
 
-    def add(name:, type:, &block)
-      Scope.new(@parent).tap { |scope| @entries[name.to_s] = Entry.new(type, scope) }
+    def add(declaration, &block)
+      Scope.new(@parent, declaration).tap do |scope|
+        @entries[declaration.name.to_s] = Entry.new(declaration.type, scope)
+      end
     end
 
     def include?(name)

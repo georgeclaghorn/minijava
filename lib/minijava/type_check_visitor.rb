@@ -183,9 +183,18 @@ module MiniJava
       boolean
     end
 
+    def visit_this(this)
+      if context.static?
+        flunk "non-static variable this cannot be referenced from a static context"
+        unknown
+      else
+        object scope.parent.context.name
+      end
+    end
+
     private
       attr_reader :scope, :errors
-      delegate :class_scope_by_name, :method_scope_by_name, :variable_type_by_name, to: :scope
+      delegate :class_scope_by_name, :method_scope_by_name, :variable_type_by_name, :context, to: :scope
 
       def within(subscope)
         superscope, @scope = @scope, subscope

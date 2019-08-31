@@ -26,6 +26,10 @@ module MiniJava
       def name
         Identifier.new "main"
       end
+
+      def static?
+        true
+      end
     end
 
     ClassDeclaration = Struct.new(:name, :variable_declarations, :method_declarations) do
@@ -36,8 +40,13 @@ module MiniJava
 
     SubclassDeclaration = Struct.new(:name, :superclass_name, :variable_declarations, :method_declarations)
 
-    MethodDeclaration   = Struct.new(:type, :name, :parameters, :variable_declarations, :statements, :return_expression)
-    FormalParameter     = Struct.new(:type, :name)
+    MethodDeclaration = Struct.new(:type, :name, :parameters, :variable_declarations, :statements, :return_expression) do
+      def static?
+        true
+      end
+    end
+
+    FormalParameter = Struct.new(:type, :name)
 
     VariableDeclaration = Struct.new(:type, :name)
 

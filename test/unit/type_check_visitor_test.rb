@@ -837,6 +837,18 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     assert_equal [ "Cannot find class: Foo" ], errors
   end
 
+  def test_this_in_static_method
+    errors = check(<<~JAVA)
+      class HelloWorld {
+        public static void main() {
+          System.out.println(this.foo());
+        }
+      }
+    JAVA
+
+    assert_equal [ "non-static variable this cannot be referenced from a static context" ], errors
+  end
+
   private
     def check(source)
       program = MiniJava::Parser.program_from(source)
