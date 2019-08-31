@@ -195,12 +195,16 @@ module MiniJava
       def method_declaration_for(invocation)
         if (type = visit(invocation.receiver)).known?
           if type.dereferenceable?
-            class_scope_by_name(type.class_name).method_declaration_by_name(invocation.name) ||
+            method_declaration_in_class_by_name(type.class_name, invocation.name) ||
               flunk("Cannot find method #{type}.#{invocation.name}")
           else
             flunk "#{type} cannot be dereferenced"
           end
         end
+      end
+
+      def method_declaration_in_class_by_name(class_name, method_name)
+        class_scope_by_name(class_name)&.method_declaration_by_name(method_name)
       end
 
 
