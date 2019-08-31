@@ -138,7 +138,7 @@ module MiniJava
     def visit_method_invocation(invocation)
       if declaration = method_declaration_for(invocation)
         assert_types_of declaration.parameters.collect(&:type), invocation.parameters,
-          "Cannot find method #{invocation.name}(%<actual>s) - found #{invocation.name}(%<expected>s)"
+          "Cannot find method #{invocation.name}(%<actual>s) - found #{declaration.name}(%<expected>s)"
 
         declaration.type
       else
