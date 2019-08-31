@@ -138,7 +138,7 @@ module MiniJava
     def visit_method_invocation(invocation)
       if declaration = method_declaration_for_invocation(invocation)
         assert_types_of declaration.parameters.collect(&:type), invocation.parameters,
-          ->(_, actual) { "Cannot find method #{invocation.name}(#{actual.join(", ")})" }
+          "Cannot find method #{invocation.name}(%<actual>s) - found #{invocation.name}(%<expected>s)"
 
         declaration.type
       else
@@ -224,10 +224,9 @@ module MiniJava
         MiniJava::Syntax::UnknownType.instance
       end
 
-      def assert_types_of(expected, visitables,
-          message = ->(expected, actual) { "Incompatible types: expected #{expected.join(", ")}; got #{actual.join(", ")}" })
+      def assert_types_of(expected, visitables, message = "Incompatible types: expected %<expected>s; got %<actual>s")
         if (actual = visit_all(visitables)).all?(&:known?)
-          assert_equal expected, actual, message.call(expected, actual)
+          assert_equal expected, actual, sprintf(message, expected: expected.join(", "), actual: actual.join(", "))
         end
       end
 

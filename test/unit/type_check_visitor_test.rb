@@ -295,7 +295,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
         }
     JAVA
 
-    assert_equal [ "Cannot find method bar(int)" ], errors
+    assert_equal [ "Cannot find method bar(int) - found bar(int, int)" ], errors
   end
 
   def test_calling_a_method_with_the_wrong_types_of_parameters
@@ -320,7 +320,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
         }
     JAVA
 
-    assert_equal [ "Cannot find method bar(int, int, int)" ], errors
+    assert_equal [ "Cannot find method bar(int, int, int) - found bar(boolean, int, int)" ], errors
   end
 
   def test_binary_arithmetic_operation_with_non_integer_operand_on_left
