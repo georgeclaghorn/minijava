@@ -259,24 +259,6 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
         }
     JAVA
 
-    assert_equal [ "Attempt to call non-method baz" ], errors
-  end
-
-  def test_calling_a_method_on_a_primitive
-    errors = check(<<~JAVA)
-        class HelloWorld {
-          public static void main() {
-            System.out.println(new NumberPicker().pick(3));
-          }
-        }
-
-        class NumberPicker {
-          public int pick(int bar) {
-            return bar.baz();
-          }
-        }
-    JAVA
-
     assert_equal [ "int cannot be dereferenced" ], errors
   end
 
