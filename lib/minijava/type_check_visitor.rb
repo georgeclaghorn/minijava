@@ -173,7 +173,7 @@ module MiniJava
 
     def visit_this(this)
       if context.static?
-        flunk "non-static variable this cannot be referenced from a static context"
+        flunk "Non-static variable this cannot be referenced from a static context"
         unknown
       else
         object scope.parent.context.name

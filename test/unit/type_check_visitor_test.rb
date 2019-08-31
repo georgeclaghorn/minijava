@@ -871,7 +871,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal [ "non-static variable this cannot be referenced from a static context" ], errors
+    assert_equal [ "Non-static variable this cannot be referenced from a static context" ], errors
   end
 
   def test_this_in_instance_method
