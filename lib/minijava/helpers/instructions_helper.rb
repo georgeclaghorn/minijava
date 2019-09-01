@@ -24,6 +24,14 @@ module MiniJava
       MiniJava::IntermediateRepresentation::Return.new(value)
     end
 
+    def index_into(array, index, result)
+      MiniJava::IntermediateRepresentation::ArrayAccess.new(array, index, result)
+    end
+
+    def copy_into(value, array, index)
+      MiniJava::IntermediateRepresentation::ArrayAssignment.new(value, array, index)
+    end
+
     def new_object(type, result)
       MiniJava::IntermediateRepresentation::NewObject.new(type, result)
     end

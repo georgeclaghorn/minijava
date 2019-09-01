@@ -65,9 +65,21 @@ module MiniJava
       end
     end
 
+    def visit_array_element_assignment(statement)
+      visit(statement.value).then do |value|
+        emit copy_into(value.register, statement.array.name, statement.index.value)
+      end
+    end
+
 
     def visit_variable_access(access)
       Result.new access.variable.name, variable_type_by_name(access.variable)
+    end
+
+    def visit_array_access(access)
+      visit(access.array).then do |array|
+        emit_to(integer) { |result| index_into array.register, access.index.value, result.register }
+      end
     end
 
     def visit_method_invocation(invocation)
@@ -88,7 +100,7 @@ module MiniJava
     end
 
     def visit_new_array(expression)
-      emit_to(array) { |result| new_array integer, expression.size }
+      emit_to(array) { |result| new_array integer, expression.size.value, result.register }
     end
 
     def visit_integer_literal(literal)
