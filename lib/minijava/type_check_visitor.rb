@@ -1,7 +1,10 @@
 require "minijava/visitor"
+require "minijava/helpers/types_helper"
 
 module MiniJava
   class TypeCheckVisitor < Visitor
+    include TypesHelper
+
     def self.check(program, scope)
       [].tap { |errors| new(scope, errors).visit(program) }
     end
@@ -206,26 +209,6 @@ module MiniJava
         class_scope_by_name(class_name)&.method_declaration_by_name(method_name)
       end
 
-
-      def boolean
-        MiniJava::Syntax::BooleanType.instance
-      end
-
-      def integer
-        MiniJava::Syntax::IntegerType.instance
-      end
-
-      def array
-        MiniJava::Syntax::ArrayType.instance
-      end
-
-      def object(class_name)
-        MiniJava::Syntax::ObjectType.new(class_name)
-      end
-
-      def unknown
-        MiniJava::Syntax::UnknownType.instance
-      end
 
       def assert_types_of(expected, visitables, message = "Incompatible types: expected %<expected>s; got %<actual>s")
         if (actual = visit_all(visitables)).all?(&:known?)
