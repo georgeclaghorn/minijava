@@ -30,7 +30,7 @@ module MiniJava
 
     def visit_main_method_declaration(declaration)
       within method_scope_by_name(declaration.name) do
-        emit label("#{scope.parent.context.name}$#{declaration.name}")
+        label_with method_label(scope.parent.context.name, declaration.name)
         visit declaration.statement
       end
     end
@@ -44,7 +44,7 @@ module MiniJava
 
     def visit_method_declaration(declaration)
       within method_scope_by_name(declaration.name) do
-        emit label("#{scope.parent.context.name}$#{declaration.name}")
+        label_with method_label(scope.parent.context.name, declaration.name)
         visit_all declaration.statements
         emit return_with(visit(declaration.return_expression).register)
       end
@@ -64,7 +64,7 @@ module MiniJava
           push receiver
 
           emit_to method_type_in_class_by_name(receiver.type.class_name, invocation.name) do |result|
-            call "#{receiver.type.class_name}$#{invocation.name}", parameters.count + 1, result.register
+            call method_label(receiver.type.class_name, invocation.name), parameters.count + 1, result.register
           end
         end
       end
@@ -104,6 +104,14 @@ module MiniJava
         Result.new "%r#{@register ? @register += 1 : @register = 0}", type
       end
 
+
+      def method_label(class_name, method_name)
+        "#{class_name}$#{method_name}"
+      end
+
+      def label_with(name)
+        emit label(name)
+      end
 
       def push_all(symbols)
         symbols.reverse.each { |symbol| push symbol }
