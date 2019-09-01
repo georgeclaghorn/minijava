@@ -3,7 +3,7 @@ require "test_helper"
 class MiniJava::IntermediateRepresentationVisitorTest < MiniTest::Test
   include MiniJava::InstructionsHelper, MiniJava::TypesHelper
 
-  def test_representing_a_valid_program_with_variable_assignment
+  def test_representing_variable_assignment
     instructions = represent(<<~JAVA)
       class HelloWorld {
         public static void main() {
@@ -35,7 +35,7 @@ class MiniJava::IntermediateRepresentationVisitorTest < MiniTest::Test
     ], instructions
   end
 
-  def test_representing_a_valid_program_with_array_element_assignment
+  def test_representing_array_element_assignment
     instructions = represent(<<~JAVA)
       class HelloWorld {
         public static void main() {
