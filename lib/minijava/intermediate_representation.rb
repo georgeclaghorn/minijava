@@ -3,6 +3,9 @@ module MiniJava
     Label = Struct.new(:name)
     Copy  = Struct.new(:value, :result)
 
+    Jump       = Struct.new(:label)
+    JumpUnless = Struct.new(:condition, :label)
+
     Parameter = Struct.new(:value)
     Call      = Struct.new(:label, :parameter_count, :result)
     Return    = Struct.new(:value)

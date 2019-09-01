@@ -12,6 +12,14 @@ module MiniJava
       MiniJava::IntermediateRepresentation::Copy.new(value, result)
     end
 
+    def jump(label)
+      MiniJava::IntermediateRepresentation::Jump.new(label)
+    end
+
+    def jump_unless(condition, label)
+      MiniJava::IntermediateRepresentation::JumpUnless.new(condition, label)
+    end
+
     def parameter(value)
       MiniJava::IntermediateRepresentation::Parameter.new(value)
     end

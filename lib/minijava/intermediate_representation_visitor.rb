@@ -54,6 +54,26 @@ module MiniJava
     end
 
 
+    def visit_block(block)
+      visit_all block.statements
+    end
+
+    def visit_if_statement(statement)
+      visit(statement.condition).then do |condition|
+        next_if_label_prefix.then do |prefix|
+          emit jump_unless(condition.register, "#{prefix}.else")
+
+          visit statement.affirmative
+          emit jump("#{prefix}.end")
+
+          label_with "#{prefix}.else"
+          visit statement.negative
+
+          label_with "#{prefix}.end"
+        end
+      end
+    end
+
     def visit_print_statement(statement)
       push visit(statement.expression)
       emit call("__println", 1)
@@ -61,7 +81,7 @@ module MiniJava
 
     def visit_variable_assignment(statement)
       visit(statement.value).then do |value|
-        emit copy(statement.variable.name, value.register)
+        emit copy(value.register, statement.variable.name)
       end
     end
 
@@ -107,6 +127,14 @@ module MiniJava
       emit_to(integer) { |result| copy literal.value, result.register }
     end
 
+    def visit_true_literal(literal)
+      emit_to(boolean) { |result| copy true, result.register }
+    end
+
+    def visit_false_literal(literal)
+      emit_to(boolean) { |result| copy false, result.register }
+    end
+
     private
       attr_reader :scope, :instructions
       delegate :class_scope_by_name, :method_scope_by_name,
@@ -130,9 +158,13 @@ module MiniJava
         Result.new "%r#{@register ? @register += 1 : @register = 0}", type
       end
 
+      def next_if_label_prefix
+        ".if.#{@if ? @if += 1 : @if = 0}"
+      end
+
 
       def method_label(class_name, method_name)
-        "#{class_name}$#{method_name}"
+        "#{class_name}.#{method_name}"
       end
 
       def label_with(name)
