@@ -13,7 +13,9 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
 
       class Foo {
         public int bar() {
-          return 42;
+          int number;
+          number = 42;
+          return number;
         }
       }
     JAVA
@@ -28,7 +30,8 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
 
       label("Foo$bar"),
       copy(42, "%r2"),
-      return_with("%r2")
+      copy("number", "%r2"),
+      return_with("number")
     ], instructions
   end
 

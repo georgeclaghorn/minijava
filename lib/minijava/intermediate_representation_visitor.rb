@@ -59,6 +59,16 @@ module MiniJava
       emit call("__println", 1)
     end
 
+    def visit_variable_assignment(statement)
+      visit(statement.value).then do |value|
+        emit copy(statement.variable.name, value.register)
+      end
+    end
+
+
+    def visit_variable_access(access)
+      Result.new access.variable.name, variable_type_by_name(access.variable)
+    end
 
     def visit_method_invocation(invocation)
       visit(invocation.receiver).then do |receiver|
@@ -87,7 +97,8 @@ module MiniJava
 
     private
       attr_reader :scope, :instructions
-      delegate :class_scope_by_name, :method_scope_by_name, :method_declaration_in_class_by_name, to: :scope
+      delegate :class_scope_by_name, :method_scope_by_name,
+        :method_declaration_in_class_by_name, :variable_type_by_name, to: :scope
 
       def within(subscope)
         superscope, @scope = @scope, subscope
