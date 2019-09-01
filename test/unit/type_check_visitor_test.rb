@@ -244,7 +244,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     assert_equal [ "Cannot find variable: pick" ], errors
   end
 
-  def test_calling_a_method_on_a_primitive
+  def test_method_invocation_on_primitive
     errors = check(<<~JAVA)
         class HelloWorld {
           public static void main() {
@@ -262,7 +262,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     assert_equal [ "int cannot be dereferenced" ], errors
   end
 
-  def test_calling_an_undefined_method
+  def test_invocation_of_undefined_method
     errors = check(<<~JAVA)
         class HelloWorld {
           public static void main() {
@@ -280,7 +280,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     assert_equal [ "Cannot find method Foo.baz" ], errors
   end
 
-  def test_calling_a_method_with_the_wrong_number_of_parameters
+  def test_method_invocation_with_wrong_parameter_count
     errors = check(<<~JAVA)
         class HelloWorld {
           public static void main() {
@@ -298,7 +298,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     assert_equal [ "Cannot find method bar(int) - found bar(int, int)" ], errors
   end
 
-  def test_calling_a_method_with_the_wrong_types_of_parameters
+  def test_method_invocation_with_wrong_parameter_types
     errors = check(<<~JAVA)
         class HelloWorld {
           public static void main() {
@@ -850,7 +850,7 @@ class MiniJava::TypeCheckVisitorTest < MiniTest::Test
     assert_equal [ "Cannot find method Foo.baz", "Cannot find variable: glorp" ], errors
   end
 
-  def test_invoking_method_on_object_of_undefined_class
+  def test_method_invocation_on_object_of_undefined_class
     errors = check(<<~JAVA)
       class HelloWorld {
         public static void main() {
