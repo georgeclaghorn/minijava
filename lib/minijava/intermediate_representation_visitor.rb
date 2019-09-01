@@ -84,7 +84,7 @@ module MiniJava
 
     private
       attr_reader :scope, :instructions
-      delegate :class_scope_by_name, :method_scope_by_name, to: :scope
+      delegate :class_scope_by_name, :method_scope_by_name, :method_declaration_in_class_by_name, to: :scope
 
       def within(subscope)
         superscope, @scope = @scope, subscope
@@ -95,10 +95,6 @@ module MiniJava
 
       def method_type_in_class_by_name(class_name, method_name)
         method_declaration_in_class_by_name(class_name, method_name).type
-      end
-
-      def method_declaration_in_class_by_name(class_name, method_name)
-        class_scope_by_name(class_name).method_declaration_by_name(method_name)
       end
 
 
