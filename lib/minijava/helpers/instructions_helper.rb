@@ -40,6 +40,10 @@ module MiniJava
       MiniJava::IntermediateRepresentation::ArrayAssignment.new(value, array, index)
     end
 
+    def length_of(array, result)
+      MiniJava::IntermediateRepresentation::ArrayLength.new(array, result)
+    end
+
     def new_object(type, result)
       MiniJava::IntermediateRepresentation::NewObject.new(type, result)
     end

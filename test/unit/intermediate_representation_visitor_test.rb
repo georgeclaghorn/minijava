@@ -157,6 +157,39 @@ class MiniJava::IntermediateRepresentationVisitorTest < MiniTest::Test
     ], instructions
   end
 
+  def test_representing_array_length
+    instructions = represent(<<~JAVA)
+      class HelloWorld {
+        public static void main() {
+          System.out.println(new Foo().bar());
+        }
+      }
+
+      class Foo {
+        public int bar() {
+          int[] numbers;
+          numbers = new int[3];
+          return numbers.length;
+        }
+      }
+    JAVA
+
+    assert_equal [
+      label("HelloWorld.main"),
+      new_object("Foo", "%r0"),
+      parameter("%r0"),
+      call("Foo.bar", 1, "%r1"),
+      parameter("%r1"),
+      call("__println", 1, nil),
+
+      label("Foo.bar"),
+      new_array(integer, 3, "%r2"),
+      copy("%r2", "numbers"),
+      length_of("numbers", "%r3"),
+      return_with("%r3")
+    ], instructions
+  end
+
   private
     def represent(source)
       program = MiniJava::Parser.program_from(source)

@@ -12,6 +12,7 @@ module MiniJava
 
     ArrayAccess     = Struct.new(:array, :index, :result)
     ArrayAssignment = Struct.new(:value, :array, :index)
+    ArrayLength     = Struct.new(:array, :result)
 
     NewObject = Struct.new(:type, :result)
     NewArray  = Struct.new(:type, :size, :result)

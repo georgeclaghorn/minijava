@@ -117,6 +117,12 @@ module MiniJava
       end
     end
 
+    def visit_array_length(length)
+      visit(length.array).then do |array|
+        emit_to(integer) { |result| length_of array.register, result.register }
+      end
+    end
+
     def visit_method_invocation(invocation)
       visit(invocation.receiver).then do |receiver|
         visit_all(invocation.parameters).then do |parameters|
