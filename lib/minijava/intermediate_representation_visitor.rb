@@ -46,7 +46,10 @@ module MiniJava
       within method_scope_by_name(declaration.name) do
         label_with method_label(scope.parent.context.name, declaration.name)
         visit_all declaration.statements
-        emit return_with(visit(declaration.return_expression).register)
+
+        visit(declaration.return_expression).then do |result|
+          emit return_with(result.register)
+        end
       end
     end
 
