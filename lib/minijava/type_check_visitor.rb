@@ -64,7 +64,7 @@ module MiniJava
 
     def visit_while_statement(statement)
       assert_type_of boolean, statement.condition
-      visit statement.substatement
+      visit statement.body
     end
 
     def visit_print_statement(statement)

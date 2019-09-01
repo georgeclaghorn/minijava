@@ -74,6 +74,21 @@ module MiniJava
       end
     end
 
+    def visit_while_statement(statement)
+      next_while_label_prefix.then do |prefix|
+        label_with "#{prefix}.begin"
+
+        visit(statement.condition).then do |condition|
+          emit jump_unless(condition.register, "#{prefix}.end")
+        end
+
+        visit statement.body
+        emit jump("#{prefix}.begin")
+
+        label_with "#{prefix}.end"
+      end
+    end
+
     def visit_print_statement(statement)
       push visit(statement.expression)
       emit call("__println", 1)
@@ -160,6 +175,10 @@ module MiniJava
 
       def next_if_label_prefix
         ".if.#{@if ? @if += 1 : @if = 0}"
+      end
+
+      def next_while_label_prefix
+        ".while.#{@while ? @while += 1 : @while = 0}"
       end
 
 

@@ -176,9 +176,9 @@ class MiniJava::ParserTest < Minitest::Test
     assert_kind_of MiniJava::Syntax::LessThan, loop.condition
     assert_equal "number", loop.condition.left.variable.name
     assert_equal 3, loop.condition.right.value
-    assert_kind_of MiniJava::Syntax::Block, loop.substatement
+    assert_kind_of MiniJava::Syntax::Block, loop.body
 
-    block = loop.substatement
+    block = loop.body
     assert block.statements.one?
     assert_kind_of MiniJava::Syntax::VariableAssignment, block.statements.first
 

@@ -116,6 +116,47 @@ class MiniJava::IntermediateRepresentationVisitorTest < MiniTest::Test
     ], instructions
   end
 
+  def test_representing_while_statement
+    instructions = represent(<<~JAVA)
+      class HelloWorld {
+        public static void main() {
+          System.out.println(new Foo().bar());
+        }
+      }
+
+      class Foo {
+        public int bar() {
+          int number;
+
+          while (true) {
+            number = 1;
+          }
+
+          return number;
+        }
+      }
+    JAVA
+
+    assert_equal [
+      label("HelloWorld.main"),
+      new_object("Foo", "%r0"),
+      parameter("%r0"),
+      call("Foo.bar", 1, "%r1"),
+      parameter("%r1"),
+      call("__println", 1, nil),
+
+      label("Foo.bar"),
+      label(".while.0.begin"),
+      copy(true, "%r2"),
+      jump_unless("%r2", ".while.0.end"),
+      copy(1, "%r3"),
+      copy("%r3", "number"),
+      jump(".while.0.begin"),
+      label(".while.0.end"),
+      return_with("number")
+    ], instructions
+  end
+
   private
     def represent(source)
       program = MiniJava::Parser.program_from(source)

@@ -136,7 +136,7 @@ module MiniJava
 
     Block          = Struct.new(:statements)
     IfStatement    = Struct.new(:condition, :affirmative, :negative)
-    WhileStatement = Struct.new(:condition, :substatement)
+    WhileStatement = Struct.new(:condition, :body)
     PrintStatement = Struct.new(:expression)
 
     VariableAssignment = Struct.new(:variable, :value)

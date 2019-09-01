@@ -100,7 +100,7 @@ module MiniJava
     def visit_while_statement(statement)
       match statement
       visit statement.condition
-      visit statement.substatement
+      visit statement.body
     end
 
     def visit_print_statement(statement)
