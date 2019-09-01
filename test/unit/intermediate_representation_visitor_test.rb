@@ -1,9 +1,9 @@
 require "test_helper"
 
-class MiniJava::TypeCheckVisitorTest < MiniTest::Test
+class MiniJava::IntermediateRepresentationVisitorTest < MiniTest::Test
   include MiniJava::InstructionsHelper
 
-  def test_generating_an_intermediate_representation_for_a_valid_program
+  def test_representing_a_valid_program_with_variable_assignment
     instructions = represent(<<~JAVA)
       class HelloWorld {
         public static void main() {
