@@ -82,6 +82,14 @@ module MiniJava
       nil
     end
 
+    def method_declaration_in_class_by_name(class_name, method_name)
+      nil
+    end
+
+    def method_type_in_class_by_name(class_name, method_name)
+      nil
+    end
+
 
     def variable?(name)
       false
