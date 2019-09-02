@@ -131,6 +131,6 @@ module MiniJava
 
     #== Other
 
-    Result = Struct.new(:location, :type)
+    Result = Struct.new(:operand, :type)
   end
 end

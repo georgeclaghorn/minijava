@@ -45,8 +45,8 @@ module MiniJava
         label_with method_label(scope.parent.context.name, declaration.name)
         visit_all declaration.statements
 
-        visit(declaration.return_expression).then do |result|
-          emit return_with(result.location)
+        with_result_of declaration.return_expression do |result|
+          emit return_with(result.operand)
         end
       end
     end
@@ -57,27 +57,27 @@ module MiniJava
     end
 
     def visit_if_statement(statement)
-      visit(statement.condition).then do |condition|
-        next_if_label_prefix.then do |prefix|
-          emit jump_unless(condition.location, "#{prefix}.else")
-
-          visit statement.affirmative
-          emit jump("#{prefix}.end")
-
-          label_with "#{prefix}.else"
-          visit statement.negative
-
-          label_with "#{prefix}.end"
+      with_next_if_label_prefix do |prefix|
+        with_result_of statement.condition do |condition|
+          emit jump_unless(condition.operand, "#{prefix}.else")
         end
+
+        visit statement.affirmative
+        emit jump("#{prefix}.end")
+
+        label_with "#{prefix}.else"
+        visit statement.negative
+
+        label_with "#{prefix}.end"
       end
     end
 
     def visit_while_statement(statement)
-      next_while_label_prefix.then do |prefix|
+      with_next_while_label_prefix do |prefix|
         label_with "#{prefix}.begin"
 
-        visit(statement.condition).then do |condition|
-          emit jump_unless(condition.location, "#{prefix}.end")
+        with_result_of statement.condition do |condition|
+          emit jump_unless(condition.operand, "#{prefix}.end")
         end
 
         visit statement.body
@@ -93,115 +93,155 @@ module MiniJava
     end
 
     def visit_variable_assignment(statement)
-      visit(statement.value).then do |value|
-        emit copy(value.location, variable(statement.variable.name))
+      with_result_of statement.value do |value|
+        emit copy(value.operand, variable(statement.variable.name))
       end
     end
 
     def visit_array_element_assignment(statement)
-      visit(statement.value).then do |value|
-        emit copy_into(value.location, variable(statement.array.name), statement.index.value)
+      with_result_of statement.value do |value|
+        emit copy_into(value.operand, variable(statement.array.name), statement.index.value)
       end
     end
 
 
     def visit_not(operation)
-      visit(operation.expression).then do |operand|
-        emit_to(boolean) { |result| not_of operand.location, result }
+      with_result_of operation.expression do |expression|
+        with_next_register do |result|
+          emit not_of(expression.operand, result)
+          propagate result, boolean
+        end
       end
     end
 
     def visit_and(operation)
-      visit(operation.left).then do |left|
-        visit(operation.right).then do |right|
-          emit_to(boolean) { |result| and_of left.location, right.location, result }
+      with_result_of operation.left do |left|
+        with_result_of operation.right do |right|
+          with_next_register do |result|
+            emit and_of(left.operand, right.operand, result)
+            propagate result, boolean
+          end
         end
       end
     end
 
     def visit_less_than(operation)
-      visit(operation.left).then do |left|
-        visit(operation.right).then do |right|
-          emit_to(boolean) { |result| less_than left.location, right.location, result }
+      with_result_of operation.left do |left|
+        with_result_of operation.right do |right|
+          with_next_register do |result|
+            emit less_than(left.operand, right.operand, result)
+            propagate result, boolean
+          end
         end
       end
     end
 
     def visit_plus(operation)
-      visit(operation.left).then do |left|
-        visit(operation.right).then do |right|
-          emit_to(integer) { |result| add left.location, right.location, result }
+      with_result_of operation.left do |left|
+        with_result_of operation.right do |right|
+          with_next_register do |result|
+            emit add(left.operand, right.operand, result)
+            propagate result, integer
+          end
         end
       end
     end
 
     def visit_minus(operation)
-      visit(operation.left).then do |left|
-        visit(operation.right).then do |right|
-          emit_to(integer) { |result| subtract left.location, right.location, result }
+      with_result_of operation.left do |left|
+        with_result_of operation.right do |right|
+          with_next_register do |result|
+            emit subtract(left.operand, right.operand, result)
+            propagate result, integer
+          end
         end
       end
     end
 
     def visit_times(operation)
-      visit(operation.left).then do |left|
-        visit(operation.right).then do |right|
-          emit_to(integer) { |result| multiply left.location, right.location, result }
+      with_result_of operation.left do |left|
+        with_result_of operation.right do |right|
+          with_next_register do |result|
+            emit multiply(left.operand, right.operand, result)
+            propagate result, integer
+          end
         end
       end
     end
 
     def visit_variable_access(access)
-      Protocode::Result.new variable(access.variable.name), variable_type_by_name(access.variable.name)
+      propagate variable(access.variable.name), variable_type_by_name(access.variable.name)
     end
 
     def visit_array_access(access)
-      visit(access.array).then do |array|
-        emit_to(integer) { |result| index_into array.location, access.index.value, result }
+      with_result_of access.array do |array|
+        with_next_register do |result|
+          emit index_into(array.operand, access.index.value, result)
+          propagate result, integer
+        end
       end
     end
 
     def visit_array_length(length)
-      visit(length.array).then do |array|
-        emit_to(integer) { |result| length_of array.location, result }
+      with_result_of length.array do |array|
+        with_next_register do |result|
+          emit length_of(array.operand, result)
+          propagate result, integer
+        end
       end
     end
 
     def visit_method_invocation(invocation)
-      visit(invocation.receiver).then do |receiver|
-        visit_all(invocation.parameters).then do |parameters|
+      with_result_of invocation.receiver do |receiver|
+        with_results_of invocation.parameters do |parameters|
           push_all parameters
           push receiver
 
-          emit_to method_type_in_class_by_name(receiver.type.class_name, invocation.name) do |result|
-            call method_label(receiver.type.class_name, invocation.name), parameters.count + 1, result
+          with_next_register do |result|
+            emit call(method_label(receiver.type.class_name, invocation.name), parameters.count + 1, result)
+            propagate result, method_type_in_class_by_name(receiver.type.class_name, invocation.name)
           end
         end
       end
     end
 
     def visit_new_object(expression)
-      emit_to(object(expression.class_name)) { |result| new_object expression.class_name.to_s, result }
+      with_next_register do |result|
+        emit new_object(expression.class_name.to_s, result)
+        propagate result, object(expression.class_name)
+      end
     end
 
     def visit_new_array(expression)
-      emit_to(array) { |result| new_array integer, expression.size.value, result }
+      with_next_register do |result|
+        emit new_array(integer, expression.size.value, result)
+        propagate result, array
+      end
     end
 
     def visit_integer_literal(literal)
-      emit_to(integer) { |result| copy literal.value, result }
+      with_next_register do |result|
+        emit copy(literal.value, result)
+        propagate result, boolean
+      end
     end
 
     def visit_true_literal(literal)
-      emit_to(boolean) { |result| copy true, result }
+      with_next_register do |result|
+        emit copy(true, result)
+        propagate result, boolean
+      end
     end
 
     def visit_false_literal(literal)
-      emit_to(boolean) { |result| copy false, result }
+      with_next_register do |result|
+        emit copy(false, result)
+        propagate result, boolean
+      end
     end
 
     def visit_this(*)
-      Protocode::Result.new this, object(scope.parent.context.name)
+      propagate this, object(scope.parent.context.name)
     end
 
     private
@@ -221,16 +261,16 @@ module MiniJava
       end
 
 
-      def next_register
-        register @register.nil? ? @register = 0 : @register += 1
+      def with_next_register
+        yield register(@register.nil? ? @register = 0 : @register += 1)
       end
 
-      def next_if_label_prefix
-        ".if.#{@if ? @if += 1 : @if = 0}"
+      def with_next_if_label_prefix
+        yield ".if.#{@if ? @if += 1 : @if = 0}"
       end
 
-      def next_while_label_prefix
-        ".while.#{@while ? @while += 1 : @while = 0}"
+      def with_next_while_label_prefix
+        yield ".while.#{@while ? @while += 1 : @while = 0}"
       end
 
 
@@ -247,16 +287,25 @@ module MiniJava
       end
 
       def push(symbol)
-        emit parameter(symbol.location)
-      end
-
-      def emit_to(type)
-        Protocode::Result.new next_register.tap { |result| emit yield(result) }, type
+        emit parameter(symbol.operand)
       end
 
       def emit(instruction)
         instructions.append(instruction)
         nil
+      end
+
+
+      def with_result_of(visitable)
+        yield visit(visitable)
+      end
+
+      def with_results_of(visitable)
+        yield visit_all(visitable)
+      end
+
+      def propagate(operand, type)
+        Protocode::Result.new operand, type
       end
   end
 end
