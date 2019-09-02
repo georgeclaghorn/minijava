@@ -9,9 +9,9 @@ module MiniJava
     def initialize(parent = NullScope.instance, context = nil)
       @parent    = parent
       @context   = context
-      @classes   = ChildSet.new(self)
-      @methods   = ChildSet.new(self)
-      @variables = VariableSet.new
+      @classes   = ChildMap.new(self)
+      @methods   = ChildMap.new(self)
+      @variables = VariableMap.new
     end
 
     def reparent(parent)
@@ -101,7 +101,7 @@ module MiniJava
   end
 
 
-  class ChildSet
+  class ChildMap
     def initialize(parent)
       @parent = parent
       @scopes = {}
@@ -124,7 +124,7 @@ module MiniJava
     end
   end
 
-  class VariableSet
+  class VariableMap
     def initialize
       @types = {}
     end
