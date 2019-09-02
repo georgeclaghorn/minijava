@@ -1,17 +1,17 @@
 module MiniJava
   class Scope
-    attr_reader :parent, :context, :classes, :methods, :variables
+    attr_reader :parent, :declaration, :classes, :methods, :variables
 
     def self.build(*args, &block)
       new(*args).tap(&block)
     end
 
-    def initialize(parent = NullScope.instance, context = nil)
-      @parent    = parent
-      @context   = context
-      @classes   = ScopeMap.new(self)
-      @methods   = ScopeMap.new(self)
-      @variables = VariableMap.new
+    def initialize(parent = NullScope.instance, declaration = nil)
+      @parent      = parent
+      @declaration = declaration
+      @classes     = ScopeMap.new(self)
+      @methods     = ScopeMap.new(self)
+      @variables   = VariableMap.new
     end
 
     def reparent(parent)
@@ -24,7 +24,7 @@ module MiniJava
     end
 
     def class_scope_by_name(name)
-      classes.scope_for(name) || parent.class_scope_by_name(name)
+      classes[name] || parent.class_scope_by_name(name)
     end
 
 
@@ -32,12 +32,12 @@ module MiniJava
       methods.include?(name) || parent.method?(name)
     end
 
-    def method_declaration_by_name(name)
-      methods.declaration_for(name) || parent.method_declaration_by_name(name)
+    def method_scope_by_name(name)
+      methods[name] || parent.method_scope_by_name(name)
     end
 
-    def method_scope_by_name(name)
-      methods.scope_for(name) || parent.method_scope_by_name(name)
+    def method_declaration_by_name(name)
+      method_scope_by_name(name)&.declaration
     end
 
     def method_declaration_in_class_by_name(class_name, method_name)
@@ -115,12 +115,8 @@ module MiniJava
       @scopes.include?(name.to_s)
     end
 
-    def scope_for(name)
+    def [](name)
       @scopes[name.to_s]
-    end
-
-    def declaration_for(name)
-      scope_for(name)&.context
     end
   end
 

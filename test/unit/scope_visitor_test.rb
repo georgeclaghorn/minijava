@@ -34,18 +34,18 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
 
 
     class_scope = program_scope.class_scope_by_name("HelloWorld")
-    assert_equal program.main_class_declaration, class_scope.context
+    assert_equal program.main_class_declaration, class_scope.declaration
     assert class_scope.method?("main")
 
     method_declaration = class_scope.method_declaration_by_name("main")
     assert_equal MiniJava::Syntax::VoidType.instance, method_declaration.type
 
     method_scope = class_scope.method_scope_by_name("main")
-    assert_equal method_declaration, method_scope.context
+    assert_equal method_declaration, method_scope.declaration
 
 
     class_scope = program_scope.class_scope_by_name("Incrementor")
-    assert_equal program.class_declarations.first, class_scope.context
+    assert_equal program.class_declarations.first, class_scope.declaration
 
     assert class_scope.variable?("foo")
     assert_equal MiniJava::Syntax::IntegerType.instance, class_scope.variable_type_by_name("foo")
@@ -56,7 +56,7 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
     assert_equal MiniJava::Syntax::IntegerType.instance, method_declaration.type
 
     method_scope = class_scope.method_scope_by_name("next")
-    assert_equal method_declaration, method_scope.context
+    assert_equal method_declaration, method_scope.declaration
 
     assert method_scope.variable?("bar")
     assert_equal MiniJava::Syntax::BooleanType.instance, method_scope.variable_type_by_name("bar")
@@ -69,7 +69,7 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
 
 
     class_scope = program_scope.class_scope_by_name("Decrementor")
-    assert_equal program.class_declarations.second, class_scope.context
+    assert_equal program.class_declarations.second, class_scope.declaration
 
     assert class_scope.variable?("foo")
     assert_equal MiniJava::Syntax::IntegerType.instance, class_scope.variable_type_by_name("foo")
@@ -80,7 +80,7 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
     assert_equal MiniJava::Syntax::IntegerType.instance, method_declaration.type
 
     method_scope = class_scope.method_scope_by_name("next")
-    assert_equal method_declaration, method_scope.context
+    assert_equal method_declaration, method_scope.declaration
 
     assert method_scope.variable?("foo")
     assert_equal MiniJava::Syntax::IntegerType.instance, method_scope.variable_type_by_name("foo")
@@ -251,21 +251,21 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
 
     foo_bar_declaration = foo_declaration.method_declarations.first
     foo_bar_scope = foo_scope.method_scope_by_name("bar")
-    assert_equal foo_bar_declaration, foo_bar_scope.context
-    assert_equal foo_declaration, foo_bar_scope.parent.context
+    assert_equal foo_bar_declaration, foo_bar_scope.declaration
+    assert_equal foo_declaration, foo_bar_scope.parent.declaration
 
     foo_baz_declaration = foo_declaration.method_declarations.second
     foo_baz_scope = foo_scope.method_scope_by_name("baz")
-    assert_equal foo_baz_declaration, foo_baz_scope.context
+    assert_equal foo_baz_declaration, foo_baz_scope.declaration
     assert_equal foo_scope, foo_baz_scope.parent
 
     bar_bar_scope = bar_scope.method_scope_by_name("bar")
-    assert_equal foo_bar_declaration, bar_bar_scope.context
+    assert_equal foo_bar_declaration, bar_bar_scope.declaration
     assert_equal foo_scope, bar_bar_scope.parent
 
     bar_baz_declaration = bar_declaration.method_declarations.first
     bar_baz_scope = bar_scope.method_scope_by_name("baz")
-    assert_equal bar_baz_declaration, bar_baz_scope.context
+    assert_equal bar_baz_declaration, bar_baz_scope.declaration
     assert_equal bar_scope, bar_baz_scope.parent
   end
 end

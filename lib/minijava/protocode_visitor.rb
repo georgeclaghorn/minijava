@@ -31,7 +31,7 @@ module MiniJava
 
     def visit_main_method_declaration(declaration)
       within method_scope_by_name(declaration.name) do
-        label_with method_label(scope.parent.context.name, declaration.name)
+        label_with method_label(scope.parent.declaration.name, declaration.name)
         visit declaration.statement
       end
     end
@@ -45,7 +45,7 @@ module MiniJava
 
     def visit_method_declaration(declaration)
       within method_scope_by_name(declaration.name) do
-        label_with method_label(scope.parent.context.name, declaration.name)
+        label_with method_label(scope.parent.declaration.name, declaration.name)
         visit_all declaration.statements
 
         with_result_of declaration.return_expression do |destination|
@@ -244,7 +244,7 @@ module MiniJava
     end
 
     def visit_this(*)
-      propagate this, object(scope.parent.context.name)
+      propagate this, object(scope.parent.declaration.name)
     end
 
     private
