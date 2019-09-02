@@ -201,8 +201,8 @@ module MiniJava
           push receiver
 
           with_next_register do |destination|
-            emit call(method_label(receiver.type.class_name, invocation.name), parameters.count + 1, destination)
-            propagate destination, method_type_in_class_by_name(receiver.type.class_name, invocation.name)
+            emit call(method_label(receiver.type, invocation.name), parameters.count + 1, destination)
+            propagate destination, method_type_in_class_by_name(receiver.type, invocation.name)
           end
         end
       end
