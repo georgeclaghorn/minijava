@@ -1,14 +1,14 @@
 require "minijava/visitor"
-require "minijava/intermediate_representation"
+require "minijava/protocode"
 
 require "minijava/helpers/types_helper"
 require "minijava/helpers/instructions_helper"
 
 module MiniJava
-  class IntermediateRepresentationVisitor < Visitor
+  class ProtocodeVisitor < Visitor
     include TypesHelper, InstructionsHelper
 
-    def self.represent(program, scope)
+    def self.protocode_for(program, scope)
       [].tap { |instructions| new(scope, instructions).visit(program) }
     end
 

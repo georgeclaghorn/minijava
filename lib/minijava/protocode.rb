@@ -1,5 +1,5 @@
 module MiniJava
-  module IntermediateRepresentation
+  module Protocode
     Label = Struct.new(:name)
 
     Not      = Struct.new(:operand, :result)

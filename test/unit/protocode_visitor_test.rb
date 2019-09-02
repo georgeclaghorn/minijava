@@ -1,6 +1,6 @@
 require "test_helper"
 
-class MiniJava::IntermediateRepresentationVisitorTest < MiniTest::Test
+class MiniJava::ProtocodeVisitorTest < MiniTest::Test
   include MiniJava::InstructionsHelper, MiniJava::TypesHelper
 
   def test_variable_assignment
@@ -398,6 +398,6 @@ class MiniJava::IntermediateRepresentationVisitorTest < MiniTest::Test
       program = MiniJava::Parser.program_from(source)
       scope = MiniJava::ScopeVisitor.scope_for(program)
 
-      MiniJava::IntermediateRepresentationVisitor.represent(program, scope)
+      MiniJava::ProtocodeVisitor.protocode_for(program, scope)
     end
 end
