@@ -215,4 +215,57 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
     assert_equal foo_scope, bar_scope.parent
     assert_equal bar_scope, baz_scope.parent
   end
+
+  def test_method_overriding
+    program = MiniJava::Parser.program_from(<<~JAVA)
+      class HelloWorld {
+        public static void main() {
+          System.out.println(new Foo().bar());
+        }
+      }
+
+      class Foo {
+        public int bar() {
+          return this.baz() + 1;
+        }
+
+        public int baz() {
+          return 3;
+        }
+      }
+
+      class Bar extends Foo {
+        public int baz() {
+          return 4;
+        }
+      }
+    JAVA
+
+    program_scope = MiniJava::ScopeVisitor.scope_for(program)
+
+    foo_declaration = program.class_declarations.first
+    foo_scope = program_scope.class_scope_by_name("Foo")
+
+    bar_declaration = program.class_declarations.second
+    bar_scope = program_scope.class_scope_by_name("Bar")
+
+    foo_bar_declaration = foo_declaration.method_declarations.first
+    foo_bar_scope = foo_scope.method_scope_by_name("bar")
+    assert_equal foo_bar_declaration, foo_bar_scope.context
+    assert_equal foo_declaration, foo_bar_scope.parent.context
+
+    foo_baz_declaration = foo_declaration.method_declarations.second
+    foo_baz_scope = foo_scope.method_scope_by_name("baz")
+    assert_equal foo_baz_declaration, foo_baz_scope.context
+    assert_equal foo_scope, foo_baz_scope.parent
+
+    bar_bar_scope = bar_scope.method_scope_by_name("bar")
+    assert_equal foo_bar_declaration, bar_bar_scope.context
+    assert_equal foo_scope, bar_bar_scope.parent
+
+    bar_baz_declaration = bar_declaration.method_declarations.first
+    bar_baz_scope = bar_scope.method_scope_by_name("baz")
+    assert_equal bar_baz_declaration, bar_baz_scope.context
+    assert_equal bar_scope, bar_baz_scope.parent
+  end
 end
