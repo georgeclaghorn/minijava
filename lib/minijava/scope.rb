@@ -9,8 +9,8 @@ module MiniJava
     def initialize(parent = NullScope.instance, context = nil)
       @parent    = parent
       @context   = context
-      @classes   = ChildMap.new(self)
-      @methods   = ChildMap.new(self)
+      @classes   = ScopeMap.new(self)
+      @methods   = ScopeMap.new(self)
       @variables = VariableMap.new
     end
 
@@ -101,8 +101,8 @@ module MiniJava
   end
 
 
-  class ChildMap
-    def initialize(parent)
+  class ScopeMap
+    def initialize(parent = nil)
       @parent = parent
       @scopes = {}
     end
