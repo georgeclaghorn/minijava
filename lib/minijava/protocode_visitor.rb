@@ -11,7 +11,10 @@ module MiniJava
     end
 
     def initialize(scope, instructions)
-      @scope, @instructions = scope, instructions
+      @scope        = scope
+      @instructions = instructions
+      @registers    = Protocode::NumberedRegisters.new
+      @labelings    = Protocode::NumberedLabelingsByPrefix.new
     end
 
     def visit_program(program)
@@ -57,33 +60,33 @@ module MiniJava
     end
 
     def visit_if_statement(statement)
-      with_next_if_label_prefix do |prefix|
+      with_next_if_labeling do |labels|
         with_result_of statement.condition do |condition|
-          emit jump_unless(condition.operand, "#{prefix}.else")
+          emit jump_unless(condition.operand, labels.else)
         end
 
         visit statement.affirmative
-        emit jump("#{prefix}.end")
+        emit jump(labels.end)
 
-        label_with "#{prefix}.else"
+        label_with labels.else
         visit statement.negative
 
-        label_with "#{prefix}.end"
+        label_with labels.end
       end
     end
 
     def visit_while_statement(statement)
-      with_next_while_label_prefix do |prefix|
-        label_with "#{prefix}.begin"
+      with_next_while_labeling do |labels|
+        label_with labels.begin
 
         with_result_of statement.condition do |condition|
-          emit jump_unless(condition.operand, "#{prefix}.end")
+          emit jump_unless(condition.operand, labels.end)
         end
 
         visit statement.body
-        emit jump("#{prefix}.begin")
+        emit jump(labels.begin)
 
-        label_with "#{prefix}.end"
+        label_with labels.end
       end
     end
 
@@ -261,16 +264,24 @@ module MiniJava
       end
 
 
+      def with_result_of(visitable)
+        yield visit(visitable)
+      end
+
+      def with_results_of(visitable)
+        yield visit_all(visitable)
+      end
+
       def with_next_register
-        yield register(@register.nil? ? @register = 0 : @register += 1)
+        yield @registers.next
       end
 
-      def with_next_if_label_prefix
-        yield ".if.#{@if ? @if += 1 : @if = 0}"
+      def with_next_if_labeling
+        yield @labelings.next(".if")
       end
 
-      def with_next_while_label_prefix
-        yield ".while.#{@while ? @while += 1 : @while = 0}"
+      def with_next_while_labeling
+        yield @labelings.next(".while")
       end
 
 
@@ -293,15 +304,6 @@ module MiniJava
       def emit(instruction)
         instructions.append(instruction)
         nil
-      end
-
-
-      def with_result_of(visitable)
-        yield visit(visitable)
-      end
-
-      def with_results_of(visitable)
-        yield visit_all(visitable)
       end
 
       def propagate(operand, type)

@@ -102,6 +102,57 @@ module MiniJava
       end
     end
 
+    class NumberedLabelingsByPrefix
+      def initialize
+        @labelings = Hash.new { |hash, prefix| hash[prefix] = NumberedLabelings.new(prefix) }
+      end
+
+      def next(prefix)
+        @labelings[prefix].next
+      end
+    end
+
+    class NumberedLabelings
+      attr_reader :prefix
+
+      def initialize(prefix)
+        @prefix = prefix
+        @number = -1
+      end
+
+      def next
+        Labeling.new("#{prefix}.#{next_number}")
+      end
+
+      def next_number
+        @number += 1
+      end
+    end
+
+    class Labeling
+      attr_reader :prefix
+
+      def initialize(prefix)
+        @prefix = prefix
+      end
+
+      def begin
+        get "begin"
+      end
+
+      def else
+        get "else"
+      end
+
+      def end
+        get "end"
+      end
+
+      def get(suffix)
+        "#{prefix}.#{suffix}"
+      end
+    end
+
 
     #== Operands
 
@@ -125,6 +176,20 @@ module MiniJava
 
       def this
         ThisOperand.instance
+      end
+    end
+
+    class NumberedRegisters
+      def initialize
+        @number = -1
+      end
+
+      def next
+        RegisterOperand.new(next_number)
+      end
+
+      def next_number
+        @number += 1
       end
     end
 
