@@ -20,6 +20,18 @@ module MiniJava
       MiniJava::Protocode::LessThan.new(left, right, result)
     end
 
+    def add(left, right, result)
+      MiniJava::Protocode::Add.new(left, right, result)
+    end
+
+    def subtract(left, right, result)
+      MiniJava::Protocode::Subtract.new(left, right, result)
+    end
+
+    def multiply(left, right, result)
+      MiniJava::Protocode::Multiply.new(left, right, result)
+    end
+
     def copy(value, result)
       MiniJava::Protocode::Copy.new(value, result)
     end

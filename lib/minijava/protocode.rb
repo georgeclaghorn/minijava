@@ -5,6 +5,9 @@ module MiniJava
     Not      = Struct.new(:operand, :result)
     And      = Struct.new(:left, :right, :result)
     LessThan = Struct.new(:left, :right, :result)
+    Add      = Struct.new(:left, :right, :result)
+    Subtract = Struct.new(:left, :right, :result)
+    Multiply = Struct.new(:left, :right, :result)
     Copy     = Struct.new(:value, :result)
 
     Jump       = Struct.new(:label)

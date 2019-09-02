@@ -322,6 +322,44 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
     ], instructions
   end
 
+  def test_arithmetic_operators
+    instructions = represent(<<~JAVA)
+      class HelloWorld {
+        public static void main() {
+          System.out.println(new Foo().bar(42));
+        }
+      }
+
+      class Foo {
+        public int bar(int baz) {
+          int glorp;
+          glorp = 4;
+          return (baz * 7) + (baz - glorp);
+        }
+      }
+    JAVA
+
+    assert_equal [
+      label("HelloWorld.main"),
+      new_object("Foo", "%r0"),
+      copy(42, "%r1"),
+      parameter("%r1"),
+      parameter("%r0"),
+      call("Foo.bar", 2, "%r2"),
+      parameter("%r2"),
+      call("__println", 1, nil),
+
+      label("Foo.bar"),
+      copy(4, "%r3"),
+      copy("%r3", "glorp"),
+      copy(7, "%r4"),
+      multiply("baz", "%r4", "%r5"),
+      subtract("baz", "glorp", "%r6"),
+      add("%r5", "%r6", "%r7"),
+      return_with("%r7"),
+    ], instructions
+  end
+
   def test_array_length
     instructions = represent(<<~JAVA)
       class HelloWorld {

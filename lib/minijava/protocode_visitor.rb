@@ -129,6 +129,30 @@ module MiniJava
       end
     end
 
+    def visit_plus(operation)
+      visit(operation.left).then do |left|
+        visit(operation.right).then do |right|
+          emit_to(integer) { |result| add left.register, right.register, result.register }
+        end
+      end
+    end
+
+    def visit_minus(operation)
+      visit(operation.left).then do |left|
+        visit(operation.right).then do |right|
+          emit_to(integer) { |result| subtract left.register, right.register, result.register }
+        end
+      end
+    end
+
+    def visit_times(operation)
+      visit(operation.left).then do |left|
+        visit(operation.right).then do |right|
+          emit_to(integer) { |result| multiply left.register, right.register, result.register }
+        end
+      end
+    end
+
     def visit_variable_access(access)
       Result.new access.variable.name, variable_type_by_name(access.variable)
     end
