@@ -1,7 +1,11 @@
 module MiniJava
   module IntermediateRepresentation
     Label = Struct.new(:name)
-    Copy  = Struct.new(:value, :result)
+
+    Not      = Struct.new(:operand, :result)
+    And      = Struct.new(:left, :right, :result)
+    LessThan = Struct.new(:left, :right, :result)
+    Copy     = Struct.new(:value, :result)
 
     Jump       = Struct.new(:label)
     JumpUnless = Struct.new(:condition, :label)

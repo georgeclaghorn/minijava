@@ -261,6 +261,67 @@ class MiniJava::IntermediateRepresentationVisitorTest < MiniTest::Test
     ], instructions
   end
 
+  def test_logical_operators
+    instructions = represent(<<~JAVA)
+      class HelloWorld {
+        public static void main() {
+          System.out.println(new Foo().bar(42));
+        }
+      }
+
+      class Foo {
+        public int bar(int baz) {
+          int result;
+
+          if (this.glorp(baz)) {
+            result = baz;
+          } else {
+            result = 0;
+          }
+
+          return result;
+        }
+
+        public int glorp(int baz) {
+          return !(baz < 1) && baz < 100;
+        }
+      }
+    JAVA
+
+    assert_equal [
+      label("HelloWorld.main"),
+      new_object("Foo", "%r0"),
+      copy(42, "%r1"),
+      parameter("%r1"),
+      parameter("%r0"),
+      call("Foo.bar", 2, "%r2"),
+      parameter("%r2"),
+      call("__println", 1, nil),
+
+      label("Foo.bar"),
+      parameter("baz"),
+      parameter("this"),
+      call("Foo.glorp", 2, "%r3"),
+      jump_unless("%r3", ".if.0.else"),
+      copy("baz", "result"),
+      jump(".if.0.end"),
+      label(".if.0.else"),
+      copy(0, "%r4"),
+      copy("%r4", "result"),
+      label(".if.0.end"),
+      return_with("result"),
+
+      label("Foo.glorp"),
+      copy(1, "%r5"),
+      less_than("baz", "%r5", "%r6"),
+      not_of("%r6", "%r7"),
+      copy(100, "%r8"),
+      less_than("baz", "%r8", "%r9"),
+      and_of("%r7", "%r9", "%r10"),
+      return_with("%r10")
+    ], instructions
+  end
+
   def test_array_length
     instructions = represent(<<~JAVA)
       class HelloWorld {

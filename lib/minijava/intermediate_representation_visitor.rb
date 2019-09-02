@@ -107,6 +107,28 @@ module MiniJava
     end
 
 
+    def visit_not(operation)
+      visit(operation.expression).then do |operand|
+        emit_to(boolean) { |result| not_of operand.register, result.register }
+      end
+    end
+
+    def visit_and(operation)
+      visit(operation.left).then do |left|
+        visit(operation.right).then do |right|
+          emit_to(boolean) { |result| and_of left.register, right.register, result.register }
+        end
+      end
+    end
+
+    def visit_less_than(operation)
+      visit(operation.left).then do |left|
+        visit(operation.right).then do |right|
+          emit_to(boolean) { |result| less_than left.register, right.register, result.register }
+        end
+      end
+    end
+
     def visit_variable_access(access)
       Result.new access.variable.name, variable_type_by_name(access.variable)
     end

@@ -8,6 +8,18 @@ module MiniJava
       MiniJava::IntermediateRepresentation::Label.new(name)
     end
 
+    def not_of(operand, result)
+      MiniJava::IntermediateRepresentation::Not.new(operand, result)
+    end
+
+    def and_of(left, right, result)
+      MiniJava::IntermediateRepresentation::And.new(left, right, result)
+    end
+
+    def less_than(left, right, result)
+      MiniJava::IntermediateRepresentation::LessThan.new(left, right, result)
+    end
+
     def copy(value, result)
       MiniJava::IntermediateRepresentation::Copy.new(value, result)
     end
