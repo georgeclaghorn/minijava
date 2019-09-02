@@ -1,12 +1,10 @@
 require "minijava/visitor"
 require "minijava/protocode"
 
-require "minijava/helpers/types_helper"
-require "minijava/helpers/instructions_helper"
-
 module MiniJava
   class ProtocodeVisitor < Visitor
-    include TypesHelper, InstructionsHelper
+    include Syntax::TypesHelper
+    include Protocode::InstructionsHelper, Protocode::OperandsHelper
 
     def self.protocode_for(program, scope)
       [].tap { |instructions| new(scope, instructions).visit(program) }
@@ -48,7 +46,7 @@ module MiniJava
         visit_all declaration.statements
 
         visit(declaration.return_expression).then do |result|
-          emit return_with(result.register)
+          emit return_with(result.location)
         end
       end
     end
@@ -61,7 +59,7 @@ module MiniJava
     def visit_if_statement(statement)
       visit(statement.condition).then do |condition|
         next_if_label_prefix.then do |prefix|
-          emit jump_unless(condition.register, "#{prefix}.else")
+          emit jump_unless(condition.location, "#{prefix}.else")
 
           visit statement.affirmative
           emit jump("#{prefix}.end")
@@ -79,7 +77,7 @@ module MiniJava
         label_with "#{prefix}.begin"
 
         visit(statement.condition).then do |condition|
-          emit jump_unless(condition.register, "#{prefix}.end")
+          emit jump_unless(condition.location, "#{prefix}.end")
         end
 
         visit statement.body
@@ -96,27 +94,27 @@ module MiniJava
 
     def visit_variable_assignment(statement)
       visit(statement.value).then do |value|
-        emit copy(value.register, statement.variable.name)
+        emit copy(value.location, variable(statement.variable.name))
       end
     end
 
     def visit_array_element_assignment(statement)
       visit(statement.value).then do |value|
-        emit copy_into(value.register, statement.array.name, statement.index.value)
+        emit copy_into(value.location, variable(statement.array.name), statement.index.value)
       end
     end
 
 
     def visit_not(operation)
       visit(operation.expression).then do |operand|
-        emit_to(boolean) { |result| not_of operand.register, result.register }
+        emit_to(boolean) { |result| not_of operand.location, result }
       end
     end
 
     def visit_and(operation)
       visit(operation.left).then do |left|
         visit(operation.right).then do |right|
-          emit_to(boolean) { |result| and_of left.register, right.register, result.register }
+          emit_to(boolean) { |result| and_of left.location, right.location, result }
         end
       end
     end
@@ -124,7 +122,7 @@ module MiniJava
     def visit_less_than(operation)
       visit(operation.left).then do |left|
         visit(operation.right).then do |right|
-          emit_to(boolean) { |result| less_than left.register, right.register, result.register }
+          emit_to(boolean) { |result| less_than left.location, right.location, result }
         end
       end
     end
@@ -132,7 +130,7 @@ module MiniJava
     def visit_plus(operation)
       visit(operation.left).then do |left|
         visit(operation.right).then do |right|
-          emit_to(integer) { |result| add left.register, right.register, result.register }
+          emit_to(integer) { |result| add left.location, right.location, result }
         end
       end
     end
@@ -140,7 +138,7 @@ module MiniJava
     def visit_minus(operation)
       visit(operation.left).then do |left|
         visit(operation.right).then do |right|
-          emit_to(integer) { |result| subtract left.register, right.register, result.register }
+          emit_to(integer) { |result| subtract left.location, right.location, result }
         end
       end
     end
@@ -148,24 +146,24 @@ module MiniJava
     def visit_times(operation)
       visit(operation.left).then do |left|
         visit(operation.right).then do |right|
-          emit_to(integer) { |result| multiply left.register, right.register, result.register }
+          emit_to(integer) { |result| multiply left.location, right.location, result }
         end
       end
     end
 
     def visit_variable_access(access)
-      Result.new access.variable.name, variable_type_by_name(access.variable)
+      Protocode::Result.new variable(access.variable.name), variable_type_by_name(access.variable.name)
     end
 
     def visit_array_access(access)
       visit(access.array).then do |array|
-        emit_to(integer) { |result| index_into array.register, access.index.value, result.register }
+        emit_to(integer) { |result| index_into array.location, access.index.value, result }
       end
     end
 
     def visit_array_length(length)
       visit(length.array).then do |array|
-        emit_to(integer) { |result| length_of array.register, result.register }
+        emit_to(integer) { |result| length_of array.location, result }
       end
     end
 
@@ -176,34 +174,34 @@ module MiniJava
           push receiver
 
           emit_to method_type_in_class_by_name(receiver.type.class_name, invocation.name) do |result|
-            call method_label(receiver.type.class_name, invocation.name), parameters.count + 1, result.register
+            call method_label(receiver.type.class_name, invocation.name), parameters.count + 1, result
           end
         end
       end
     end
 
     def visit_new_object(expression)
-      emit_to(object(expression.class_name)) { |result| new_object expression.class_name.to_s, result.register }
+      emit_to(object(expression.class_name)) { |result| new_object expression.class_name.to_s, result }
     end
 
     def visit_new_array(expression)
-      emit_to(array) { |result| new_array integer, expression.size.value, result.register }
+      emit_to(array) { |result| new_array integer, expression.size.value, result }
     end
 
     def visit_integer_literal(literal)
-      emit_to(integer) { |result| copy literal.value, result.register }
+      emit_to(integer) { |result| copy literal.value, result }
     end
 
     def visit_true_literal(literal)
-      emit_to(boolean) { |result| copy true, result.register }
+      emit_to(boolean) { |result| copy true, result }
     end
 
     def visit_false_literal(literal)
-      emit_to(boolean) { |result| copy false, result.register }
+      emit_to(boolean) { |result| copy false, result }
     end
 
-    def visit_this(this)
-      Result.new "this", object(scope.parent.context.name)
+    def visit_this(*)
+      Protocode::Result.new this, object(scope.parent.context.name)
     end
 
     private
@@ -223,10 +221,8 @@ module MiniJava
       end
 
 
-      Result = Struct.new(:register, :type)
-
-      def next_register_for(type)
-        Result.new "%r#{@register ? @register += 1 : @register = 0}", type
+      def next_register
+        register @register.nil? ? @register = 0 : @register += 1
       end
 
       def next_if_label_prefix
@@ -251,11 +247,11 @@ module MiniJava
       end
 
       def push(symbol)
-        emit parameter(symbol.register)
+        emit parameter(symbol.location)
       end
 
       def emit_to(type)
-        next_register_for(type).tap { |result| emit yield(result) }
+        Protocode::Result.new next_register.tap { |result| emit yield(result) }, type
       end
 
       def emit(instruction)

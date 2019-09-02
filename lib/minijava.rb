@@ -13,7 +13,4 @@ module MiniJava
   require "minijava/protocode_visitor"
 
   require "minijava/errors"
-
-  require "minijava/helpers/types_helper"
-  require "minijava/helpers/instructions_helper"
 end

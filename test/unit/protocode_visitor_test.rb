@@ -1,7 +1,8 @@
 require "test_helper"
 
 class MiniJava::ProtocodeVisitorTest < MiniTest::Test
-  include MiniJava::InstructionsHelper, MiniJava::TypesHelper
+  include MiniJava::Protocode::InstructionsHelper, MiniJava::Protocode::OperandsHelper
+  include MiniJava::Syntax::TypesHelper
 
   def test_variable_assignment
     instructions = represent(<<~JAVA)
@@ -22,16 +23,16 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
     assert_equal [
       label("HelloWorld.main"),
-      new_object("Foo", "%r0"),
-      parameter("%r0"),
-      call("Foo.bar", 1, "%r1"),
-      parameter("%r1"),
+      new_object("Foo", register(0)),
+      parameter(register(0)),
+      call("Foo.bar", 1, register(1)),
+      parameter(register(1)),
       call("__println", 1, nil),
 
       label("Foo.bar"),
-      copy(42, "%r2"),
-      copy("%r2", "number"),
-      return_with("number")
+      copy(42, register(2)),
+      copy(register(2), variable("number")),
+      return_with(variable("number")),
     ], instructions
   end
 
@@ -55,19 +56,19 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
     assert_equal [
       label("HelloWorld.main"),
-      new_object("Foo", "%r0"),
-      parameter("%r0"),
-      call("Foo.bar", 1, "%r1"),
-      parameter("%r1"),
+      new_object("Foo", register(0)),
+      parameter(register(0)),
+      call("Foo.bar", 1, register(1)),
+      parameter(register(1)),
       call("__println", 1, nil),
 
       label("Foo.bar"),
-      new_array(integer, 3, "%r2"),
-      copy("%r2", "numbers"),
-      copy(42, "%r3"),
-      copy_into("%r3", "numbers", 1),
-      index_into("numbers", 1, "%r4"),
-      return_with("%r4")
+      new_array(integer, 3, register(2)),
+      copy(register(2), variable("numbers")),
+      copy(42, register(3)),
+      copy_into(register(3), variable("numbers"), 1),
+      index_into(variable("numbers"), 1, register(4)),
+      return_with(register(4))
     ], instructions
   end
 
@@ -96,23 +97,23 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
     assert_equal [
       label("HelloWorld.main"),
-      new_object("Foo", "%r0"),
-      parameter("%r0"),
-      call("Foo.bar", 1, "%r1"),
-      parameter("%r1"),
+      new_object("Foo", register(0)),
+      parameter(register(0)),
+      call("Foo.bar", 1, register(1)),
+      parameter(register(1)),
       call("__println", 1, nil),
 
       label("Foo.bar"),
-      copy(true, "%r2"),
-      jump_unless("%r2", ".if.0.else"),
-      copy(1, "%r3"),
-      copy("%r3", "number"),
+      copy(true, register(2)),
+      jump_unless(register(2), ".if.0.else"),
+      copy(1, register(3)),
+      copy(register(3), variable("number")),
       jump(".if.0.end"),
       label(".if.0.else"),
-      copy(2, "%r4"),
-      copy("%r4", "number"),
+      copy(2, register(4)),
+      copy(register(4), variable("number")),
       label(".if.0.end"),
-      return_with("number")
+      return_with(variable("number"))
     ], instructions
   end
 
@@ -145,30 +146,30 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
     assert_equal [
       label("HelloWorld.main"),
-      new_object("Foo", "%r0"),
-      parameter("%r0"),
-      call("Foo.bar", 1, "%r1"),
-      parameter("%r1"),
+      new_object("Foo", register(0)),
+      parameter(register(0)),
+      call("Foo.bar", 1, register(1)),
+      parameter(register(1)),
       call("__println", 1, nil),
 
       label("Foo.bar"),
-      copy(true, "%r2"),
-      jump_unless("%r2", ".if.0.else"),
-      copy(true, "%r3"),
-      jump_unless("%r3", ".if.1.else"),
-      copy(1, "%r4"),
-      copy("%r4", "number"),
+      copy(true, register(2)),
+      jump_unless(register(2), ".if.0.else"),
+      copy(true, register(3)),
+      jump_unless(register(3), ".if.1.else"),
+      copy(1, register(4)),
+      copy(register(4), variable("number")),
       jump(".if.1.end"),
       label(".if.1.else"),
-      copy(2, "%r5"),
-      copy("%r5", "number"),
+      copy(2, register(5)),
+      copy(register(5), variable("number")),
       label(".if.1.end"),
       jump(".if.0.end"),
       label(".if.0.else"),
-      copy(3, "%r6"),
-      copy("%r6", "number"),
+      copy(3, register(6)),
+      copy(register(6), variable("number")),
       label(".if.0.end"),
-      return_with("number")
+      return_with(variable("number"))
     ], instructions
   end
 
@@ -195,21 +196,21 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
     assert_equal [
       label("HelloWorld.main"),
-      new_object("Foo", "%r0"),
-      parameter("%r0"),
-      call("Foo.bar", 1, "%r1"),
-      parameter("%r1"),
+      new_object("Foo", register(0)),
+      parameter(register(0)),
+      call("Foo.bar", 1, register(1)),
+      parameter(register(1)),
       call("__println", 1, nil),
 
       label("Foo.bar"),
       label(".while.0.begin"),
-      copy(true, "%r2"),
-      jump_unless("%r2", ".while.0.end"),
-      copy(1, "%r3"),
-      copy("%r3", "number"),
+      copy(true, register(2)),
+      jump_unless(register(2), ".while.0.end"),
+      copy(1, register(3)),
+      copy(register(3), variable("number")),
       jump(".while.0.begin"),
       label(".while.0.end"),
-      return_with("number")
+      return_with(variable("number"))
     ], instructions
   end
 
@@ -238,26 +239,26 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
     assert_equal [
       label("HelloWorld.main"),
-      new_object("Foo", "%r0"),
-      parameter("%r0"),
-      call("Foo.bar", 1, "%r1"),
-      parameter("%r1"),
+      new_object("Foo", register(0)),
+      parameter(register(0)),
+      call("Foo.bar", 1, register(1)),
+      parameter(register(1)),
       call("__println", 1, nil),
 
       label("Foo.bar"),
       label(".while.0.begin"),
-      copy(true, "%r2"),
-      jump_unless("%r2", ".while.0.end"),
+      copy(true, register(2)),
+      jump_unless(register(2), ".while.0.end"),
       label(".while.1.begin"),
-      copy(true, "%r3"),
-      jump_unless("%r3", ".while.1.end"),
-      copy(2, "%r4"),
-      copy("%r4", "number"),
+      copy(true, register(3)),
+      jump_unless(register(3), ".while.1.end"),
+      copy(2, register(4)),
+      copy(register(4), variable("number")),
       jump(".while.1.begin"),
       label(".while.1.end"),
       jump(".while.0.begin"),
       label(".while.0.end"),
-      return_with("number")
+      return_with(variable("number"))
     ], instructions
   end
 
@@ -290,35 +291,35 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
     assert_equal [
       label("HelloWorld.main"),
-      new_object("Foo", "%r0"),
-      copy(42, "%r1"),
-      parameter("%r1"),
-      parameter("%r0"),
-      call("Foo.bar", 2, "%r2"),
-      parameter("%r2"),
+      new_object("Foo", register(0)),
+      copy(42, register(1)),
+      parameter(register(1)),
+      parameter(register(0)),
+      call("Foo.bar", 2, register(2)),
+      parameter(register(2)),
       call("__println", 1, nil),
 
       label("Foo.bar"),
-      parameter("baz"),
-      parameter("this"),
-      call("Foo.glorp", 2, "%r3"),
-      jump_unless("%r3", ".if.0.else"),
-      copy("baz", "result"),
+      parameter(variable("baz")),
+      parameter(this),
+      call("Foo.glorp", 2, register(3)),
+      jump_unless(register(3), ".if.0.else"),
+      copy(variable("baz"), variable("result")),
       jump(".if.0.end"),
       label(".if.0.else"),
-      copy(0, "%r4"),
-      copy("%r4", "result"),
+      copy(0, register(4)),
+      copy(register(4), variable("result")),
       label(".if.0.end"),
-      return_with("result"),
+      return_with(variable("result")),
 
       label("Foo.glorp"),
-      copy(1, "%r5"),
-      less_than("baz", "%r5", "%r6"),
-      not_of("%r6", "%r7"),
-      copy(100, "%r8"),
-      less_than("baz", "%r8", "%r9"),
-      and_of("%r7", "%r9", "%r10"),
-      return_with("%r10")
+      copy(1, register(5)),
+      less_than(variable("baz"), register(5), register(6)),
+      not_of(register(6), register(7)),
+      copy(100, register(8)),
+      less_than(variable("baz"), register(8), register(9)),
+      and_of(register(7), register(9), register(10)),
+      return_with(register(10))
     ], instructions
   end
 
@@ -341,22 +342,22 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
     assert_equal [
       label("HelloWorld.main"),
-      new_object("Foo", "%r0"),
-      copy(42, "%r1"),
-      parameter("%r1"),
-      parameter("%r0"),
-      call("Foo.bar", 2, "%r2"),
-      parameter("%r2"),
+      new_object("Foo", register(0)),
+      copy(42, register(1)),
+      parameter(register(1)),
+      parameter(register(0)),
+      call("Foo.bar", 2, register(2)),
+      parameter(register(2)),
       call("__println", 1, nil),
 
       label("Foo.bar"),
-      copy(4, "%r3"),
-      copy("%r3", "glorp"),
-      copy(7, "%r4"),
-      multiply("baz", "%r4", "%r5"),
-      subtract("baz", "glorp", "%r6"),
-      add("%r5", "%r6", "%r7"),
-      return_with("%r7"),
+      copy(4, register(3)),
+      copy(register(3), variable("glorp")),
+      copy(7, register(4)),
+      multiply(variable("baz"), register(4), register(5)),
+      subtract(variable("baz"), variable("glorp"), register(6)),
+      add(register(5), register(6), register(7)),
+      return_with(register(7)),
     ], instructions
   end
 
@@ -379,17 +380,17 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
     assert_equal [
       label("HelloWorld.main"),
-      new_object("Foo", "%r0"),
-      parameter("%r0"),
-      call("Foo.bar", 1, "%r1"),
-      parameter("%r1"),
+      new_object("Foo", register(0)),
+      parameter(register(0)),
+      call("Foo.bar", 1, register(1)),
+      parameter(register(1)),
       call("__println", 1, nil),
 
       label("Foo.bar"),
-      new_array(integer, 3, "%r2"),
-      copy("%r2", "numbers"),
-      length_of("numbers", "%r3"),
-      return_with("%r3")
+      new_array(integer, 3, register(2)),
+      copy(register(2), variable("numbers")),
+      length_of(variable("numbers"), register(3)),
+      return_with(register(3))
     ], instructions
   end
 
@@ -414,20 +415,20 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
     assert_equal [
       label("HelloWorld.main"),
-      new_object("Foo", "%r0"),
-      parameter("%r0"),
-      call("Foo.bar", 1, "%r1"),
-      parameter("%r1"),
+      new_object("Foo", register(0)),
+      parameter(register(0)),
+      call("Foo.bar", 1, register(1)),
+      parameter(register(1)),
       call("__println", 1, nil),
 
       label("Foo.bar"),
-      parameter("this"),
-      call("Foo.baz", 1, "%r2"),
-      return_with("%r2"),
+      parameter(this),
+      call("Foo.baz", 1, register(2)),
+      return_with(register(2)),
 
       label("Foo.baz"),
-      copy(42, "%r3"),
-      return_with("%r3")
+      copy(42, register(3)),
+      return_with(register(3))
     ], instructions
   end
 

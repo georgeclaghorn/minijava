@@ -1,9 +1,9 @@
 require "minijava/visitor"
-require "minijava/helpers/types_helper"
+require "minijava/syntax"
 
 module MiniJava
   class TypeCheckVisitor < Visitor
-    include TypesHelper
+    include Syntax::TypesHelper
 
     def self.check(program, scope)
       [].tap { |errors| new(scope, errors).visit(program) }

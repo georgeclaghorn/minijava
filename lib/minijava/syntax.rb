@@ -131,6 +131,30 @@ module MiniJava
       end
     end
 
+    module TypesHelper
+      private
+
+      def boolean
+        BooleanType.instance
+      end
+
+      def integer
+        IntegerType.instance
+      end
+
+      def array
+        ArrayType.instance
+      end
+
+      def object(class_name)
+        ObjectType.new(class_name)
+      end
+
+      def unknown
+        UnknownType.instance
+      end
+    end
+
 
     #== Statements
 
