@@ -121,29 +121,25 @@ module MiniJava
   end
 
   class MethodSet
-    Entry = Struct.new(:declaration, :scope)
-
     def initialize(parent)
-      @parent  = parent
-      @entries = {}
+      @parent = parent
+      @scopes = {}
     end
 
     def add(declaration, &block)
-      Scope.new(@parent, declaration).tap do |scope|
-        @entries[declaration.name.to_s] = Entry.new(declaration, scope)
-      end
+      @scopes[declaration.name.to_s] = Scope.new(@parent, declaration)
     end
 
     def include?(name)
-      @entries.include?(name.to_s)
+      @scopes.include?(name.to_s)
     end
 
     def declaration_for(name)
-      @entries[name.to_s]&.declaration
+      @scopes[name.to_s]&.context
     end
 
     def scope_for(name)
-      @entries[name.to_s]&.scope
+      @scopes[name.to_s]
     end
   end
 
