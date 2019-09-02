@@ -156,6 +156,10 @@ module MiniJava
       emit_to(boolean) { |result| copy false, result.register }
     end
 
+    def visit_this(this)
+      Result.new "this", object(scope.parent.context.name)
+    end
+
     private
       attr_reader :scope, :instructions
       delegate :class_scope_by_name, :method_scope_by_name,

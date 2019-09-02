@@ -3,7 +3,7 @@ require "test_helper"
 class MiniJava::IntermediateRepresentationVisitorTest < MiniTest::Test
   include MiniJava::InstructionsHelper, MiniJava::TypesHelper
 
-  def test_representing_variable_assignment
+  def test_variable_assignment
     instructions = represent(<<~JAVA)
       class HelloWorld {
         public static void main() {
@@ -35,7 +35,7 @@ class MiniJava::IntermediateRepresentationVisitorTest < MiniTest::Test
     ], instructions
   end
 
-  def test_representing_array_element_assignment
+  def test_array_element_assignment
     instructions = represent(<<~JAVA)
       class HelloWorld {
         public static void main() {
@@ -71,7 +71,7 @@ class MiniJava::IntermediateRepresentationVisitorTest < MiniTest::Test
     ], instructions
   end
 
-  def test_representing_if_statement
+  def test_if_statement
     instructions = represent(<<~JAVA)
       class HelloWorld {
         public static void main() {
@@ -116,7 +116,7 @@ class MiniJava::IntermediateRepresentationVisitorTest < MiniTest::Test
     ], instructions
   end
 
-  def test_representing_nested_if_statements
+  def test_nested_if_statements
     instructions = represent(<<~JAVA)
       class HelloWorld {
         public static void main() {
@@ -172,7 +172,7 @@ class MiniJava::IntermediateRepresentationVisitorTest < MiniTest::Test
     ], instructions
   end
 
-  def test_representing_while_statement
+  def test_while_statement
     instructions = represent(<<~JAVA)
       class HelloWorld {
         public static void main() {
@@ -213,7 +213,7 @@ class MiniJava::IntermediateRepresentationVisitorTest < MiniTest::Test
     ], instructions
   end
 
-  def test_representing_nested_while_statements
+  def test_nested_while_statements
     instructions = represent(<<~JAVA)
       class HelloWorld {
         public static void main() {
@@ -261,7 +261,7 @@ class MiniJava::IntermediateRepresentationVisitorTest < MiniTest::Test
     ], instructions
   end
 
-  def test_representing_array_length
+  def test_array_length
     instructions = represent(<<~JAVA)
       class HelloWorld {
         public static void main() {
@@ -290,6 +290,44 @@ class MiniJava::IntermediateRepresentationVisitorTest < MiniTest::Test
       new_array(integer, 3, "%r2"),
       copy("%r2", "numbers"),
       length_of("numbers", "%r3"),
+      return_with("%r3")
+    ], instructions
+  end
+
+  def test_this
+    instructions = represent(<<~JAVA)
+      class HelloWorld {
+        public static void main() {
+          System.out.println(new Foo().bar());
+        }
+      }
+
+      class Foo {
+        public int bar() {
+          return this.baz();
+        }
+
+        public int baz() {
+          return 42;
+        }
+      }
+    JAVA
+
+    assert_equal [
+      label("HelloWorld.main"),
+      new_object("Foo", "%r0"),
+      parameter("%r0"),
+      call("Foo.bar", 1, "%r1"),
+      parameter("%r1"),
+      call("__println", 1, nil),
+
+      label("Foo.bar"),
+      parameter("this"),
+      call("Foo.baz", 1, "%r2"),
+      return_with("%r2"),
+
+      label("Foo.baz"),
+      copy(42, "%r3"),
       return_with("%r3")
     ], instructions
   end
