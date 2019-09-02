@@ -9,8 +9,8 @@ module MiniJava
     def initialize(parent = NullScope.instance, context = nil)
       @parent    = parent
       @context   = context
-      @classes   = ClassSet.new(self)
-      @methods   = MethodSet.new(self)
+      @classes   = ChildSet.new(self)
+      @methods   = ChildSet.new(self)
       @variables = VariableSet.new
     end
 
@@ -101,7 +101,7 @@ module MiniJava
   end
 
 
-  class ClassSet
+  class ChildSet
     def initialize(parent)
       @parent = parent
       @scopes = {}
@@ -118,28 +118,9 @@ module MiniJava
     def scope_for(name)
       @scopes[name.to_s]
     end
-  end
-
-  class MethodSet
-    def initialize(parent)
-      @parent = parent
-      @scopes = {}
-    end
-
-    def add(declaration, &block)
-      @scopes[declaration.name.to_s] = Scope.new(@parent, declaration)
-    end
-
-    def include?(name)
-      @scopes.include?(name.to_s)
-    end
 
     def declaration_for(name)
-      @scopes[name.to_s]&.context
-    end
-
-    def scope_for(name)
-      @scopes[name.to_s]
+      scope_for(name)&.context
     end
   end
 
