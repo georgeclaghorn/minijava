@@ -45,8 +45,8 @@ module MiniJava
         label_with method_label(scope.parent.context.name, declaration.name)
         visit_all declaration.statements
 
-        with_result_of declaration.return_expression do |result|
-          emit return_with(result.operand)
+        with_result_of declaration.return_expression do |destination|
+          emit return_with(destination.operand)
         end
       end
     end
@@ -107,9 +107,9 @@ module MiniJava
 
     def visit_not(operation)
       with_result_of operation.expression do |expression|
-        with_next_register do |result|
-          emit not_of(expression.operand, result)
-          propagate result, boolean
+        with_next_register do |destination|
+          emit not_of(expression.operand, destination)
+          propagate destination, boolean
         end
       end
     end
@@ -117,9 +117,9 @@ module MiniJava
     def visit_and(operation)
       with_result_of operation.left do |left|
         with_result_of operation.right do |right|
-          with_next_register do |result|
-            emit and_of(left.operand, right.operand, result)
-            propagate result, boolean
+          with_next_register do |destination|
+            emit and_of(left.operand, right.operand, destination)
+            propagate destination, boolean
           end
         end
       end
@@ -128,9 +128,9 @@ module MiniJava
     def visit_less_than(operation)
       with_result_of operation.left do |left|
         with_result_of operation.right do |right|
-          with_next_register do |result|
-            emit less_than(left.operand, right.operand, result)
-            propagate result, boolean
+          with_next_register do |destination|
+            emit less_than(left.operand, right.operand, destination)
+            propagate destination, boolean
           end
         end
       end
@@ -139,9 +139,9 @@ module MiniJava
     def visit_plus(operation)
       with_result_of operation.left do |left|
         with_result_of operation.right do |right|
-          with_next_register do |result|
-            emit add(left.operand, right.operand, result)
-            propagate result, integer
+          with_next_register do |destination|
+            emit add(left.operand, right.operand, destination)
+            propagate destination, integer
           end
         end
       end
@@ -150,9 +150,9 @@ module MiniJava
     def visit_minus(operation)
       with_result_of operation.left do |left|
         with_result_of operation.right do |right|
-          with_next_register do |result|
-            emit subtract(left.operand, right.operand, result)
-            propagate result, integer
+          with_next_register do |destination|
+            emit subtract(left.operand, right.operand, destination)
+            propagate destination, integer
           end
         end
       end
@@ -161,9 +161,9 @@ module MiniJava
     def visit_times(operation)
       with_result_of operation.left do |left|
         with_result_of operation.right do |right|
-          with_next_register do |result|
-            emit multiply(left.operand, right.operand, result)
-            propagate result, integer
+          with_next_register do |destination|
+            emit multiply(left.operand, right.operand, destination)
+            propagate destination, integer
           end
         end
       end
@@ -175,18 +175,18 @@ module MiniJava
 
     def visit_array_access(access)
       with_result_of access.array do |array|
-        with_next_register do |result|
-          emit index_into(array.operand, access.index.value, result)
-          propagate result, integer
+        with_next_register do |destination|
+          emit index_into(array.operand, access.index.value, destination)
+          propagate destination, integer
         end
       end
     end
 
     def visit_array_length(length)
       with_result_of length.array do |array|
-        with_next_register do |result|
-          emit length_of(array.operand, result)
-          propagate result, integer
+        with_next_register do |destination|
+          emit length_of(array.operand, destination)
+          propagate destination, integer
         end
       end
     end
@@ -197,46 +197,46 @@ module MiniJava
           push_all parameters
           push receiver
 
-          with_next_register do |result|
-            emit call(method_label(receiver.type.class_name, invocation.name), parameters.count + 1, result)
-            propagate result, method_type_in_class_by_name(receiver.type.class_name, invocation.name)
+          with_next_register do |destination|
+            emit call(method_label(receiver.type.class_name, invocation.name), parameters.count + 1, destination)
+            propagate destination, method_type_in_class_by_name(receiver.type.class_name, invocation.name)
           end
         end
       end
     end
 
     def visit_new_object(expression)
-      with_next_register do |result|
-        emit new_object(expression.class_name.to_s, result)
-        propagate result, object(expression.class_name)
+      with_next_register do |destination|
+        emit new_object(expression.class_name.to_s, destination)
+        propagate destination, object(expression.class_name)
       end
     end
 
     def visit_new_array(expression)
-      with_next_register do |result|
-        emit new_array(integer, expression.size.value, result)
-        propagate result, array
+      with_next_register do |destination|
+        emit new_array(integer, expression.size.value, destination)
+        propagate destination, array
       end
     end
 
     def visit_integer_literal(literal)
-      with_next_register do |result|
-        emit copy(literal.value, result)
-        propagate result, boolean
+      with_next_register do |destination|
+        emit copy(literal.value, destination)
+        propagate destination, boolean
       end
     end
 
     def visit_true_literal(literal)
-      with_next_register do |result|
-        emit copy(true, result)
-        propagate result, boolean
+      with_next_register do |destination|
+        emit copy(true, destination)
+        propagate destination, boolean
       end
     end
 
     def visit_false_literal(literal)
-      with_next_register do |result|
-        emit copy(false, result)
-        propagate result, boolean
+      with_next_register do |destination|
+        emit copy(false, destination)
+        propagate destination, boolean
       end
     end
 

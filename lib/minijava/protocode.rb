@@ -4,27 +4,27 @@ module MiniJava
 
     Label           = Struct.new(:name)
 
-    Not             = Struct.new(:operand, :result)
-    And             = Struct.new(:left, :right, :result)
-    LessThan        = Struct.new(:left, :right, :result)
-    Add             = Struct.new(:left, :right, :result)
-    Subtract        = Struct.new(:left, :right, :result)
-    Multiply        = Struct.new(:left, :right, :result)
-    Copy            = Struct.new(:value, :result)
+    Not             = Struct.new(:source, :destination)
+    And             = Struct.new(:left, :right, :destination)
+    LessThan        = Struct.new(:left, :right, :destination)
+    Add             = Struct.new(:left, :right, :destination)
+    Subtract        = Struct.new(:left, :right, :destination)
+    Multiply        = Struct.new(:left, :right, :destination)
+    Copy            = Struct.new(:source, :destination)
 
     Jump            = Struct.new(:label)
     JumpUnless      = Struct.new(:condition, :label)
 
-    Parameter       = Struct.new(:value)
-    Call            = Struct.new(:label, :parameter_count, :result)
-    Return          = Struct.new(:value)
+    Parameter       = Struct.new(:source)
+    Call            = Struct.new(:label, :parameter_count, :destination)
+    Return          = Struct.new(:source)
 
-    ArrayAccess     = Struct.new(:array, :index, :result)
-    ArrayAssignment = Struct.new(:value, :array, :index)
-    ArrayLength     = Struct.new(:array, :result)
+    ArrayAccess     = Struct.new(:array, :index, :destination)
+    ArrayAssignment = Struct.new(:source, :array, :index)
+    ArrayLength     = Struct.new(:array, :destination)
 
-    NewObject       = Struct.new(:type, :result)
-    NewArray        = Struct.new(:type, :size, :result)
+    NewObject       = Struct.new(:type, :destination)
+    NewArray        = Struct.new(:type, :size, :destination)
 
     module InstructionsHelper
       private
