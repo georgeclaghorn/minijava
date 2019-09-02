@@ -250,17 +250,13 @@ module MiniJava
     private
       attr_reader :scope, :instructions
       delegate :class_scope_by_name, :method_scope_by_name,
-        :method_declaration_in_class_by_name, :variable_type_by_name, to: :scope
+        :method_type_in_class_by_name, :variable_type_by_name, to: :scope
 
       def within(subscope)
         superscope, @scope = @scope, subscope
         yield
       ensure
         @scope = superscope
-      end
-
-      def method_type_in_class_by_name(class_name, method_name)
-        method_declaration_in_class_by_name(class_name, method_name).type
       end
 
 

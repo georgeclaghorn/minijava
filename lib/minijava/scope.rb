@@ -44,6 +44,10 @@ module MiniJava
       class_scope_by_name(class_name)&.method_declaration_by_name(method_name)
     end
 
+    def method_type_in_class_by_name(class_name, method_name)
+      method_declaration_in_class_by_name(class_name, method_name)&.type
+    end
+
 
     def variable?(name)
       variables.include?(name) || parent.variable?(name)
