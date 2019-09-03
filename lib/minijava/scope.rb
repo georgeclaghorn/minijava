@@ -1,4 +1,5 @@
 require "minijava/hash_with_normalized_keys"
+require "minijava/errors"
 
 module MiniJava
   class Scope
@@ -117,11 +118,11 @@ module MiniJava
 
     def initialize(parent = nil)
       @parent = parent
-      @scopes = HashWithNormalizedKeys.new(&:to_s)
+      @scopes = SymbolMap.new
     end
 
-    def add(declaration)
-      scopes[declaration.name] = Scope.new(parent, declaration)
+    def add_scope_for(declaration)
+      Scope.new(parent, declaration).tap { |scope| scopes.add(declaration.name, scope) }
     end
   end
 
@@ -130,11 +131,35 @@ module MiniJava
     delegate :[], :include?, to: :declarations
 
     def initialize
-      @declarations = HashWithNormalizedKeys.new(&:to_s)
+      @declarations = SymbolMap.new
     end
 
     def add(declaration)
-      declarations[declaration.name] = declaration
+      declarations.add(declaration.name, declaration)
+      self
     end
+  end
+
+  class SymbolMap
+    delegate :[], :include?, to: :@symbols
+
+    def initialize
+      @symbols = HashWithNormalizedKeys.new(&:to_s)
+    end
+
+    def add(name, value)
+      ensure_undefined name
+      store name, value
+    end
+
+    def store(name, value)
+      @symbols.store(name, value)
+      self
+    end
+
+    private
+      def ensure_undefined(name)
+        raise NameError, "Symbol #{name} is already defined" if include?(name)
+      end
   end
 end

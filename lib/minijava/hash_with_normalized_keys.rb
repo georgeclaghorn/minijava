@@ -9,7 +9,12 @@ module MiniJava
     end
 
     def []=(key, value)
+      store key, value
+    end
+
+    def store(key, value)
       @hash[normalize(key)] = value
+      self
     end
 
     def include?(key)

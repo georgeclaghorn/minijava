@@ -88,7 +88,7 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
     assert !method_scope.variable?("number")
   end
 
-  def test_forbidding_class_redefinition
+  def test_class_redefinition
     program = MiniJava::Parser.program_from(<<~JAVA)
       class HelloWorld {
         public static void main() {
@@ -100,10 +100,10 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
     JAVA
 
     error = assert_raises(MiniJava::NameError) { MiniJava::ScopeVisitor.scope_for(program) }
-    assert_equal "Redefinition of class HelloWorld", error.message
+    assert_equal "Symbol HelloWorld is already defined", error.message
   end
 
-  def test_forbidding_variable_redefinition
+  def test_variable_redefinition
     program = MiniJava::Parser.program_from(<<~JAVA)
       class HelloWorld {
         public static void main() {
@@ -118,10 +118,10 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
     JAVA
 
     error = assert_raises(MiniJava::NameError) { MiniJava::ScopeVisitor.scope_for(program) }
-    assert_equal "Redefinition of variable baz", error.message
+    assert_equal "Symbol baz is already defined", error.message
   end
 
-  def test_forbidding_method_redefinition
+  def test_method_redefinition
     program = MiniJava::Parser.program_from(<<~JAVA)
       class HelloWorld {
         public static void main() {
@@ -141,7 +141,7 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
     JAVA
 
     error = assert_raises(MiniJava::NameError) { MiniJava::ScopeVisitor.scope_for(program) }
-    assert_equal "Redefinition of method bar", error.message
+    assert_equal "Symbol bar is already defined", error.message
   end
 
   def test_variable_shadowing
@@ -170,7 +170,7 @@ class MiniJava::ScopeVisitorTest < MiniTest::Test
     assert_equal MiniJava::Syntax::IntegerType.instance, method_scope.variable_type_by_name("baz")
   end
 
-  def test_forbidding_inheritance_from_undefined_class
+  def test_inheriting_from_an_undefined_class
     program = MiniJava::Parser.program_from(<<~JAVA)
       class HelloWorld {
         public static void main() {

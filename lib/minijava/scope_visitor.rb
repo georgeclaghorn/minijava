@@ -20,58 +20,58 @@ module MiniJava
 
 
     def visit_main_class_declaration(declaration)
-      within scope.classes.add(declaration) do
+      within new_class_scope_for(declaration) do
         visit declaration.method_declaration
       end
     end
 
     def visit_main_method_declaration(declaration)
-      scope.methods.add(declaration)
+      scope.methods.add_scope_for(declaration)
     end
 
 
     def visit_class_declaration(declaration)
-      if scope.classes.include?(declaration.name)
-        raise NameError, "Redefinition of class #{declaration.name}"
-      else
-        within scope.classes.add(declaration) do
-          visit_all declaration.variable_declarations
-          visit_all declaration.method_declarations
-        end
+      within new_class_scope_for(declaration) do
+        visit_all declaration.variable_declarations
+        visit_all declaration.method_declarations
       end
     end
 
     alias_method :visit_subclass_declaration, :visit_class_declaration
 
     def visit_variable_declaration(declaration)
-      if scope.variables.include?(declaration.name)
-        raise NameError, "Redefinition of variable #{declaration.name}"
-      else
-        scope.variables.add(declaration)
-      end
+      scope.variables.add(declaration)
     end
 
     def visit_method_declaration(declaration)
-      if scope.methods.include?(declaration.name)
-        raise NameError, "Redefinition of method #{declaration.name}"
-      else
-        within scope.methods.add(declaration) do
-          visit_all declaration.parameters
-          visit_all declaration.variable_declarations
-        end
+      within new_method_scope_for(declaration) do
+        visit_all declaration.parameters
+        visit_all declaration.variable_declarations
       end
     end
 
     def visit_formal_parameter(parameter)
-      if scope.variables.include?(parameter.name)
-        raise NameError, "Redefinition of variable #{parameter.name}"
-      else
-        scope.variables.add(parameter)
-      end
+      scope.variables.add(parameter)
     end
 
     private
       attr_reader :scope
+
+      def within(subscope)
+        superscope, @scope = @scope, subscope
+        yield
+      ensure
+        @scope = superscope
+      end
+
+      def new_class_scope_for(declaration)
+        scope.classes.add_scope_for(declaration)
+      end
+
+      def new_method_scope_for(declaration)
+        scope.methods.add_scope_for(declaration)
+      end
+
 
       def resolve_class_inheritance(program)
         program.subclass_declarations.each do |declaration|
@@ -83,13 +83,6 @@ module MiniJava
             raise NameError, "Cannot find class #{declaration.superclass_name}"
           end
         end
-      end
-
-      def within(subscope)
-        superscope, @scope = @scope, subscope
-        yield
-      ensure
-        @scope = superscope
       end
   end
 end
