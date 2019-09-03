@@ -1,3 +1,5 @@
+require "minijava/hash_with_normalized_keys"
+
 module MiniJava
   class Scope
     attr_reader :parent, :declaration, :classes, :methods, :variables
@@ -53,8 +55,12 @@ module MiniJava
       variables.include?(name) || parent.variable?(name)
     end
 
+    def variable_declaration_by_name(name)
+      variables[name] || parent.variable_declaration_by_name(name)
+    end
+
     def variable_type_by_name(name)
-      variables.type_for(name) || parent.variable_type_by_name(name)
+      variable_declaration_by_name(name)&.type
     end
   end
 
@@ -74,11 +80,11 @@ module MiniJava
       false
     end
 
-    def method_declaration_by_name(name)
+    def method_scope_by_name(name)
       nil
     end
 
-    def method_scope_by_name(name)
+    def method_declaration_by_name(name)
       nil
     end
 
@@ -95,6 +101,10 @@ module MiniJava
       false
     end
 
+    def variable_declaration_by_name(name)
+      nil
+    end
+
     def variable_type_by_name(name)
       nil
     end
@@ -102,40 +112,29 @@ module MiniJava
 
 
   class ScopeMap
+    attr_reader :parent, :scopes
+    delegate :[], :include?, to: :scopes
+
     def initialize(parent = nil)
       @parent = parent
-      @scopes = {}
+      @scopes = HashWithNormalizedKeys.new(&:to_s)
     end
 
     def add(declaration)
-      @scopes[declaration.name.to_s] = Scope.new(@parent, declaration)
-    end
-
-    def include?(name)
-      @scopes.include?(name.to_s)
-    end
-
-    def [](name)
-      @scopes[name.to_s]
+      scopes[declaration.name] = Scope.new(parent, declaration)
     end
   end
 
   class VariableMap
+    attr_reader :declarations
+    delegate :[], :include?, to: :declarations
+
     def initialize
-      @types = {}
+      @declarations = HashWithNormalizedKeys.new(&:to_s)
     end
 
-    def add(name:, type:)
-      @types[name.to_s] = type
-      nil
-    end
-
-    def include?(name)
-      @types.include?(name.to_s)
-    end
-
-    def type_for(name)
-      @types[name.to_s]
+    def add(declaration)
+      declarations[declaration.name] = declaration
     end
   end
 end

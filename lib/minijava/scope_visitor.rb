@@ -47,7 +47,7 @@ module MiniJava
       if scope.variables.include?(declaration.name)
         raise NameError, "Redefinition of variable #{declaration.name}"
       else
-        scope.variables.add(name: declaration.name, type: declaration.type)
+        scope.variables.add(declaration)
       end
     end
 
@@ -66,7 +66,7 @@ module MiniJava
       if scope.variables.include?(parameter.name)
         raise NameError, "Redefinition of variable #{parameter.name}"
       else
-        scope.variables.add(name: parameter.name, type: parameter.type)
+        scope.variables.add(parameter)
       end
     end
 
