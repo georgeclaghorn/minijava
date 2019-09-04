@@ -1,23 +1,14 @@
+.data
+__println_format: .asciz "%i\n"
+
+.text
 __println:
-mov %edi, %eax
-mov $10, %ecx
-push %rcx
-mov %rsp, %rsi
-
-.digit:
-xor %edx, %edx
-div %ecx
-add $48, %edx
-dec %rsi
-mov %dl, (%rsi)
-test %eax, %eax
-jnz .digit
-
-mov $0x2000004, %eax
-mov $1, %edi
-lea 1(%rsp), %edx
-sub %esi, %edx
-syscall
-
-add $8, %rsp
+push %rbp
+mov %rsp, %rbp
+and $-16, %rsp
+mov %rdi, %rsi
+lea __println_format(%rip), %rdi
+mov $0, %al
+call _printf
+leave
 ret
