@@ -12,5 +12,7 @@ module MiniJava
   require "minijava/type_check_visitor"
   require "minijava/protocode_visitor"
 
+  require "minijava/targets/amd64/generator"
+
   require "minijava/errors"
 end

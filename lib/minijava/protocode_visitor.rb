@@ -33,6 +33,7 @@ module MiniJava
       within method_scope_by_name(declaration.name) do
         label_with method_label(scope.parent.declaration.name, declaration.name)
         visit declaration.statement
+        emit void_return
       end
     end
 

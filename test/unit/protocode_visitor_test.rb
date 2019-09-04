@@ -28,6 +28,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
       call("Foo.bar", 1, register(1)),
       parameter(register(1)),
       call("__println", 1, nil),
+      void_return,
 
       label("Foo.bar"),
       copy(42, register(2)),
@@ -61,6 +62,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
       call("Foo.bar", 1, register(1)),
       parameter(register(1)),
       call("__println", 1, nil),
+      void_return,
 
       label("Foo.bar"),
       new_array(integer, 3, register(2)),
@@ -102,6 +104,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
       call("Foo.bar", 1, register(1)),
       parameter(register(1)),
       call("__println", 1, nil),
+      void_return,
 
       label("Foo.bar"),
       copy(true, register(2)),
@@ -151,6 +154,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
       call("Foo.bar", 1, register(1)),
       parameter(register(1)),
       call("__println", 1, nil),
+      void_return,
 
       label("Foo.bar"),
       copy(true, register(2)),
@@ -201,6 +205,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
       call("Foo.bar", 1, register(1)),
       parameter(register(1)),
       call("__println", 1, nil),
+      void_return,
 
       label("Foo.bar"),
       label(".while.0.begin"),
@@ -244,6 +249,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
       call("Foo.bar", 1, register(1)),
       parameter(register(1)),
       call("__println", 1, nil),
+      void_return,
 
       label("Foo.bar"),
       label(".while.0.begin"),
@@ -298,6 +304,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
       call("Foo.bar", 2, register(2)),
       parameter(register(2)),
       call("__println", 1, nil),
+      void_return,
 
       label("Foo.bar"),
       parameter(variable("baz")),
@@ -349,6 +356,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
       call("Foo.bar", 2, register(2)),
       parameter(register(2)),
       call("__println", 1, nil),
+      void_return,
 
       label("Foo.bar"),
       copy(4, register(3)),
@@ -385,6 +393,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
       call("Foo.bar", 1, register(1)),
       parameter(register(1)),
       call("__println", 1, nil),
+      void_return,
 
       label("Foo.bar"),
       new_array(integer, 3, register(2)),
@@ -420,6 +429,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
       call("Foo.bar", 1, register(1)),
       parameter(register(1)),
       call("__println", 1, nil),
+      void_return,
 
       label("Foo.bar"),
       parameter(this),
