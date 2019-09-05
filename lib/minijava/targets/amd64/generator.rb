@@ -1,7 +1,7 @@
 module MiniJava
   module AMD64
     class Generator < Visitor
-      LIBRARY = File.expand_path("../library.s", __FILE__)
+      LIBRARY_PATH = File.expand_path("../library.s", __FILE__)
 
       attr_reader :destination
       delegate :puts, :print, to: :@destination
@@ -87,7 +87,7 @@ module MiniJava
 
       private
         def inject_library
-          IO.copy_stream(LIBRARY, destination)
+          IO.copy_stream(LIBRARY_PATH, destination)
         end
 
 
