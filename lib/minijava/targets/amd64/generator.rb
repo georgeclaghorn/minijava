@@ -79,10 +79,16 @@ module MiniJava
 
       def visit_call(call)
         puts "call #{call.label}"
+        puts "mov %rax, #{resolve(call.destination)}" unless call.destination.nil?
       end
 
       def visit_return(instruction)
+        puts "mov #{resolve(instruction.source)}, %rax" unless instruction.source.nil?
         puts "ret"
+      end
+
+      def visit_new_object(instruction)
+        puts "xor #{resolve(instruction.destination)}, #{resolve(instruction.destination)}"
       end
 
       private
