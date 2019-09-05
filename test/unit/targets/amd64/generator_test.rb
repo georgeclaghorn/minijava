@@ -7,8 +7,10 @@ class MiniJava::AMD64::GeneratorTest < MiniTest::Test
     actual = generate \
       protocode: [
         label("HelloWorld.main"),
-        copy(9, register(0)),
-        parameter(register(0)),
+        copy(5, register(0)),
+        copy(4, register(1)),
+        add(register(0), register(1), register(2)),
+        parameter(register(2)),
         call("__println", 1, nil),
         void_return
       ],

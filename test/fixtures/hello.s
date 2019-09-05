@@ -7,8 +7,11 @@ xor %rax, %rax
 ret
 
 HelloWorld.main:
-mov $9, %r12
-mov %r12, %rdi
+mov $5, %r12
+mov $4, %r13
+mov %r12, %r14
+add %r13, %r14
+mov %r14, %rdi
 call __println
 ret
 
