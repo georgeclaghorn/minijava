@@ -16,7 +16,7 @@ class MiniJava::AMD64::GeneratorTest < MiniTest::Test
       ],
       entrypoint: "HelloWorld.main"
 
-    assert_equal fixture_file("hello.s").read, actual
+    assert_equal fixture_file("amd64/hello.s").read, actual
   end
 
   def test_function
@@ -36,18 +36,16 @@ class MiniJava::AMD64::GeneratorTest < MiniTest::Test
       ],
       entrypoint: "HelloWorld.main"
 
-    assert_equal fixture_file("function.s").read, actual
+    assert_equal fixture_file("amd64/function.s").read, actual
   end
 
   private
     def generate(protocode:, entrypoint:)
-      StringIO.new.tap do |destination|
-        MiniJava::AMD64::Generator.new(destination).generate(protocode, entrypoint)
-        destination.rewind
-      end.read
-    end
-
-    def fixture_file(path)
-      Pathname.new File.expand_path("../../../fixtures/#{path}", __dir__)
+      StringIO.new
+        .tap { |destination| MiniJava::AMD64::Generator.new(destination).generate(protocode, entrypoint) }
+        .then do |destination|
+          destination.rewind
+          destination.read
+        end
     end
 end

@@ -19,4 +19,8 @@ class MiniTest::Test
       destination.close!
       stream.reopen(origin)
     end
+
+    def fixture_file(path)
+      Pathname.new File.expand_path("fixtures/#{path}", __dir__)
+    end
 end
