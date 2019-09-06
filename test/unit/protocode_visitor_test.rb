@@ -23,16 +23,16 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
     assert_equal [
       label("HelloWorld.main"),
-      new_object("Foo", register(0)),
-      parameter(register(0)),
-      call("Foo.bar", 1, register(1)),
-      parameter(register(1)),
+      new_object("Foo", temporary(0)),
+      parameter(temporary(0)),
+      call("Foo.bar", 1, temporary(1)),
+      parameter(temporary(1)),
       call("__println", 1, nil),
       void_return,
 
       label("Foo.bar"),
-      copy(42, register(2)),
-      copy(register(2), variable("number")),
+      copy(42, temporary(2)),
+      copy(temporary(2), variable("number")),
       return_with(variable("number")),
     ], instructions
   end
@@ -57,20 +57,20 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
     assert_equal [
       label("HelloWorld.main"),
-      new_object("Foo", register(0)),
-      parameter(register(0)),
-      call("Foo.bar", 1, register(1)),
-      parameter(register(1)),
+      new_object("Foo", temporary(0)),
+      parameter(temporary(0)),
+      call("Foo.bar", 1, temporary(1)),
+      parameter(temporary(1)),
       call("__println", 1, nil),
       void_return,
 
       label("Foo.bar"),
-      new_array(integer, 3, register(2)),
-      copy(register(2), variable("numbers")),
-      copy(42, register(3)),
-      copy_into(register(3), variable("numbers"), 1),
-      index_into(variable("numbers"), 1, register(4)),
-      return_with(register(4))
+      new_array(integer, 3, temporary(2)),
+      copy(temporary(2), variable("numbers")),
+      copy(42, temporary(3)),
+      copy_into(temporary(3), variable("numbers"), 1),
+      index_into(variable("numbers"), 1, temporary(4)),
+      return_with(temporary(4))
     ], instructions
   end
 
@@ -99,22 +99,22 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
     assert_equal [
       label("HelloWorld.main"),
-      new_object("Foo", register(0)),
-      parameter(register(0)),
-      call("Foo.bar", 1, register(1)),
-      parameter(register(1)),
+      new_object("Foo", temporary(0)),
+      parameter(temporary(0)),
+      call("Foo.bar", 1, temporary(1)),
+      parameter(temporary(1)),
       call("__println", 1, nil),
       void_return,
 
       label("Foo.bar"),
-      copy(true, register(2)),
-      jump_unless(register(2), ".if.0.else"),
-      copy(1, register(3)),
-      copy(register(3), variable("number")),
+      copy(true, temporary(2)),
+      jump_unless(temporary(2), ".if.0.else"),
+      copy(1, temporary(3)),
+      copy(temporary(3), variable("number")),
       jump(".if.0.end"),
       label(".if.0.else"),
-      copy(2, register(4)),
-      copy(register(4), variable("number")),
+      copy(2, temporary(4)),
+      copy(temporary(4), variable("number")),
       label(".if.0.end"),
       return_with(variable("number"))
     ], instructions
@@ -149,29 +149,29 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
     assert_equal [
       label("HelloWorld.main"),
-      new_object("Foo", register(0)),
-      parameter(register(0)),
-      call("Foo.bar", 1, register(1)),
-      parameter(register(1)),
+      new_object("Foo", temporary(0)),
+      parameter(temporary(0)),
+      call("Foo.bar", 1, temporary(1)),
+      parameter(temporary(1)),
       call("__println", 1, nil),
       void_return,
 
       label("Foo.bar"),
-      copy(true, register(2)),
-      jump_unless(register(2), ".if.0.else"),
-      copy(true, register(3)),
-      jump_unless(register(3), ".if.1.else"),
-      copy(1, register(4)),
-      copy(register(4), variable("number")),
+      copy(true, temporary(2)),
+      jump_unless(temporary(2), ".if.0.else"),
+      copy(true, temporary(3)),
+      jump_unless(temporary(3), ".if.1.else"),
+      copy(1, temporary(4)),
+      copy(temporary(4), variable("number")),
       jump(".if.1.end"),
       label(".if.1.else"),
-      copy(2, register(5)),
-      copy(register(5), variable("number")),
+      copy(2, temporary(5)),
+      copy(temporary(5), variable("number")),
       label(".if.1.end"),
       jump(".if.0.end"),
       label(".if.0.else"),
-      copy(3, register(6)),
-      copy(register(6), variable("number")),
+      copy(3, temporary(6)),
+      copy(temporary(6), variable("number")),
       label(".if.0.end"),
       return_with(variable("number"))
     ], instructions
@@ -200,19 +200,19 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
     assert_equal [
       label("HelloWorld.main"),
-      new_object("Foo", register(0)),
-      parameter(register(0)),
-      call("Foo.bar", 1, register(1)),
-      parameter(register(1)),
+      new_object("Foo", temporary(0)),
+      parameter(temporary(0)),
+      call("Foo.bar", 1, temporary(1)),
+      parameter(temporary(1)),
       call("__println", 1, nil),
       void_return,
 
       label("Foo.bar"),
       label(".while.0.begin"),
-      copy(true, register(2)),
-      jump_unless(register(2), ".while.0.end"),
-      copy(1, register(3)),
-      copy(register(3), variable("number")),
+      copy(true, temporary(2)),
+      jump_unless(temporary(2), ".while.0.end"),
+      copy(1, temporary(3)),
+      copy(temporary(3), variable("number")),
       jump(".while.0.begin"),
       label(".while.0.end"),
       return_with(variable("number"))
@@ -244,22 +244,22 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
     assert_equal [
       label("HelloWorld.main"),
-      new_object("Foo", register(0)),
-      parameter(register(0)),
-      call("Foo.bar", 1, register(1)),
-      parameter(register(1)),
+      new_object("Foo", temporary(0)),
+      parameter(temporary(0)),
+      call("Foo.bar", 1, temporary(1)),
+      parameter(temporary(1)),
       call("__println", 1, nil),
       void_return,
 
       label("Foo.bar"),
       label(".while.0.begin"),
-      copy(true, register(2)),
-      jump_unless(register(2), ".while.0.end"),
+      copy(true, temporary(2)),
+      jump_unless(temporary(2), ".while.0.end"),
       label(".while.1.begin"),
-      copy(true, register(3)),
-      jump_unless(register(3), ".while.1.end"),
-      copy(2, register(4)),
-      copy(register(4), variable("number")),
+      copy(true, temporary(3)),
+      jump_unless(temporary(3), ".while.1.end"),
+      copy(2, temporary(4)),
+      copy(temporary(4), variable("number")),
       jump(".while.1.begin"),
       label(".while.1.end"),
       jump(".while.0.begin"),
@@ -297,36 +297,36 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
     assert_equal [
       label("HelloWorld.main"),
-      new_object("Foo", register(0)),
-      copy(42, register(1)),
-      parameter(register(1)),
-      parameter(register(0)),
-      call("Foo.bar", 2, register(2)),
-      parameter(register(2)),
+      new_object("Foo", temporary(0)),
+      copy(42, temporary(1)),
+      parameter(temporary(1)),
+      parameter(temporary(0)),
+      call("Foo.bar", 2, temporary(2)),
+      parameter(temporary(2)),
       call("__println", 1, nil),
       void_return,
 
       label("Foo.bar"),
       parameter(variable("baz")),
       parameter(this),
-      call("Foo.glorp", 2, register(3)),
-      jump_unless(register(3), ".if.0.else"),
+      call("Foo.glorp", 2, temporary(3)),
+      jump_unless(temporary(3), ".if.0.else"),
       copy(variable("baz"), variable("result")),
       jump(".if.0.end"),
       label(".if.0.else"),
-      copy(0, register(4)),
-      copy(register(4), variable("result")),
+      copy(0, temporary(4)),
+      copy(temporary(4), variable("result")),
       label(".if.0.end"),
       return_with(variable("result")),
 
       label("Foo.glorp"),
-      copy(1, register(5)),
-      less_than(variable("baz"), register(5), register(6)),
-      not_of(register(6), register(7)),
-      copy(100, register(8)),
-      less_than(variable("baz"), register(8), register(9)),
-      and_of(register(7), register(9), register(10)),
-      return_with(register(10))
+      copy(1, temporary(5)),
+      less_than(variable("baz"), temporary(5), temporary(6)),
+      not_of(temporary(6), temporary(7)),
+      copy(100, temporary(8)),
+      less_than(variable("baz"), temporary(8), temporary(9)),
+      and_of(temporary(7), temporary(9), temporary(10)),
+      return_with(temporary(10))
     ], instructions
   end
 
@@ -349,23 +349,23 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
     assert_equal [
       label("HelloWorld.main"),
-      new_object("Foo", register(0)),
-      copy(42, register(1)),
-      parameter(register(1)),
-      parameter(register(0)),
-      call("Foo.bar", 2, register(2)),
-      parameter(register(2)),
+      new_object("Foo", temporary(0)),
+      copy(42, temporary(1)),
+      parameter(temporary(1)),
+      parameter(temporary(0)),
+      call("Foo.bar", 2, temporary(2)),
+      parameter(temporary(2)),
       call("__println", 1, nil),
       void_return,
 
       label("Foo.bar"),
-      copy(4, register(3)),
-      copy(register(3), variable("glorp")),
-      copy(7, register(4)),
-      multiply(variable("baz"), register(4), register(5)),
-      subtract(variable("baz"), variable("glorp"), register(6)),
-      add(register(5), register(6), register(7)),
-      return_with(register(7)),
+      copy(4, temporary(3)),
+      copy(temporary(3), variable("glorp")),
+      copy(7, temporary(4)),
+      multiply(variable("baz"), temporary(4), temporary(5)),
+      subtract(variable("baz"), variable("glorp"), temporary(6)),
+      add(temporary(5), temporary(6), temporary(7)),
+      return_with(temporary(7)),
     ], instructions
   end
 
@@ -388,18 +388,18 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
     assert_equal [
       label("HelloWorld.main"),
-      new_object("Foo", register(0)),
-      parameter(register(0)),
-      call("Foo.bar", 1, register(1)),
-      parameter(register(1)),
+      new_object("Foo", temporary(0)),
+      parameter(temporary(0)),
+      call("Foo.bar", 1, temporary(1)),
+      parameter(temporary(1)),
       call("__println", 1, nil),
       void_return,
 
       label("Foo.bar"),
-      new_array(integer, 3, register(2)),
-      copy(register(2), variable("numbers")),
-      length_of(variable("numbers"), register(3)),
-      return_with(register(3))
+      new_array(integer, 3, temporary(2)),
+      copy(temporary(2), variable("numbers")),
+      length_of(variable("numbers"), temporary(3)),
+      return_with(temporary(3))
     ], instructions
   end
 
@@ -424,21 +424,21 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
     assert_equal [
       label("HelloWorld.main"),
-      new_object("Foo", register(0)),
-      parameter(register(0)),
-      call("Foo.bar", 1, register(1)),
-      parameter(register(1)),
+      new_object("Foo", temporary(0)),
+      parameter(temporary(0)),
+      call("Foo.bar", 1, temporary(1)),
+      parameter(temporary(1)),
       call("__println", 1, nil),
       void_return,
 
       label("Foo.bar"),
       parameter(this),
-      call("Foo.baz", 1, register(2)),
-      return_with(register(2)),
+      call("Foo.baz", 1, temporary(2)),
+      return_with(temporary(2)),
 
       label("Foo.baz"),
-      copy(42, register(3)),
-      return_with(register(3))
+      copy(42, temporary(3)),
+      return_with(temporary(3))
     ], instructions
   end
 

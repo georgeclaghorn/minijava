@@ -7,10 +7,10 @@ class MiniJava::AMD64::GeneratorTest < MiniTest::Test
     actual = generate \
       protocode: [
         label("HelloWorld.main"),
-        copy(5, register(0)),
-        copy(4, register(1)),
-        add(register(0), register(1), register(2)),
-        parameter(register(2)),
+        copy(5, temporary(0)),
+        copy(4, temporary(1)),
+        add(temporary(0), temporary(1), temporary(2)),
+        parameter(temporary(2)),
         call("__println", 1, nil),
         void_return
       ],
@@ -23,16 +23,16 @@ class MiniJava::AMD64::GeneratorTest < MiniTest::Test
     actual = generate \
       protocode: [
         label("HelloWorld.main"),
-        new_object("Foo", register(0)),
-        parameter(register(0)),
-        call("Foo.bar", 2, register(1)),
-        parameter(register(1)),
+        new_object("Foo", temporary(0)),
+        parameter(temporary(0)),
+        call("Foo.bar", 2, temporary(1)),
+        parameter(temporary(1)),
         call("__println", 1, nil),
         void_return,
 
         label("Foo.bar"),
-        copy(9, register(2)),
-        return_with(register(2))
+        copy(9, temporary(2)),
+        return_with(temporary(2))
       ],
       entrypoint: "HelloWorld.main"
 

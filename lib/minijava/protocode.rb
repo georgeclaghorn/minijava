@@ -160,8 +160,8 @@ module MiniJava
 
     #== Operands
 
-    RegisterOperand = Struct.new(:number)
-    VariableOperand = Struct.new(:name)
+    TemporaryOperand = Struct.new(:number)
+    VariableOperand  = Struct.new(:name)
 
     class ThisOperand
       include Singleton
@@ -170,8 +170,8 @@ module MiniJava
     module OperandsHelper
       private
 
-      def register(number)
-        RegisterOperand.new(number)
+      def temporary(number)
+        TemporaryOperand.new(number)
       end
 
       def variable(name)
@@ -183,13 +183,13 @@ module MiniJava
       end
     end
 
-    class NumberedRegisters
+    class NumberedTemporaries
       def initialize
         @number = -1
       end
 
       def next
-        RegisterOperand.new(next_number)
+        TemporaryOperand.new(next_number)
       end
 
       def next_number

@@ -101,7 +101,7 @@ module MiniJava
 
         def resolve(operand)
           case operand
-          when MiniJava::Protocode::RegisterOperand
+          when MiniJava::Protocode::TemporaryOperand
             REGISTERS[operand.number] || raise("Too many registers")
           when Integer
             "$#{operand}"
