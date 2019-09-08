@@ -11,15 +11,7 @@ module MiniJava
       end
 
       def generate(instructions, entrypoint)
-        puts ".text"
-        puts ".globl _main"
-        puts
-
-        puts "_main:"
-        puts "call #{entrypoint}"
-        puts "xor %rax, %rax"
-        puts "ret"
-        puts
+        inject_prelude entrypoint: entrypoint
 
         visit_all instructions
         puts
@@ -92,6 +84,23 @@ module MiniJava
       end
 
       private
+        def inject_prelude(entrypoint:)
+          puts ".text"
+          puts "#ifdef __APPLE__"
+          puts ".globl _main"
+          puts
+          puts "_main:"
+          puts "#else"
+          puts ".globl main"
+          puts
+          puts "main:"
+          puts "#endif"
+          puts "call #{entrypoint}"
+          puts "xor %rax, %rax"
+          puts "ret"
+          puts
+        end
+
         def inject_library
           IO.copy_stream(LIBRARY_PATH, destination)
         end
