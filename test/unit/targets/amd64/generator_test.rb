@@ -20,7 +20,7 @@ class MiniJava::AMD64::GeneratorTest < MiniTest::Test
       ],
       entrypoint: "HelloWorld.main"
 
-    assert_equal fixture_file("amd64/hello.s").read, actual
+    assert_equal fixture_file("amd64/hello.S").read, actual
   end
 
   def test_function
@@ -48,7 +48,7 @@ class MiniJava::AMD64::GeneratorTest < MiniTest::Test
       ],
       entrypoint: "HelloWorld.main"
 
-    assert_equal fixture_file("amd64/function.s").read, actual
+    assert_equal fixture_file("amd64/function.S").read, actual
   end
 
   private
