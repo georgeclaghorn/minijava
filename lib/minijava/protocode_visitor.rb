@@ -93,7 +93,7 @@ module MiniJava
 
     def visit_print_statement(statement)
       push visit(statement.expression)
-      emit call("__println", 1)
+      emit call("System.out.println", 1)
     end
 
     def visit_variable_assignment(statement)

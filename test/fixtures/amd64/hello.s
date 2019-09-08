@@ -1,5 +1,5 @@
 .data
-__println_format: .asciz "%i\n"
+System.out.println.format: .asciz "%i\n"
 
 .text
 #ifdef __APPLE__
@@ -15,12 +15,12 @@ call HelloWorld.main
 xor %rax, %rax
 ret
 
-__println:
+System.out.println:
 push %rbp
 mov %rsp, %rbp
 and $-16, %rsp
 mov %rdi, %rsi
-lea __println_format(%rip), %rdi
+lea System.out.println.format(%rip), %rdi
 mov $0, %al
 #ifdef __APPLE__
 call _printf
@@ -36,5 +36,5 @@ mov $4, %r13
 mov %r12, %r14
 add %r13, %r14
 mov %r14, %rdi
-call __println
+call System.out.println
 ret
