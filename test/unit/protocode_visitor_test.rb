@@ -32,8 +32,8 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
       ]),
 
       function("Foo.bar", [
-        copy(42, temporary(2)),
-        copy(temporary(2), variable("number")),
+        copy(42, temporary(0)),
+        copy(temporary(0), variable("number")),
         return_with(variable("number"))
       ])
     ], protocode
@@ -73,12 +73,12 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
       function(
         "Foo.bar",
         [
-          new_array(integer, 3, temporary(2)),
-          copy(temporary(2), variable("numbers")),
-          copy(42, temporary(3)),
-          copy_into(temporary(3), variable("numbers"), 1),
-          index_into(variable("numbers"), 1, temporary(4)),
-          return_with(temporary(4))
+          new_array(integer, 3, temporary(0)),
+          copy(temporary(0), variable("numbers")),
+          copy(42, temporary(1)),
+          copy_into(temporary(1), variable("numbers"), 1),
+          index_into(variable("numbers"), 1, temporary(2)),
+          return_with(temporary(2))
         ]
       )
     ], instructions
@@ -123,14 +123,14 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
       function(
         "Foo.bar",
         [
-          copy(true, temporary(2)),
-          jump_unless(temporary(2), ".if.0.else"),
-          copy(1, temporary(3)),
-          copy(temporary(3), variable("number")),
+          copy(true, temporary(0)),
+          jump_unless(temporary(0), ".if.0.else"),
+          copy(1, temporary(1)),
+          copy(temporary(1), variable("number")),
           jump(".if.0.end"),
           label(".if.0.else"),
-          copy(2, temporary(4)),
-          copy(temporary(4), variable("number")),
+          copy(2, temporary(2)),
+          copy(temporary(2), variable("number")),
           label(".if.0.end"),
           return_with(variable("number"))
         ]
@@ -181,21 +181,21 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
       function(
         "Foo.bar",
         [
-          copy(true, temporary(2)),
-          jump_unless(temporary(2), ".if.0.else"),
-          copy(true, temporary(3)),
-          jump_unless(temporary(3), ".if.1.else"),
-          copy(1, temporary(4)),
-          copy(temporary(4), variable("number")),
+          copy(true, temporary(0)),
+          jump_unless(temporary(0), ".if.0.else"),
+          copy(true, temporary(1)),
+          jump_unless(temporary(1), ".if.1.else"),
+          copy(1, temporary(2)),
+          copy(temporary(2), variable("number")),
           jump(".if.1.end"),
           label(".if.1.else"),
-          copy(2, temporary(5)),
-          copy(temporary(5), variable("number")),
+          copy(2, temporary(3)),
+          copy(temporary(3), variable("number")),
           label(".if.1.end"),
           jump(".if.0.end"),
           label(".if.0.else"),
-          copy(3, temporary(6)),
-          copy(temporary(6), variable("number")),
+          copy(3, temporary(4)),
+          copy(temporary(4), variable("number")),
           label(".if.0.end"),
           return_with(variable("number"))
         ]
@@ -241,10 +241,10 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
         "Foo.bar",
         [
           label(".while.0.begin"),
-          copy(true, temporary(2)),
-          jump_unless(temporary(2), ".while.0.end"),
-          copy(1, temporary(3)),
-          copy(temporary(3), variable("number")),
+          copy(true, temporary(0)),
+          jump_unless(temporary(0), ".while.0.end"),
+          copy(1, temporary(1)),
+          copy(temporary(1), variable("number")),
           jump(".while.0.begin"),
           label(".while.0.end"),
           return_with(variable("number"))
@@ -293,13 +293,13 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
         "Foo.bar",
         [
           label(".while.0.begin"),
-          copy(true, temporary(2)),
-          jump_unless(temporary(2), ".while.0.end"),
+          copy(true, temporary(0)),
+          jump_unless(temporary(0), ".while.0.end"),
           label(".while.1.begin"),
-          copy(true, temporary(3)),
-          jump_unless(temporary(3), ".while.1.end"),
-          copy(2, temporary(4)),
-          copy(temporary(4), variable("number")),
+          copy(true, temporary(1)),
+          jump_unless(temporary(1), ".while.1.end"),
+          copy(2, temporary(2)),
+          copy(temporary(2), variable("number")),
           jump(".while.1.begin"),
           label(".while.1.end"),
           jump(".while.0.begin"),
@@ -357,13 +357,13 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
         [
           parameter(variable("baz")),
           parameter(this),
-          call("Foo.glorp", 2, temporary(3)),
-          jump_unless(temporary(3), ".if.0.else"),
+          call("Foo.glorp", 2, temporary(0)),
+          jump_unless(temporary(0), ".if.0.else"),
           copy(variable("baz"), variable("result")),
           jump(".if.0.end"),
           label(".if.0.else"),
-          copy(0, temporary(4)),
-          copy(temporary(4), variable("result")),
+          copy(0, temporary(1)),
+          copy(temporary(1), variable("result")),
           label(".if.0.end"),
           return_with(variable("result"))
         ]
@@ -372,13 +372,13 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
       function(
         "Foo.glorp",
         [
-          copy(1, temporary(5)),
-          less_than(variable("baz"), temporary(5), temporary(6)),
-          not_of(temporary(6), temporary(7)),
-          copy(100, temporary(8)),
-          less_than(variable("baz"), temporary(8), temporary(9)),
-          and_of(temporary(7), temporary(9), temporary(10)),
-          return_with(temporary(10))
+          copy(1, temporary(0)),
+          less_than(variable("baz"), temporary(0), temporary(1)),
+          not_of(temporary(1), temporary(2)),
+          copy(100, temporary(3)),
+          less_than(variable("baz"), temporary(3), temporary(4)),
+          and_of(temporary(2), temporary(4), temporary(5)),
+          return_with(temporary(5))
         ]
       )
     ], instructions
@@ -419,13 +419,13 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
       function(
         "Foo.bar",
         [
-          copy(4, temporary(3)),
-          copy(temporary(3), variable("glorp")),
-          copy(7, temporary(4)),
-          multiply(variable("baz"), temporary(4), temporary(5)),
-          subtract(variable("baz"), variable("glorp"), temporary(6)),
-          add(temporary(5), temporary(6), temporary(7)),
-          return_with(temporary(7))
+          copy(4, temporary(0)),
+          copy(temporary(0), variable("glorp")),
+          copy(7, temporary(1)),
+          multiply(variable("baz"), temporary(1), temporary(2)),
+          subtract(variable("baz"), variable("glorp"), temporary(3)),
+          add(temporary(2), temporary(3), temporary(4)),
+          return_with(temporary(4))
         ]
       )
     ], instructions
@@ -464,10 +464,10 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
       function(
         "Foo.bar",
         [
-          new_array(integer, 3, temporary(2)),
-          copy(temporary(2), variable("numbers")),
-          length_of(variable("numbers"), temporary(3)),
-          return_with(temporary(3))
+          new_array(integer, 3, temporary(0)),
+          copy(temporary(0), variable("numbers")),
+          length_of(variable("numbers"), temporary(1)),
+          return_with(temporary(1))
         ]
       )
     ], instructions
@@ -509,16 +509,16 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
         "Foo.bar",
         [
           parameter(this),
-          call("Foo.baz", 1, temporary(2)),
-          return_with(temporary(2))
+          call("Foo.baz", 1, temporary(0)),
+          return_with(temporary(0))
         ]
       ),
 
       function(
         "Foo.baz",
         [
-          copy(42, temporary(3)),
-          return_with(temporary(3))
+          copy(42, temporary(0)),
+          return_with(temporary(0))
         ]
       )
     ], instructions

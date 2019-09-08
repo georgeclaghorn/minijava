@@ -11,10 +11,9 @@ module MiniJava
     end
 
     def initialize(scope, functions)
-      @scope       = scope
-      @functions   = functions
-      @temporaries = Protocode::NumberedTemporaries.new
-      @labelings   = Protocode::NumberedLabelingsByPrefix.new
+      @scope     = scope
+      @functions = functions
+      @labelings = Protocode::NumberedLabelingsByPrefix.new
     end
 
     def visit_program(program)
@@ -251,7 +250,7 @@ module MiniJava
     end
 
     private
-      attr_reader :scope, :current_function
+      attr_reader :scope, :function
       delegate :class_scope_by_name, :method_scope_by_name,
         :method_type_in_class_by_name, :variable_type_by_name, to: :scope
 
@@ -264,11 +263,14 @@ module MiniJava
 
 
       def build_function(name:)
-        @current_function = Protocode::Function.new(name, [])
+        @function    = Protocode::Function.new(name, [])
+        @temporaries = Protocode::NumberedTemporaries.new
         yield
       ensure
-        @functions.append(@current_function)
-        @current_function = nil
+        @functions.append(@function)
+
+        @function    = nil
+        @temporaries = nil
       end
 
       def label_with(name)
@@ -284,7 +286,7 @@ module MiniJava
       end
 
       def emit(instruction)
-        current_function.instructions.append(instruction)
+        function.instructions.append(instruction)
         nil
       end
 
