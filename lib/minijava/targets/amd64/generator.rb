@@ -94,6 +94,8 @@ module MiniJava
             REGISTERS[operand.number] || raise("Too many registers")
           when Integer
             "$#{operand}"
+          else
+            raise "Could not resolve operand #{operand.inspect}"
           end
         end
     end
