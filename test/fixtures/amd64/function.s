@@ -38,6 +38,7 @@ mov %rax, %r13
 mov %r13, %rdi
 call System.out.println
 ret
+
 Foo.bar:
 mov $9, %r14
 mov %r14, %rax

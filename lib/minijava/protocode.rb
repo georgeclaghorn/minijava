@@ -2,6 +2,8 @@ module MiniJava
   module Protocode
     #== Instructions
 
+    Function        = Struct.new(:name, :instructions)
+
     Label           = Struct.new(:name)
 
     Not             = Struct.new(:source, :destination)
@@ -28,6 +30,10 @@ module MiniJava
 
     module InstructionsHelper
       private
+
+      def function(name, instructions)
+        Function.new(name, instructions)
+      end
 
       def label(name)
         Label.new(name)

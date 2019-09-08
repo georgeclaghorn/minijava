@@ -10,15 +10,16 @@ module MiniJava
         @destination = destination
       end
 
-      def generate(instructions, entrypoint)
+      def generate(functions, entrypoint)
         insert_runtime_for entrypoint: entrypoint
-        visit_all instructions
+        visit_all functions
         flush
       end
 
 
-      def visit_label(label)
-        puts "#{label.name}:"
+      def visit_function(function)
+        puts "\n#{function.name}:"
+        visit_all function.instructions
       end
 
       def visit_add(add)
@@ -82,7 +83,7 @@ module MiniJava
 
       private
         def insert_runtime_for(entrypoint:)
-          puts Runtime.new.render(entrypoint: entrypoint), "\n"
+          puts Runtime.new.render(entrypoint: entrypoint)
         end
 
 

@@ -7,14 +7,14 @@ module MiniJava
     include Protocode::InstructionsHelper, Protocode::OperandsHelper
 
     def self.protocode_for(program, scope)
-      [].tap { |instructions| new(scope, instructions).visit(program) }
+      [].tap { |functions| new(scope, functions).visit(program) }
     end
 
-    def initialize(scope, instructions)
-      @scope        = scope
-      @instructions = instructions
-      @temporaries  = Protocode::NumberedTemporaries.new
-      @labelings    = Protocode::NumberedLabelingsByPrefix.new
+    def initialize(scope, functions)
+      @scope       = scope
+      @functions   = functions
+      @temporaries = Protocode::NumberedTemporaries.new
+      @labelings   = Protocode::NumberedLabelingsByPrefix.new
     end
 
     def visit_program(program)
@@ -31,9 +31,10 @@ module MiniJava
 
     def visit_main_method_declaration(declaration)
       within method_scope_by_name(declaration.name) do
-        label_with method_label(scope.parent.declaration.name, declaration.name)
-        visit declaration.statement
-        emit void_return
+        build_function name: "#{scope.parent.declaration.name}.#{declaration.name}" do
+          visit declaration.statement
+          emit void_return
+        end
       end
     end
 
@@ -46,11 +47,12 @@ module MiniJava
 
     def visit_method_declaration(declaration)
       within method_scope_by_name(declaration.name) do
-        label_with method_label(scope.parent.declaration.name, declaration.name)
-        visit_all declaration.statements
+        build_function name: "#{scope.parent.declaration.name}.#{declaration.name}" do
+          visit_all declaration.statements
 
-        with_result_of declaration.return_expression do |destination|
-          emit return_with(destination.operand)
+          with_result_of declaration.return_expression do |destination|
+            emit return_with(destination.operand)
+          end
         end
       end
     end
@@ -202,7 +204,7 @@ module MiniJava
           push receiver
 
           with_next_temporary do |destination|
-            emit call(method_label(receiver.type, invocation.name), parameters.count + 1, destination)
+            emit call("#{receiver.type.class_name}.#{invocation.name}", parameters.count + 1, destination)
             propagate destination, method_type_in_class_by_name(receiver.type, invocation.name)
           end
         end
@@ -249,7 +251,7 @@ module MiniJava
     end
 
     private
-      attr_reader :scope, :instructions
+      attr_reader :scope, :current_function
       delegate :class_scope_by_name, :method_scope_by_name,
         :method_type_in_class_by_name, :variable_type_by_name, to: :scope
 
@@ -258,6 +260,36 @@ module MiniJava
         yield
       ensure
         @scope = superscope
+      end
+
+
+      def build_function(name:)
+        @current_function = Protocode::Function.new(name, [])
+        yield
+      ensure
+        @functions.append(@current_function)
+        @current_function = nil
+      end
+
+      def label_with(name)
+        emit label(name)
+      end
+
+      def push_all(symbols)
+        symbols.reverse.each { |symbol| push symbol }
+      end
+
+      def push(symbol)
+        emit parameter(symbol.operand)
+      end
+
+      def emit(instruction)
+        current_function.instructions.append(instruction)
+        nil
+      end
+
+      def propagate(operand, type)
+        Protocode::Result.new operand, type
       end
 
 
@@ -279,32 +311,6 @@ module MiniJava
 
       def with_next_while_labeling
         yield @labelings.next(".while")
-      end
-
-
-      def method_label(class_name, method_name)
-        "#{class_name}.#{method_name}"
-      end
-
-      def label_with(name)
-        emit label(name)
-      end
-
-      def push_all(symbols)
-        symbols.reverse.each { |symbol| push symbol }
-      end
-
-      def push(symbol)
-        emit parameter(symbol.operand)
-      end
-
-      def emit(instruction)
-        instructions.append(instruction)
-        nil
-      end
-
-      def propagate(operand, type)
-        Protocode::Result.new operand, type
       end
   end
 end
