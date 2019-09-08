@@ -3,8 +3,6 @@ require "minijava/targets/amd64/runtime"
 module MiniJava
   module AMD64
     class Generator < Visitor
-      LIBRARY_PATH = File.expand_path("../library.s", __FILE__)
-
       attr_reader :destination
       delegate :puts, :print, :flush, to: :@destination
 
