@@ -45,7 +45,7 @@ class MiniJava::AMD64::CompilationTest < MiniTest::Test
           IO.popen([ "gcc", assembly.path, "-o", binary.path ], err: %i[ child out ]) do |out|
             out.read.strip
               .tap  { |output| out.close }
-              .then { |output| assert $?.success?, "Compilation failed: gcc: #{output.presence || "no output"}" }
+              .then { |output| assert $?.success?, "Assembling/linking failed: gcc: #{output.presence || "no output"}" }
           end
 
           binary.close
@@ -53,7 +53,7 @@ class MiniJava::AMD64::CompilationTest < MiniTest::Test
           IO.popen(binary.path, err: %i[ child out ]) do |out|
             out.read.strip
               .tap { |output| out.close }
-              .tap { |output| assert $?.success?, "Run failed:  #{output.presence || "no output"}" }
+              .tap { |output| assert $?.success?, "Run failed: #{output.presence || "no output"}" }
           end
         end
       end
