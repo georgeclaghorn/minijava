@@ -1,4 +1,5 @@
 require "minijava/targets/amd64/runtime"
+require "active_support/core_ext/numeric/bytes"
 
 module MiniJava
   module AMD64
@@ -19,6 +20,8 @@ module MiniJava
 
       def visit_function(function)
         puts "\n#{function.name}:"
+        puts "push %rbp"
+        puts "mov %rsp, %rbp"
         visit_all function.instructions
       end
 
@@ -68,12 +71,16 @@ module MiniJava
       end
 
       def visit_call(call)
-        puts "call #{call.label}"
+        preserve TEMPORARY_REGISTERS do
+          puts "call #{call.label}"
+        end
+
         puts "mov %rax, #{resolve(call.destination)}" unless call.destination.nil?
       end
 
       def visit_return(instruction)
         puts "mov #{resolve(instruction.source)}, %rax" unless instruction.source.nil?
+        puts "leave"
         puts "ret"
       end
 
@@ -98,6 +105,34 @@ module MiniJava
           else
             raise "Could not resolve operand #{operand.inspect}"
           end
+        end
+
+        def preserve(registers)
+          allocate registers.count * 8.bytes do
+            save registers
+            yield
+            restore registers
+          end
+        end
+
+        def allocate(size)
+          align(size, 16.bytes).then do |size|
+            puts "sub $#{size}, %rsp"
+            yield
+            puts "add $#{size}, %rsp"
+          end
+        end
+
+        def save(registers)
+          registers.each_with_index { |register, index| puts "mov #{register}, #{index * 8.bytes}(%rsp)" }
+        end
+
+        def restore(registers)
+          registers.each_with_index { |register, index| puts "mov #{index * 8.bytes}(%rsp), #{register}" }
+        end
+
+        def align(size, alignment)
+          size % alignment == 0 ? size : (size / alignment + 1) * alignment
         end
     end
   end
