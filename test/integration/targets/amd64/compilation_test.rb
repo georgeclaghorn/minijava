@@ -41,7 +41,7 @@ class MiniJava::AMD64::CompilationTest < MiniTest::Test
       Tempfile.open([ "test", ".S" ]) do |assembly|
         MiniJava::AMD64::Generator.new(assembly).generate(protocode, "HelloWorld.main")
 
-        Tempfile.open([ "test" ]) do |binary|
+        Tempfile.open("test") do |binary|
           IO.popen([ "gcc", assembly.path, "-o", binary.path ], err: %i[ child out ]) do |out|
             out.read.strip
               .tap  { |output| out.close }
