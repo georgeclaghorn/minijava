@@ -20,9 +20,14 @@ module MiniJava
 
       def visit_function(function)
         puts "\n#{function.name}:"
-        puts "push %rbp"
-        puts "mov %rsp, %rbp"
-        visit_all function.instructions
+
+        enter TEMPORARY_REGISTERS.count * 8.bytes do
+          preserve TEMPORARY_REGISTERS do
+            visit_all function.instructions
+          end
+        end
+
+        puts "ret"
       end
 
       def visit_add(add)
@@ -71,17 +76,12 @@ module MiniJava
       end
 
       def visit_call(call)
-        preserve TEMPORARY_REGISTERS do
-          puts "call #{call.label}"
-        end
-
+        puts "call #{call.label}"
         puts "mov %rax, #{resolve(call.destination)}" unless call.destination.nil?
       end
 
       def visit_return(instruction)
         puts "mov #{resolve(instruction.source)}, %rax" unless instruction.source.nil?
-        puts "leave"
-        puts "ret"
       end
 
       def visit_new_object(instruction)
@@ -107,28 +107,26 @@ module MiniJava
           end
         end
 
-        def preserve(registers)
-          allocate registers.count * 8.bytes do
-            save registers
-            yield
-            restore registers
-          end
+        def enter(size)
+          puts "push %rbp"
+          puts "mov %rsp, %rbp"
+          puts "sub $#{align(size, 16.bytes)}, %rsp"
+          yield
+          puts "leave"
         end
 
-        def allocate(size)
-          align(size, 16.bytes).then do |size|
-            puts "sub $#{size}, %rsp"
-            yield
-            puts "add $#{size}, %rsp"
-          end
+        def preserve(registers, offset: 0)
+          save registers, offset: offset
+          yield
+          restore registers, offset: offset
         end
 
-        def save(registers)
-          registers.each_with_index { |register, index| puts "mov #{register}, #{index * 8.bytes}(%rsp)" }
+        def save(registers, offset: 0)
+          registers.each_with_index { |register, index| puts "mov #{register}, #{index * 8.bytes + offset}(%rsp)" }
         end
 
-        def restore(registers)
-          registers.each_with_index { |register, index| puts "mov #{index * 8.bytes}(%rsp), #{register}" }
+        def restore(registers, offset: 0)
+          registers.each_with_index { |register, index| puts "mov #{index * 8.bytes + offset}(%rsp), #{register}" }
         end
 
         def align(size, alignment)
