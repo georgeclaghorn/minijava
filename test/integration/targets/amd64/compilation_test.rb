@@ -11,7 +11,7 @@ class MiniJava::AMD64::CompilationTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "9", output
+    assert_equal "9\n", output
   end
 
   def test_function
@@ -29,7 +29,7 @@ class MiniJava::AMD64::CompilationTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal "9", output
+    assert_equal "9\n", output
   end
 
   private
@@ -43,17 +43,19 @@ class MiniJava::AMD64::CompilationTest < MiniTest::Test
 
         Tempfile.open("test") do |binary|
           IO.popen([ "gcc", assembly.path, "-o", binary.path ], err: %i[ child out ]) do |out|
-            out.read.strip
-              .tap  { |output| out.close }
-              .then { |output| assert $?.success?, "Assembling/linking failed: gcc: #{output.presence || "no output"}" }
+            out.read.then do |output|
+              out.close
+              assert $?.success?, "Assembling/linking failed: gcc: #{output.presence || "no output"}"
+            end
           end
 
           binary.close
 
           IO.popen(binary.path, err: %i[ child out ]) do |out|
-            out.read.strip
-              .tap { |output| out.close }
-              .tap { |output| assert $?.success?, "Run failed: #{output.presence || "no output"}" }
+            out.read.tap do |output|
+              out.close
+              assert $?.success?, "Run failed: #{output.presence || "no output"}"
+            end
           end
         end
       end
