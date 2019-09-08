@@ -2,6 +2,19 @@
 __println_format: .asciz "%i\n"
 
 .text
+#ifdef __APPLE__
+.globl _main
+
+_main:
+#else
+.globl main
+
+main:
+#endif
+call {{entrypoint}}
+xor %rax, %rax
+ret
+
 __println:
 push %rbp
 mov %rsp, %rbp

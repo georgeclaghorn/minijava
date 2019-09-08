@@ -1,3 +1,5 @@
+require "minijava/targets/amd64/runtime"
+
 module MiniJava
   module AMD64
     class Generator < Visitor
@@ -11,12 +13,8 @@ module MiniJava
       end
 
       def generate(instructions, entrypoint)
-        inject_prelude entrypoint: entrypoint
-
+        insert_runtime_for entrypoint: entrypoint
         visit_all instructions
-        puts
-
-        inject_library
         flush
       end
 
@@ -85,25 +83,8 @@ module MiniJava
       end
 
       private
-        def inject_prelude(entrypoint:)
-          puts ".text"
-          puts "#ifdef __APPLE__"
-          puts ".globl _main"
-          puts
-          puts "_main:"
-          puts "#else"
-          puts ".globl main"
-          puts
-          puts "main:"
-          puts "#endif"
-          puts "call #{entrypoint}"
-          puts "xor %rax, %rax"
-          puts "ret"
-          puts
-        end
-
-        def inject_library
-          IO.copy_stream(LIBRARY_PATH, destination)
+        def insert_runtime_for(entrypoint:)
+          puts Runtime.new.render(entrypoint: entrypoint), "\n"
         end
 
 
