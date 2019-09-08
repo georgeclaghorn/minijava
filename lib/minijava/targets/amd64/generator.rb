@@ -87,12 +87,12 @@ module MiniJava
         end
 
 
-        REGISTERS = %w[ %r12 %r13 %r14 %r15 %rbx ]
+        TEMPORARY_REGISTERS = %w[ %r12 %r13 %r14 %r15 %rbx ]
 
         def resolve(operand)
           case operand
           when MiniJava::Protocode::TemporaryOperand
-            REGISTERS[operand.number] || raise("Too many registers")
+            TEMPORARY_REGISTERS[operand.number] || raise("Too many registers")
           when Integer
             "$#{operand}"
           else
