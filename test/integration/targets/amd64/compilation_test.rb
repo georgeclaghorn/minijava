@@ -2,8 +2,7 @@ require "test_helper"
 
 class MiniJava::AMD64::CompilationTest < MiniTest::Test
   def test_hello
-    expected = fixture_file("amd64/hello.s").read
-    actual = compile(<<~JAVA)
+    output = execute(<<~JAVA)
       class HelloWorld {
         public static void main() {
           System.out.println(5 + 4);
@@ -11,12 +10,11 @@ class MiniJava::AMD64::CompilationTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal expected, actual
+    assert_equal "9", output
   end
 
   def test_function
-    expected = fixture_file("amd64/function.s").read
-    actual = compile(<<~JAVA)
+    output = execute(<<~JAVA)
       class HelloWorld {
         public static void main() {
           System.out.println(new Foo().bar());
@@ -30,20 +28,33 @@ class MiniJava::AMD64::CompilationTest < MiniTest::Test
       }
     JAVA
 
-    assert_equal expected, actual
+    assert_equal "9", output
   end
 
   private
-    def compile(source)
+    def execute(source)
       program   = MiniJava::Parser.program_from(source)
       scope     = MiniJava::ScopeVisitor.scope_for(program)
       protocode = MiniJava::ProtocodeVisitor.protocode_for(program, scope)
 
-      StringIO.new
-        .tap { |destination| MiniJava::AMD64::Generator.new(destination).generate(protocode, "HelloWorld.main") }
-        .then do |destination|
-          destination.rewind
-          destination.read
+      Tempfile.open([ "test", ".S" ]) do |assembly|
+        MiniJava::AMD64::Generator.new(assembly).generate(protocode, "HelloWorld.main")
+
+        Tempfile.open([ "test" ]) do |binary|
+          IO.popen([ "gcc", assembly.path, "-o", binary.path ], err: %i[ child out ]) do |out|
+            out.read.strip
+              .tap  { |output| out.close }
+              .then { |output| assert $?.success?, "Compilation failed: gcc: #{output}" }
+          end
+
+          binary.close
+
+          IO.popen(binary.path, err: %i[ child out ]) do |out|
+            out.read.strip
+              .tap { |output| out.close }
+              .tap { |output| assert $?.success?, "Run failed: #{output}" }
+          end
         end
+      end
     end
 end
