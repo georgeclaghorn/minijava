@@ -4,7 +4,7 @@ module MiniJava
       LIBRARY_PATH = File.expand_path("../library.s", __FILE__)
 
       attr_reader :destination
-      delegate :puts, :print, to: :@destination
+      delegate :puts, :print, :flush, to: :@destination
 
       def initialize(destination)
         @destination = destination
@@ -17,6 +17,7 @@ module MiniJava
         puts
 
         inject_library
+        flush
       end
 
 
