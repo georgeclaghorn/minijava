@@ -32,7 +32,6 @@ module MiniJava
       within method_scope_by_name(declaration.name) do
         build_function name: "#{scope.parent.declaration.name}.#{declaration.name}" do
           visit declaration.statement
-          emit void_return
         end
       end
     end

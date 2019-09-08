@@ -83,10 +83,6 @@ module MiniJava
         Call.new(label, parameter_count, result)
       end
 
-      def void_return
-        Return.new
-      end
-
       def return_with(value)
         Return.new(value)
       end

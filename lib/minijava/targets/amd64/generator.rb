@@ -81,7 +81,7 @@ module MiniJava
       end
 
       def visit_return(instruction)
-        puts "mov #{resolve(instruction.source)}, %rax" unless instruction.source.nil?
+        puts "mov #{resolve(instruction.source)}, %rax"
       end
 
       def visit_new_object(instruction)
