@@ -3,7 +3,8 @@ require "minijava/errors"
 
 module MiniJava
   class Scope
-    attr_reader :parent, :declaration, :classes, :methods, :variables
+    attr_accessor :parent
+    attr_reader :declaration, :classes, :methods, :variables
 
     def self.build(*args, &block)
       new(*args).tap(&block)
@@ -15,10 +16,6 @@ module MiniJava
       @classes     = ScopeMap.new(self)
       @methods     = ScopeMap.new(self)
       @variables   = VariableMap.new
-    end
-
-    def reparent(parent)
-      @parent = parent
     end
 
 

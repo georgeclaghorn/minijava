@@ -78,7 +78,7 @@ module MiniJava
           class_scope = scope.class_scope_by_name(declaration.name)
 
           if superclass_scope = scope.class_scope_by_name(declaration.superclass_name)
-            class_scope.reparent(superclass_scope)
+            class_scope.parent = superclass_scope
           else
             raise NameError, "Cannot find class #{declaration.superclass_name}"
           end
