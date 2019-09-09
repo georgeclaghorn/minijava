@@ -130,7 +130,7 @@ module MiniJava
         end
 
         def align(size, alignment)
-          size % alignment == 0 ? size : (size / alignment + 1) * alignment
+          ((size - 1) / alignment + 1) * alignment
         end
     end
   end
