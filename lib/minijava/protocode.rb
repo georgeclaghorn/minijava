@@ -2,7 +2,7 @@ module MiniJava
   module Protocode
     #== Instructions
 
-    Function        = Struct.new(:name, :instructions)
+    Function        = Struct.new(:name, :parameter_count, :instructions)
 
     Label           = Struct.new(:name)
 
@@ -31,8 +31,8 @@ module MiniJava
     module InstructionsHelper
       private
 
-      def function(name, instructions)
-        Function.new(name, instructions)
+      def function(name:, parameter_count:, instructions:)
+        Function.new(name, parameter_count, instructions)
       end
 
       def label(name)
@@ -122,16 +122,12 @@ module MiniJava
       attr_reader :prefix
 
       def initialize(prefix)
-        @prefix = prefix
-        @number = -1
+        @prefix  = prefix
+        @numbers = 0.step(by: 1)
       end
 
       def next
-        Labeling.new("#{prefix}.#{next_number}")
-      end
-
-      def next_number
-        @number += 1
+        Labeling.new("#{prefix}.#{@numbers.next}")
       end
     end
 
@@ -186,16 +182,12 @@ module MiniJava
     end
 
     class NumberedTemporaries
-      def initialize
-        @number = -1
+      def initialize(start = 0)
+        @numbers = start.step(by: 1)
       end
 
       def next
-        TemporaryOperand.new(next_number)
-      end
-
-      def next_number
-        @number += 1
+        TemporaryOperand.new(@numbers.next)
       end
     end
 

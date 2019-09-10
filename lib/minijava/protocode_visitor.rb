@@ -30,7 +30,7 @@ module MiniJava
 
     def visit_main_method_declaration(declaration)
       within method_scope_by_name(declaration.name) do
-        build_function name: "#{scope.parent.declaration.name}.#{declaration.name}" do
+        build_function do
           visit declaration.statement
         end
       end
@@ -45,7 +45,7 @@ module MiniJava
 
     def visit_method_declaration(declaration)
       within method_scope_by_name(declaration.name) do
-        build_function name: "#{scope.parent.declaration.name}.#{declaration.name}" do
+        build_function parameter_count: declaration.parameters.count + 1 do
           visit_all declaration.statements
 
           with_result_of declaration.return_expression do |destination|
@@ -174,7 +174,11 @@ module MiniJava
     end
 
     def visit_variable_access(access)
-      propagate variable(access.variable.name), variable_type_by_name(access.variable.name)
+      if index = formal_parameter_index_by_name(access.variable.name)
+        propagate temporary(index + 1), variable_type_by_name(access.variable.name)
+      else
+        propagate variable(access.variable.name), variable_type_by_name(access.variable.name)
+      end
     end
 
     def visit_array_access(access)
@@ -198,8 +202,7 @@ module MiniJava
     def visit_method_invocation(invocation)
       with_result_of invocation.receiver do |receiver|
         with_results_of invocation.parameters do |parameters|
-          push_all parameters
-          push receiver
+          push receiver, parameters
 
           with_next_temporary do |destination|
             emit call("#{receiver.type.class_name}.#{invocation.name}", parameters.count + 1, destination)
@@ -245,13 +248,13 @@ module MiniJava
     end
 
     def visit_this(*)
-      propagate this, object(scope.parent.declaration.name)
+      propagate this, object(parent.declaration.name)
     end
 
     private
       attr_reader :scope, :function
-      delegate :class_scope_by_name, :method_scope_by_name,
-        :method_type_in_class_by_name, :variable_type_by_name, to: :scope
+      delegate :parent, :declaration, :class_scope_by_name,
+        :method_scope_by_name, :method_type_in_class_by_name, :variable_type_by_name, to: :scope
 
       def within(subscope)
         superscope, @scope = @scope, subscope
@@ -260,10 +263,15 @@ module MiniJava
         @scope = superscope
       end
 
+      def formal_parameter_index_by_name(name)
+        declaration.parameters.index { |parameter| parameter.name == name }
+      end
 
-      def build_function(name:)
-        @function    = Protocode::Function.new(name, [])
-        @temporaries = Protocode::NumberedTemporaries.new
+
+      def build_function(name: "#{parent.declaration.name}.#{declaration.name}", parameter_count: 0)
+        @function    = Protocode::Function.new(name, parameter_count, [])
+        @temporaries = Protocode::NumberedTemporaries.new(parameter_count)
+
         yield
       ensure
         @functions.append(@function)
@@ -276,12 +284,8 @@ module MiniJava
         emit label(name)
       end
 
-      def push_all(symbols)
-        symbols.reverse.each { |symbol| push symbol }
-      end
-
-      def push(symbol)
-        emit parameter(symbol.operand)
+      def push(*symbols)
+        symbols.flatten.each { |symbol| emit parameter(symbol.operand) }
       end
 
       def emit(instruction)

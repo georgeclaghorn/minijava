@@ -225,6 +225,17 @@ module MiniJava
     #== Other
 
     Identifier = Struct.new(:name) do
+      def ==(other)
+        case other
+        when Identifier
+          name == other.name
+        when String
+          name == other
+        else
+          false
+        end
+      end
+
       def to_s
         name
       end

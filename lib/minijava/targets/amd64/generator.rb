@@ -23,6 +23,7 @@ module MiniJava
 
         enter TEMPORARY_REGISTERS.count * 8.bytes do
           preserve TEMPORARY_REGISTERS do
+            move_parameters_to_temporary_registers_for function
             visit_all function.instructions
           end
         end
@@ -72,12 +73,13 @@ module MiniJava
       end
 
       def visit_parameter(parameter)
-        puts "mov #{resolve(parameter.source)}, %rdi"
+        puts "mov #{resolve(parameter.source)}, #{next_parameter_register}"
       end
 
       def visit_call(call)
         puts "call #{call.label}"
         puts "mov %rax, #{resolve(call.destination)}" unless call.destination.nil?
+        reset_parameter_registers
       end
 
       def visit_return(instruction)
@@ -89,12 +91,17 @@ module MiniJava
       end
 
       private
+        PARAMETER_REGISTERS = %w[ %rdi %rsi %rdx %rcx %r8 %r9 ]
+        TEMPORARY_REGISTERS = %w[ %r12 %r13 %r14 %r15 %rbx ]
+
         def insert_runtime_for(entrypoint:)
           puts Runtime.new.render(entrypoint: entrypoint)
         end
 
 
-        TEMPORARY_REGISTERS = %w[ %r12 %r13 %r14 %r15 %rbx ]
+        def move_parameters_to_temporary_registers_for(function)
+          function.parameter_count.times { |i| puts "mov #{PARAMETER_REGISTERS[i]}, #{TEMPORARY_REGISTERS[i]}" }
+        end
 
         def resolve(operand)
           case operand
@@ -119,6 +126,18 @@ module MiniJava
           save registers, offset: offset
           yield
           restore registers, offset: offset
+        end
+
+        def next_parameter_register
+          parameter_registers.next
+        end
+
+        def reset_parameter_registers
+          @parameter_registers = PARAMETER_REGISTERS.cycle(1)
+        end
+
+        def parameter_registers
+          @parameter_registers || reset_parameter_registers
         end
 
         def save(registers, offset: 0)

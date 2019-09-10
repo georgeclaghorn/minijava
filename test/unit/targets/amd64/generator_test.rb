@@ -7,8 +7,9 @@ class MiniJava::AMD64::GeneratorTest < MiniTest::Test
     actual = generate \
       protocode: [
         function(
-          "HelloWorld.main",
-          [
+          name: "HelloWorld.main",
+          parameter_count: 0,
+          instructions: [
             copy(5, temporary(0)),
             copy(4, temporary(1)),
             add(temporary(0), temporary(1), temporary(2)),
@@ -26,21 +27,27 @@ class MiniJava::AMD64::GeneratorTest < MiniTest::Test
     actual = generate \
       protocode: [
         function(
-          "HelloWorld.main",
-          [
+          name: "HelloWorld.main",
+          parameter_count: 0,
+          instructions: [
             new_object("Foo", temporary(0)),
+            copy(5, temporary(1)),
+            copy(4, temporary(2)),
             parameter(temporary(0)),
-            call("Foo.bar", 2, temporary(1)),
             parameter(temporary(1)),
+            parameter(temporary(2)),
+            call("Foo.bar", 3, temporary(3)),
+            parameter(temporary(3)),
             call("System.out.println", 1, nil)
           ]
         ),
 
         function(
-          "Foo.bar",
-          [
-            copy(9, temporary(2)),
-            return_with(temporary(2))
+          name: "Foo.bar",
+          parameter_count: 3,
+          instructions: [
+            add(temporary(1), temporary(2), temporary(3)),
+            return_with(temporary(3))
           ]
         )
       ],

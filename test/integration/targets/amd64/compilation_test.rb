@@ -18,13 +18,13 @@ class MiniJava::AMD64::CompilationTest < MiniTest::Test
     output = execute(<<~JAVA)
       class HelloWorld {
         public static void main() {
-          System.out.println(new Foo().bar());
+          System.out.println(new Foo().bar(5, 4));
         }
       }
 
       class Foo {
-        public int bar() {
-          return 9;
+        public int bar(int baz, int glorp) {
+          return baz + glorp;
         }
       }
     JAVA
