@@ -128,18 +128,6 @@ module MiniJava
           restore registers, offset: offset
         end
 
-        def next_parameter_register
-          parameter_registers.next
-        end
-
-        def reset_parameter_registers
-          @parameter_registers = PARAMETER_REGISTERS.cycle(1)
-        end
-
-        def parameter_registers
-          @parameter_registers || reset_parameter_registers
-        end
-
         def save(registers, offset: 0)
           registers.each_with_index { |register, index| puts "mov #{register}, #{index * 8.bytes + offset}(%rsp)" }
         end
@@ -150,6 +138,19 @@ module MiniJava
 
         def align(size, alignment)
           ((size - 1) / alignment + 1) * alignment
+        end
+
+
+        def next_parameter_register
+          parameter_registers.next
+        end
+
+        def reset_parameter_registers
+          @parameter_registers = PARAMETER_REGISTERS.cycle(1)
+        end
+
+        def parameter_registers
+          @parameter_registers || reset_parameter_registers
         end
     end
   end
