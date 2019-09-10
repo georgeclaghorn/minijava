@@ -30,7 +30,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
           parameter(temporary(0)),
           call("Foo.bar", 1, temporary(1)),
           parameter(temporary(1)),
-          call("System.out.println", 1, nil)
+          call("System.out.println", 1)
         ]
       ),
 
@@ -73,7 +73,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
           parameter(temporary(0)),
           call("Foo.bar", 1, temporary(1)),
           parameter(temporary(1)),
-          call("System.out.println", 1, nil)
+          call("System.out.println", 1)
         ]
       ),
 
@@ -124,7 +124,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
           parameter(temporary(0)),
           call("Foo.bar", 1, temporary(1)),
           parameter(temporary(1)),
-          call("System.out.println", 1, nil)
+          call("System.out.println", 1)
         ]
       ),
 
@@ -183,7 +183,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
           parameter(temporary(0)),
           call("Foo.bar", 1, temporary(1)),
           parameter(temporary(1)),
-          call("System.out.println", 1, nil)
+          call("System.out.println", 1)
         ]
       ),
 
@@ -243,7 +243,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
           parameter(temporary(0)),
           call("Foo.bar", 1, temporary(1)),
           parameter(temporary(1)),
-          call("System.out.println", 1, nil)
+          call("System.out.println", 1)
         ]
       ),
 
@@ -296,7 +296,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
           parameter(temporary(0)),
           call("Foo.bar", 1, temporary(1)),
           parameter(temporary(1)),
-          call("System.out.println", 1, nil)
+          call("System.out.println", 1)
         ]
       ),
 
@@ -360,7 +360,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
           parameter(temporary(1)),
           call("Foo.bar", 2, temporary(2)),
           parameter(temporary(2)),
-          call("System.out.println", 1, nil)
+          call("System.out.println", 1)
         ]
       ),
 
@@ -426,7 +426,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
           parameter(temporary(1)),
           call("Foo.bar", 2, temporary(2)),
           parameter(temporary(2)),
-          call("System.out.println", 1, nil)
+          call("System.out.println", 1)
         ]
       ),
 
@@ -472,7 +472,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
           parameter(temporary(0)),
           call("Foo.bar", 1, temporary(1)),
           parameter(temporary(1)),
-          call("System.out.println", 1, nil)
+          call("System.out.println", 1)
         ]
       ),
 
@@ -517,7 +517,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
           parameter(temporary(0)),
           call("Foo.bar", 1, temporary(1)),
           parameter(temporary(1)),
-          call("System.out.println", 1, nil)
+          call("System.out.println", 1)
         ]
       ),
 
@@ -570,7 +570,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
           parameter(temporary(2)),
           call("Foo.bar", 3, temporary(3)),
           parameter(temporary(3)),
-          call("System.out.println", 1, nil)
+          call("System.out.println", 1)
         ]
       ),
 

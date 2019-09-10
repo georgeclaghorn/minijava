@@ -14,7 +14,7 @@ class MiniJava::AMD64::GeneratorTest < MiniTest::Test
             copy(4, temporary(1)),
             add(temporary(0), temporary(1), temporary(2)),
             parameter(temporary(2)),
-            call("System.out.println", 1, nil)
+            call("System.out.println", 1)
           ]
         )
       ],
@@ -38,7 +38,7 @@ class MiniJava::AMD64::GeneratorTest < MiniTest::Test
             parameter(temporary(2)),
             call("Foo.bar", 3, temporary(3)),
             parameter(temporary(3)),
-            call("System.out.println", 1, nil)
+            call("System.out.println", 1)
           ]
         ),
 
