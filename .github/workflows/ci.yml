@@ -2,7 +2,14 @@ name: CI
 on: push
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+
     steps:
       - uses: actions/checkout@master
 
@@ -12,7 +19,7 @@ jobs:
           version: 2.6.x
 
       - name: Install dependencies
-        run: gem install bundler && bundle install --jobs 4 --retry 3
+        run: gem install bundler --force && bundle install --jobs 4 --retry 3
 
       - name: Test
         run: bundle exec rake
