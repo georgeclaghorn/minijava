@@ -24,7 +24,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
     assert_equal [
       function(
         name: "HelloWorld.main",
-        parameter_count: 0,
+        parameters: 0,
         instructions: [
           new_object("Foo", temporary(0)),
           parameter(temporary(0)),
@@ -36,7 +36,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
       function(
         name: "Foo.bar",
-        parameter_count: 1,
+        parameters: 1,
         instructions: [
           copy(42, temporary(1)),
           copy(temporary(1), variable("number")),
@@ -67,7 +67,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
     assert_equal [
       function(
         name: "HelloWorld.main",
-        parameter_count: 0,
+        parameters: 0,
         instructions: [
           new_object("Foo", temporary(0)),
           parameter(temporary(0)),
@@ -79,7 +79,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
       function(
         name: "Foo.bar",
-        parameter_count: 1,
+        parameters: 1,
         instructions: [
           new_array(integer, 3, temporary(1)),
           copy(temporary(1), variable("numbers")),
@@ -118,7 +118,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
     assert_equal [
       function(
         name: "HelloWorld.main",
-        parameter_count: 0,
+        parameters: 0,
         instructions: [
           new_object("Foo", temporary(0)),
           parameter(temporary(0)),
@@ -130,7 +130,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
       function(
         name: "Foo.bar",
-        parameter_count: 1,
+        parameters: 1,
         instructions: [
           copy(true, temporary(1)),
           jump_unless(temporary(1), ".if.0.else"),
@@ -177,7 +177,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
     assert_equal [
       function(
         name: "HelloWorld.main",
-        parameter_count: 0,
+        parameters: 0,
         instructions: [
           new_object("Foo", temporary(0)),
           parameter(temporary(0)),
@@ -189,7 +189,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
       function(
         name: "Foo.bar",
-        parameter_count: 1,
+        parameters: 1,
         instructions: [
           copy(true, temporary(1)),
           jump_unless(temporary(1), ".if.0.else"),
@@ -237,7 +237,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
     assert_equal [
       function(
         name: "HelloWorld.main",
-        parameter_count: 0,
+        parameters: 0,
         instructions: [
           new_object("Foo", temporary(0)),
           parameter(temporary(0)),
@@ -249,7 +249,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
       function(
         name: "Foo.bar",
-        parameter_count: 1,
+        parameters: 1,
         instructions: [
           label(".while.0.begin"),
           copy(true, temporary(1)),
@@ -290,7 +290,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
     assert_equal [
       function(
         name: "HelloWorld.main",
-        parameter_count: 0,
+        parameters: 0,
         instructions: [
           new_object("Foo", temporary(0)),
           parameter(temporary(0)),
@@ -302,7 +302,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
       function(
         name: "Foo.bar",
-        parameter_count: 1,
+        parameters: 1,
         instructions: [
           label(".while.0.begin"),
           copy(true, temporary(1)),
@@ -352,7 +352,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
     assert_equal [
       function(
         name: "HelloWorld.main",
-        parameter_count: 0,
+        parameters: 0,
         instructions: [
           new_object("Foo", temporary(0)),
           copy(42, temporary(1)),
@@ -366,7 +366,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
       function(
         name: "Foo.bar",
-        parameter_count: 2,
+        parameters: 2,
         instructions: [
           parameter(this),
           parameter(temporary(1)),
@@ -384,7 +384,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
       function(
         name: "Foo.glorp",
-        parameter_count: 2,
+        parameters: 2,
         instructions: [
           copy(1, temporary(2)),
           less_than(temporary(1), temporary(2), temporary(3)),
@@ -418,7 +418,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
     assert_equal [
       function(
         name: "HelloWorld.main",
-        parameter_count: 0,
+        parameters: 0,
         instructions: [
           new_object("Foo", temporary(0)),
           copy(42, temporary(1)),
@@ -432,7 +432,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
       function(
         name: "Foo.bar",
-        parameter_count: 2,
+        parameters: 2,
         instructions: [
           copy(4, temporary(2)),
           copy(temporary(2), variable("glorp")),
@@ -466,7 +466,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
     assert_equal [
       function(
         name: "HelloWorld.main",
-        parameter_count: 0,
+        parameters: 0,
         instructions: [
           new_object("Foo", temporary(0)),
           parameter(temporary(0)),
@@ -478,7 +478,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
       function(
         name: "Foo.bar",
-        parameter_count: 1,
+        parameters: 1,
         instructions: [
           new_array(integer, 3, temporary(1)),
           copy(temporary(1), variable("numbers")),
@@ -511,7 +511,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
     assert_equal [
       function(
         name: "HelloWorld.main",
-        parameter_count: 0,
+        parameters: 0,
         instructions: [
           new_object("Foo", temporary(0)),
           parameter(temporary(0)),
@@ -523,7 +523,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
       function(
         name: "Foo.bar",
-        parameter_count: 1,
+        parameters: 1,
         instructions: [
           parameter(this),
           call("Foo.baz", 1, temporary(1)),
@@ -533,7 +533,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
       function(
         name: "Foo.baz",
-        parameter_count: 1,
+        parameters: 1,
         instructions: [
           copy(42, temporary(1)),
           return_with(temporary(1))
@@ -560,7 +560,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
     assert_equal [
       function(
         name: "HelloWorld.main",
-        parameter_count: 0,
+        parameters: 0,
         instructions: [
           new_object("Foo", temporary(0)),
           copy(5, temporary(1)),
@@ -576,7 +576,7 @@ class MiniJava::ProtocodeVisitorTest < MiniTest::Test
 
       function(
         name: "Foo.bar",
-        parameter_count: 3,
+        parameters: 3,
         instructions: [
           add(temporary(1), temporary(2), temporary(3)),
           return_with(temporary(3))

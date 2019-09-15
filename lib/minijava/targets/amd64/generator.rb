@@ -100,7 +100,7 @@ module MiniJava
 
 
         def move_parameters_to_temporary_registers_for(function)
-          function.parameter_count.times { |i| puts "mov #{PARAMETER_REGISTERS[i]}, #{TEMPORARY_REGISTERS[i]}" }
+          function.parameters.times { |i| puts "mov #{PARAMETER_REGISTERS[i]}, #{TEMPORARY_REGISTERS[i]}" }
         end
 
         def resolve(operand)
