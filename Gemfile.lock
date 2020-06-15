@@ -14,7 +14,7 @@ GEM
     minitest (5.11.3)
     mustache (1.1.0)
     racc (1.4.15)
-    rake (12.3.2)
+    rake (12.3.3)
     thread_safe (0.3.6)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
