@@ -229,7 +229,7 @@ module MiniJava
     def visit_integer_literal(literal)
       with_next_temporary do |destination|
         emit copy(literal.value, destination)
-        propagate destination, boolean
+        propagate destination, integer
       end
     end
 
