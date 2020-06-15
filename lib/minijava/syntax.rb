@@ -194,13 +194,7 @@ module MiniJava
       end
     end
 
-    class TrueLiteral
-      include Singleton
-    end
-
-    class FalseLiteral
-      include Singleton
-    end
+    BooleanLiteral = Struct.new(:value)
 
 
     #== Errors

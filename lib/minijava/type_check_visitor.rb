@@ -166,11 +166,7 @@ module MiniJava
       integer
     end
 
-    def visit_true_literal(literal)
-      boolean
-    end
-
-    def visit_false_literal(literal)
+    def visit_boolean_literal(literal)
       boolean
     end
 

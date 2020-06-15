@@ -233,16 +233,9 @@ module MiniJava
       end
     end
 
-    def visit_true_literal(literal)
+    def visit_boolean_literal(literal)
       with_next_temporary do |destination|
-        emit copy(true, destination)
-        propagate destination, boolean
-      end
-    end
-
-    def visit_false_literal(literal)
-      with_next_temporary do |destination|
-        emit copy(false, destination)
+        emit copy(literal.value, destination)
         propagate destination, boolean
       end
     end

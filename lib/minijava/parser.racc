@@ -92,8 +92,8 @@ rule
     | NEW INT LBRACKET Expression RBRACKET { MiniJava::Syntax::NewArray.new(val[3]) }
     | NEW Identifier LPAREN RPAREN { MiniJava::Syntax::NewObject.new(val[1]) }
     | IntegerLiteral { val[0] }
-    | TRUE { MiniJava::Syntax::TrueLiteral.instance }
-    | FALSE { MiniJava::Syntax::FalseLiteral.instance }
+    | TRUE { MiniJava::Syntax::BooleanLiteral.new(true) }
+    | FALSE { MiniJava::Syntax::BooleanLiteral.new(false) }
     | THIS { MiniJava::Syntax::This.instance }
 
   ActualParameters: { [] } | OneOrMoreActualParameters { val[0] }

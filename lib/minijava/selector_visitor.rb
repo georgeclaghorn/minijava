@@ -182,8 +182,7 @@ module MiniJava
     end
 
     alias_method :visit_integer_literal, :visit_literal
-    alias_method :visit_true_literal,    :visit_literal
-    alias_method :visit_false_literal,   :visit_literal
+    alias_method :visit_boolean_literal, :visit_literal
 
 
     def visit_identifier(identifier)
